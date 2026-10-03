@@ -1,0 +1,1184 @@
+{
+  "base_classification": {
+    "overall_risk": "HIGH",
+    "risk_score": 3,
+    "component_levels": {
+      "water_level_m": "HIGH",
+      "inflow_ktcmd": "HIGH",
+      "rainfall_mm_24h": "HIGH"
+    },
+    "driving_factor": "water_level_m",
+    "explanation": "Driven by water level m = 11.60, which falls in the HIGH band (\u2265 11.0 for this parameter)."
+  },
+  "zones": [
+    {
+      "zone_id": "Z-001",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.56416666666667
+      },
+      "bounds": {
+        "min_lat": 16.44,
+        "max_lat": 16.46,
+        "min_lon": 80.55,
+        "max_lon": 80.57833333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 7.402,
+      "risk_factors": {
+        "river_proximity_factor": 0.1207,
+        "effective_water_level_m": 1.4,
+        "effective_inflow_ktcmd": 85.66,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 7.402,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-002",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.5925
+      },
+      "bounds": {
+        "min_lat": 16.44,
+        "max_lat": 16.46,
+        "min_lon": 80.57833333333333,
+        "max_lon": 80.60666666666667
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 5.542,
+      "risk_factors": {
+        "river_proximity_factor": 0.2053,
+        "effective_water_level_m": 2.38,
+        "effective_inflow_ktcmd": 145.74,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 5.542,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-003",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.62083333333334
+      },
+      "bounds": {
+        "min_lat": 16.44,
+        "max_lat": 16.46,
+        "min_lon": 80.60666666666667,
+        "max_lon": 80.635
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 4.175,
+      "risk_factors": {
+        "river_proximity_factor": 0.3034,
+        "effective_water_level_m": 3.52,
+        "effective_inflow_ktcmd": 215.38,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 4.175,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-004",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.64916666666666
+      },
+      "bounds": {
+        "min_lat": 16.44,
+        "max_lat": 16.46,
+        "min_lon": 80.63499999999999,
+        "max_lon": 80.66333333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 3.138,
+      "risk_factors": {
+        "river_proximity_factor": 0.408,
+        "effective_water_level_m": 4.73,
+        "effective_inflow_ktcmd": 289.66,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 3.138,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-005",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.6775
+      },
+      "bounds": {
+        "min_lat": 16.44,
+        "max_lat": 16.46,
+        "min_lon": 80.66333333333333,
+        "max_lon": 80.69166666666666
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 2.047,
+      "risk_factors": {
+        "river_proximity_factor": 0.5572,
+        "effective_water_level_m": 6.46,
+        "effective_inflow_ktcmd": 395.6,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 2.047,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-006",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.70583333333333
+      },
+      "bounds": {
+        "min_lat": 16.44,
+        "max_lat": 16.46,
+        "min_lon": 80.69166666666666,
+        "max_lon": 80.72
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.021,
+      "risk_factors": {
+        "river_proximity_factor": 0.747,
+        "effective_water_level_m": 8.66,
+        "effective_inflow_ktcmd": 530.36,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.021,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-007",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.47,
+        "lon": 80.56416666666667
+      },
+      "bounds": {
+        "min_lat": 16.46,
+        "max_lat": 16.48,
+        "min_lon": 80.55,
+        "max_lon": 80.57833333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 5.9,
+      "risk_factors": {
+        "river_proximity_factor": 0.1853,
+        "effective_water_level_m": 2.15,
+        "effective_inflow_ktcmd": 131.57,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 5.9,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-008",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.47,
+        "lon": 80.5925
+      },
+      "bounds": {
+        "min_lat": 16.46,
+        "max_lat": 16.48,
+        "min_lon": 80.57833333333333,
+        "max_lon": 80.60666666666667
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 3.765,
+      "risk_factors": {
+        "river_proximity_factor": 0.3411,
+        "effective_water_level_m": 3.96,
+        "effective_inflow_ktcmd": 242.15,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 3.765,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-009",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.47,
+        "lon": 80.62083333333334
+      },
+      "bounds": {
+        "min_lat": 16.46,
+        "max_lat": 16.48,
+        "min_lon": 80.60666666666667,
+        "max_lon": 80.635
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 2.175,
+      "risk_factors": {
+        "river_proximity_factor": 0.5372,
+        "effective_water_level_m": 6.23,
+        "effective_inflow_ktcmd": 381.4,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 2.175,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-010",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.47,
+        "lon": 80.64916666666666
+      },
+      "bounds": {
+        "min_lat": 16.46,
+        "max_lat": 16.48,
+        "min_lon": 80.63499999999999,
+        "max_lon": 80.66333333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.049,
+      "risk_factors": {
+        "river_proximity_factor": 0.741,
+        "effective_water_level_m": 8.6,
+        "effective_inflow_ktcmd": 526.13,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.049,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-011",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.47,
+        "lon": 80.6775
+      },
+      "bounds": {
+        "min_lat": 16.46,
+        "max_lat": 16.48,
+        "min_lon": 80.66333333333333,
+        "max_lon": 80.69166666666666
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 0.014,
+      "risk_factors": {
+        "river_proximity_factor": 0.996,
+        "effective_water_level_m": 11.55,
+        "effective_inflow_ktcmd": 707.17,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 0.014,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "water_level_m",
+        "explanation": "Driven by water level m = 11.55, which falls in the HIGH band (\u2265 11.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-012",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.47,
+        "lon": 80.70583333333333
+      },
+      "bounds": {
+        "min_lat": 16.46,
+        "max_lat": 16.48,
+        "min_lon": 80.69166666666666,
+        "max_lon": 80.72
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.08,
+      "risk_factors": {
+        "river_proximity_factor": 0.7345,
+        "effective_water_level_m": 8.52,
+        "effective_inflow_ktcmd": 521.49,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.08,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-013",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.490000000000002,
+        "lon": 80.56416666666667
+      },
+      "bounds": {
+        "min_lat": 16.48,
+        "max_lat": 16.5,
+        "min_lon": 80.55,
+        "max_lon": 80.57833333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 3.767,
+      "risk_factors": {
+        "river_proximity_factor": 0.3409,
+        "effective_water_level_m": 3.95,
+        "effective_inflow_ktcmd": 242.01,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 3.767,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-014",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.490000000000002,
+        "lon": 80.5925
+      },
+      "bounds": {
+        "min_lat": 16.48,
+        "max_lat": 16.5,
+        "min_lon": 80.57833333333333,
+        "max_lon": 80.60666666666667
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 2.156,
+      "risk_factors": {
+        "river_proximity_factor": 0.5401,
+        "effective_water_level_m": 6.27,
+        "effective_inflow_ktcmd": 383.47,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 2.156,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-015",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.490000000000002,
+        "lon": 80.62083333333334
+      },
+      "bounds": {
+        "min_lat": 16.48,
+        "max_lat": 16.5,
+        "min_lon": 80.60666666666667,
+        "max_lon": 80.635
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 0.194,
+      "risk_factors": {
+        "river_proximity_factor": 0.9461,
+        "effective_water_level_m": 10.97,
+        "effective_inflow_ktcmd": 671.72,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 0.194,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "inflow_ktcmd",
+        "explanation": "Driven by inflow ktcmd = 671.72, which falls in the HIGH band (\u2265 600.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-016",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.490000000000002,
+        "lon": 80.64916666666666
+      },
+      "bounds": {
+        "min_lat": 16.48,
+        "max_lat": 16.5,
+        "min_lon": 80.63499999999999,
+        "max_lon": 80.66333333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.041,
+      "risk_factors": {
+        "river_proximity_factor": 0.7427,
+        "effective_water_level_m": 8.62,
+        "effective_inflow_ktcmd": 527.34,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.041,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-017",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.490000000000002,
+        "lon": 80.6775
+      },
+      "bounds": {
+        "min_lat": 16.48,
+        "max_lat": 16.5,
+        "min_lon": 80.66333333333333,
+        "max_lon": 80.69166666666666
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 2.082,
+      "risk_factors": {
+        "river_proximity_factor": 0.5516,
+        "effective_water_level_m": 6.4,
+        "effective_inflow_ktcmd": 391.67,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 2.082,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-018",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.490000000000002,
+        "lon": 80.70583333333333
+      },
+      "bounds": {
+        "min_lat": 16.48,
+        "max_lat": 16.5,
+        "min_lon": 80.69166666666666,
+        "max_lon": 80.72
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 3.181,
+      "risk_factors": {
+        "river_proximity_factor": 0.403,
+        "effective_water_level_m": 4.67,
+        "effective_inflow_ktcmd": 286.12,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 3.181,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-019",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.509999999999998,
+        "lon": 80.56416666666667
+      },
+      "bounds": {
+        "min_lat": 16.5,
+        "max_lat": 16.52,
+        "min_lon": 80.55,
+        "max_lon": 80.57833333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.711,
+      "risk_factors": {
+        "river_proximity_factor": 0.6133,
+        "effective_water_level_m": 7.11,
+        "effective_inflow_ktcmd": 435.46,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.711,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-020",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.509999999999998,
+        "lon": 80.5925
+      },
+      "bounds": {
+        "min_lat": 16.5,
+        "max_lat": 16.52,
+        "min_lon": 80.57833333333333,
+        "max_lon": 80.60666666666667
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 0.732,
+      "risk_factors": {
+        "river_proximity_factor": 0.8113,
+        "effective_water_level_m": 9.41,
+        "effective_inflow_ktcmd": 576.01,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 0.732,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-021",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.509999999999998,
+        "lon": 80.62083333333334
+      },
+      "bounds": {
+        "min_lat": 16.5,
+        "max_lat": 16.52,
+        "min_lon": 80.60666666666667,
+        "max_lon": 80.635
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.594,
+      "risk_factors": {
+        "river_proximity_factor": 0.6342,
+        "effective_water_level_m": 7.36,
+        "effective_inflow_ktcmd": 450.27,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.594,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-022",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.509999999999998,
+        "lon": 80.64916666666666
+      },
+      "bounds": {
+        "min_lat": 16.5,
+        "max_lat": 16.52,
+        "min_lon": 80.63499999999999,
+        "max_lon": 80.66333333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 3.13,
+      "risk_factors": {
+        "river_proximity_factor": 0.4089,
+        "effective_water_level_m": 4.74,
+        "effective_inflow_ktcmd": 290.32,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 3.13,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-023",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.509999999999998,
+        "lon": 80.6775
+      },
+      "bounds": {
+        "min_lat": 16.5,
+        "max_lat": 16.52,
+        "min_lon": 80.66333333333333,
+        "max_lon": 80.69166666666666
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 4.169,
+      "risk_factors": {
+        "river_proximity_factor": 0.3039,
+        "effective_water_level_m": 3.52,
+        "effective_inflow_ktcmd": 215.75,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 4.169,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-024",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.509999999999998,
+        "lon": 80.70583333333333
+      },
+      "bounds": {
+        "min_lat": 16.5,
+        "max_lat": 16.52,
+        "min_lon": 80.69166666666666,
+        "max_lon": 80.72
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 5.274,
+      "risk_factors": {
+        "river_proximity_factor": 0.2216,
+        "effective_water_level_m": 2.57,
+        "effective_inflow_ktcmd": 157.34,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 5.274,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-025",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.53,
+        "lon": 80.56416666666667
+      },
+      "bounds": {
+        "min_lat": 16.52,
+        "max_lat": 16.54,
+        "min_lon": 80.55,
+        "max_lon": 80.57833333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 0.191,
+      "risk_factors": {
+        "river_proximity_factor": 0.9469,
+        "effective_water_level_m": 10.98,
+        "effective_inflow_ktcmd": 672.29,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 0.191,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "inflow_ktcmd",
+        "explanation": "Driven by inflow ktcmd = 672.29, which falls in the HIGH band (\u2265 600.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-026",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.53,
+        "lon": 80.5925
+      },
+      "bounds": {
+        "min_lat": 16.52,
+        "max_lat": 16.54,
+        "min_lon": 80.57833333333333,
+        "max_lon": 80.60666666666667
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.356,
+      "risk_factors": {
+        "river_proximity_factor": 0.6788,
+        "effective_water_level_m": 7.87,
+        "effective_inflow_ktcmd": 481.95,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.356,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-027",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.53,
+        "lon": 80.62083333333334
+      },
+      "bounds": {
+        "min_lat": 16.52,
+        "max_lat": 16.54,
+        "min_lon": 80.60666666666667,
+        "max_lon": 80.635
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 2.631,
+      "risk_factors": {
+        "river_proximity_factor": 0.4716,
+        "effective_water_level_m": 5.47,
+        "effective_inflow_ktcmd": 334.81,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 2.631,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-028",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.53,
+        "lon": 80.64916666666666
+      },
+      "bounds": {
+        "min_lat": 16.52,
+        "max_lat": 16.54,
+        "min_lon": 80.63499999999999,
+        "max_lon": 80.66333333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 5.145,
+      "risk_factors": {
+        "river_proximity_factor": 0.2299,
+        "effective_water_level_m": 2.67,
+        "effective_inflow_ktcmd": 163.25,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 5.145,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-029",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.53,
+        "lon": 80.6775
+      },
+      "bounds": {
+        "min_lat": 16.52,
+        "max_lat": 16.54,
+        "min_lon": 80.66333333333333,
+        "max_lon": 80.69166666666666
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 6.257,
+      "risk_factors": {
+        "river_proximity_factor": 0.1673,
+        "effective_water_level_m": 1.94,
+        "effective_inflow_ktcmd": 118.81,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 6.257,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-030",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.53,
+        "lon": 80.70583333333333
+      },
+      "bounds": {
+        "min_lat": 16.52,
+        "max_lat": 16.54,
+        "min_lon": 80.69166666666666,
+        "max_lon": 80.72
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 7.335,
+      "risk_factors": {
+        "river_proximity_factor": 0.123,
+        "effective_water_level_m": 1.43,
+        "effective_inflow_ktcmd": 87.32,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 7.335,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-031",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.549999999999997,
+        "lon": 80.56416666666667
+      },
+      "bounds": {
+        "min_lat": 16.54,
+        "max_lat": 16.56,
+        "min_lon": 80.55,
+        "max_lon": 80.57833333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 1.033,
+      "risk_factors": {
+        "river_proximity_factor": 0.7444,
+        "effective_water_level_m": 8.64,
+        "effective_inflow_ktcmd": 528.54,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 1.033,
+        "proximity_band": "NEAR_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-032",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.549999999999997,
+        "lon": 80.5925
+      },
+      "bounds": {
+        "min_lat": 16.54,
+        "max_lat": 16.56,
+        "min_lon": 80.57833333333333,
+        "max_lon": 80.60666666666667
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 3.489,
+      "risk_factors": {
+        "river_proximity_factor": 0.369,
+        "effective_water_level_m": 4.28,
+        "effective_inflow_ktcmd": 262.02,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 3.489,
+        "proximity_band": "MID_RANGE",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-033",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.549999999999997,
+        "lon": 80.62083333333334
+      },
+      "bounds": {
+        "min_lat": 16.54,
+        "max_lat": 16.56,
+        "min_lon": 80.60666666666667,
+        "max_lon": 80.635
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 4.514,
+      "risk_factors": {
+        "river_proximity_factor": 0.2753,
+        "effective_water_level_m": 3.19,
+        "effective_inflow_ktcmd": 195.5,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 4.514,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-034",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.549999999999997,
+        "lon": 80.64916666666666
+      },
+      "bounds": {
+        "min_lat": 16.54,
+        "max_lat": 16.56,
+        "min_lon": 80.63499999999999,
+        "max_lon": 80.66333333333333
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 6.356,
+      "risk_factors": {
+        "river_proximity_factor": 0.1627,
+        "effective_water_level_m": 1.89,
+        "effective_inflow_ktcmd": 115.5,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 6.356,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-035",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.549999999999997,
+        "lon": 80.6775
+      },
+      "bounds": {
+        "min_lat": 16.54,
+        "max_lat": 16.56,
+        "min_lon": 80.66333333333333,
+        "max_lon": 80.69166666666666
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 8.346,
+      "risk_factors": {
+        "river_proximity_factor": 0.0921,
+        "effective_water_level_m": 1.07,
+        "effective_inflow_ktcmd": 65.41,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 8.346,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    },
+    {
+      "zone_id": "Z-036",
+      "spatial_model": "MODELLED_GRID",
+      "resolution": "default",
+      "centroid": {
+        "lat": 16.549999999999997,
+        "lon": 80.70583333333333
+      },
+      "bounds": {
+        "min_lat": 16.54,
+        "max_lat": 16.56,
+        "min_lon": 80.69166666666666,
+        "max_lon": 80.72
+      },
+      "risk_level": "HIGH",
+      "risk_score": 3,
+      "distance_to_river_km": 9.397,
+      "risk_factors": {
+        "river_proximity_factor": 0.0682,
+        "effective_water_level_m": 0.79,
+        "effective_inflow_ktcmd": 48.44,
+        "base_water_level_m": 11.6,
+        "base_inflow_ktcmd": 710.0,
+        "rainfall_mm_24h": 82.0,
+        "distance_to_river_km": 9.397,
+        "proximity_band": "FAR_FROM_RIVER",
+        "attenuation_model": "EXPONENTIAL_DECAY",
+        "decay_constant_km": 3.5,
+        "driving_factor": "rainfall_mm_24h",
+        "explanation": "Driven by rainfall mm 24h = 82.00, which falls in the HIGH band (\u2265 70.0 for this parameter)."
+      }
+    }
+  ],
+  "resolution": "default",
+  "critical_zone_count": 0,
+  "high_zone_count": 36,
+  "spatial_model": {
+    "type": "MODELLED_SPATIAL_ATTENUATION",
+    "method": "EXPONENTIAL_DECAY",
+    "decay_constant_km": 3.5,
+    "near_river_km": 1.5,
+    "far_from_river_km": 4.0,
+    "description": "Zone-specific risk via exponential proximity attenuation: river-gauge forecast values are multiplied by exp(-distance/3.5) for water level and inflow (rainfall is uniform). Zones within 1.5km are NEAR_RIVER (high exposure); zones beyond 4.0km are FAR_FROM_RIVER (low exposure).",
+    "note": "This is a modelled spatial simplification, not measured per-zone water levels."
+  },
+  "proximity_rule": {
+    "near_river_km": 1.5,
+    "far_from_river_km": 4.0,
+    "description": "Zone-specific spatial attenuation (exponential decay, constant=3.5km): zones near the river experience higher effective flood values; zones far from the river are attenuated."
+  }
+}

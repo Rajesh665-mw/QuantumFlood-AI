@@ -1,0 +1,212 @@
+{
+  "status": "SUCCESS",
+  "origin": {
+    "lat": 16.51,
+    "lon": 80.61,
+    "name": "Origin Location"
+  },
+  "destination": {
+    "lat": 16.528,
+    "lon": 80.662,
+    "name": "Gunadala Mary Matha Upper Ridge Grounds"
+  },
+  "primary_route": {
+    "label": "Primary Risk-Averse Route",
+    "total_distance_km": 8.0,
+    "estimated_route_risk_score": 2.0,
+    "high_risk_segments_count": 0,
+    "coordinates": [
+      [
+        80.61,
+        16.51
+      ],
+      [
+        80.605,
+        16.5061
+      ],
+      [
+        80.6039,
+        16.5128
+      ],
+      [
+        80.634,
+        16.526
+      ],
+      [
+        80.655,
+        16.525
+      ],
+      [
+        80.662,
+        16.528
+      ]
+    ],
+    "segments": [
+      {
+        "edge_id": "E-02",
+        "road_name": "Kanakadurga Flyover Link",
+        "road_class": "ELEVATED_FLYOVER",
+        "distance_km": 0.8,
+        "modelled_risk_score": 2,
+        "risk_level": "MODERATE",
+        "is_high_risk": false,
+        "start_coord": {
+          "lat": 16.5128,
+          "lon": 80.6039
+        },
+        "end_coord": {
+          "lat": 16.5061,
+          "lon": 80.605
+        },
+        "warning": null
+      },
+      {
+        "edge_id": "E-19",
+        "road_name": "Railway Station North Approach",
+        "road_class": "CITY_ARTERIAL",
+        "distance_km": 3.4,
+        "modelled_risk_score": 2,
+        "risk_level": "MODERATE",
+        "is_high_risk": false,
+        "start_coord": {
+          "lat": 16.526,
+          "lon": 80.634
+        },
+        "end_coord": {
+          "lat": 16.5128,
+          "lon": 80.6039
+        },
+        "warning": null
+      },
+      {
+        "edge_id": "E-18",
+        "road_name": "Eluru Road to BRTS Connector",
+        "road_class": "CITY_ARTERIAL",
+        "distance_km": 2.3,
+        "modelled_risk_score": 2,
+        "risk_level": "MODERATE",
+        "is_high_risk": false,
+        "start_coord": {
+          "lat": 16.525,
+          "lon": 80.655
+        },
+        "end_coord": {
+          "lat": 16.526,
+          "lon": 80.634
+        },
+        "warning": null
+      }
+    ],
+    "summary_nodes": [
+      "Prakasam Barrage West Junction",
+      "Kanakadurga Flyover / City Approach",
+      "Satyanarayanapuram / BRTS Road",
+      "Gunadala Center / Eluru Road"
+    ],
+    "start_node_name": "Prakasam Barrage West Junction",
+    "dest_node_name": "Gunadala Center / Eluru Road"
+  },
+  "alternative_route": {
+    "label": "Alternative Shortest Route",
+    "total_distance_km": 8.0,
+    "estimated_route_risk_score": 2.0,
+    "high_risk_segments_count": 0,
+    "coordinates": [
+      [
+        80.61,
+        16.51
+      ],
+      [
+        80.605,
+        16.5061
+      ],
+      [
+        80.6039,
+        16.5128
+      ],
+      [
+        80.634,
+        16.526
+      ],
+      [
+        80.655,
+        16.525
+      ],
+      [
+        80.662,
+        16.528
+      ]
+    ],
+    "segments": [
+      {
+        "edge_id": "E-02",
+        "road_name": "Kanakadurga Flyover Link",
+        "road_class": "ELEVATED_FLYOVER",
+        "distance_km": 0.8,
+        "modelled_risk_score": 2,
+        "risk_level": "MODERATE",
+        "is_high_risk": false,
+        "start_coord": {
+          "lat": 16.5128,
+          "lon": 80.6039
+        },
+        "end_coord": {
+          "lat": 16.5061,
+          "lon": 80.605
+        },
+        "warning": null
+      },
+      {
+        "edge_id": "E-19",
+        "road_name": "Railway Station North Approach",
+        "road_class": "CITY_ARTERIAL",
+        "distance_km": 3.4,
+        "modelled_risk_score": 2,
+        "risk_level": "MODERATE",
+        "is_high_risk": false,
+        "start_coord": {
+          "lat": 16.526,
+          "lon": 80.634
+        },
+        "end_coord": {
+          "lat": 16.5128,
+          "lon": 80.6039
+        },
+        "warning": null
+      },
+      {
+        "edge_id": "E-18",
+        "road_name": "Eluru Road to BRTS Connector",
+        "road_class": "CITY_ARTERIAL",
+        "distance_km": 2.3,
+        "modelled_risk_score": 2,
+        "risk_level": "MODERATE",
+        "is_high_risk": false,
+        "start_coord": {
+          "lat": 16.525,
+          "lon": 80.655
+        },
+        "end_coord": {
+          "lat": 16.526,
+          "lon": 80.634
+        },
+        "warning": null
+      }
+    ],
+    "summary_nodes": [
+      "Prakasam Barrage West Junction",
+      "Kanakadurga Flyover / City Approach",
+      "Satyanarayanapuram / BRTS Road",
+      "Gunadala Center / Eluru Road"
+    ],
+    "start_node_name": "Prakasam Barrage West Junction",
+    "dest_node_name": "Gunadala Center / Eluru Road"
+  },
+  "explanation": "The primary route via Prakasam Barrage West Junction provides the lowest risk path to Gunadala Mary Matha Upper Ridge Grounds with an average route risk score of 2.0.",
+  "data_provenance": {
+    "road_network": "PARTIALLY_REAL",
+    "edge_flood_risk": "MODELLED_SPATIAL",
+    "closure_telemetry": "UNAVAILABLE"
+  },
+  "scientific_honesty_banner": "Model-based evacuation route generated using modelled flood-risk data. Real-time road closure or inundation status is not available. Exercise caution."
+}

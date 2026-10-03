@@ -1,0 +1,819 @@
+{
+  "engine_type": "quantum_vqr",
+  "model_name": "quantum_variational_regressor",
+  "horizon_days": 1,
+  "train_size": 577,
+  "test_size": 145,
+  "qubits": 4,
+  "circuit_depth_layers": 2,
+  "trainable_parameters_count": 16,
+  "optimal_parameters": [
+    0.4303291547749515,
+    -0.09600952232544924,
+    0.5632842953930901,
+    1.3100249750731972,
+    -0.6374647312682433,
+    0.7471058428925668,
+    0.4101972846667603,
+    0.44934875995617296,
+    0.41584226022164983,
+    -0.077933586511017,
+    -0.20294998895010463,
+    0.6703608768880487,
+    0.2259828021766146,
+    0.5069927565562147,
+    0.9111152313692253,
+    -0.4284524139123533
+  ],
+  "metrics": {
+    "mae": 0.5773,
+    "rmse": 0.6823,
+    "r2": 0.3406
+  },
+  "predictions": [
+    {
+      "date": "2025-08-07",
+      "actual": 9.835,
+      "predicted": 8.142
+    },
+    {
+      "date": "2025-08-08",
+      "actual": 9.988,
+      "predicted": 7.707
+    },
+    {
+      "date": "2025-08-09",
+      "actual": 10.014,
+      "predicted": 8.139
+    },
+    {
+      "date": "2025-08-10",
+      "actual": 9.888,
+      "predicted": 8.119
+    },
+    {
+      "date": "2025-08-11",
+      "actual": 9.706,
+      "predicted": 8.123
+    },
+    {
+      "date": "2025-08-12",
+      "actual": 9.778,
+      "predicted": 8.028
+    },
+    {
+      "date": "2025-08-13",
+      "actual": 9.797,
+      "predicted": 8.289
+    },
+    {
+      "date": "2025-08-14",
+      "actual": 9.747,
+      "predicted": 8.195
+    },
+    {
+      "date": "2025-08-15",
+      "actual": 9.718,
+      "predicted": 7.843
+    },
+    {
+      "date": "2025-08-16",
+      "actual": 9.657,
+      "predicted": 8.419
+    },
+    {
+      "date": "2025-08-17",
+      "actual": 9.514,
+      "predicted": 8.77
+    },
+    {
+      "date": "2025-08-18",
+      "actual": 9.298,
+      "predicted": 9.084
+    },
+    {
+      "date": "2025-08-19",
+      "actual": 9.253,
+      "predicted": 9.077
+    },
+    {
+      "date": "2025-08-20",
+      "actual": 9.359,
+      "predicted": 8.903
+    },
+    {
+      "date": "2025-08-21",
+      "actual": 9.41,
+      "predicted": 8.895
+    },
+    {
+      "date": "2025-08-22",
+      "actual": 9.309,
+      "predicted": 8.897
+    },
+    {
+      "date": "2025-08-23",
+      "actual": 9.208,
+      "predicted": 9.138
+    },
+    {
+      "date": "2025-08-24",
+      "actual": 9.103,
+      "predicted": 9.301
+    },
+    {
+      "date": "2025-08-25",
+      "actual": 9.204,
+      "predicted": 8.914
+    },
+    {
+      "date": "2025-08-26",
+      "actual": 9.175,
+      "predicted": 9.208
+    },
+    {
+      "date": "2025-08-27",
+      "actual": 9.088,
+      "predicted": 9.364
+    },
+    {
+      "date": "2025-08-28",
+      "actual": 8.993,
+      "predicted": 9.309
+    },
+    {
+      "date": "2025-08-29",
+      "actual": 9.0,
+      "predicted": 9.163
+    },
+    {
+      "date": "2025-08-30",
+      "actual": 9.05,
+      "predicted": 9.352
+    },
+    {
+      "date": "2025-08-31",
+      "actual": 8.901,
+      "predicted": 9.109
+    },
+    {
+      "date": "2025-09-01",
+      "actual": 8.772,
+      "predicted": 9.041
+    },
+    {
+      "date": "2025-09-02",
+      "actual": 8.628,
+      "predicted": 9.16
+    },
+    {
+      "date": "2025-09-03",
+      "actual": 8.642,
+      "predicted": 8.531
+    },
+    {
+      "date": "2025-09-04",
+      "actual": 8.532,
+      "predicted": 9.056
+    },
+    {
+      "date": "2025-09-05",
+      "actual": 8.508,
+      "predicted": 8.25
+    },
+    {
+      "date": "2025-09-06",
+      "actual": 8.438,
+      "predicted": 8.874
+    },
+    {
+      "date": "2025-09-07",
+      "actual": 8.364,
+      "predicted": 8.673
+    },
+    {
+      "date": "2025-09-08",
+      "actual": 8.331,
+      "predicted": 8.067
+    },
+    {
+      "date": "2025-09-09",
+      "actual": 8.347,
+      "predicted": 8.34
+    },
+    {
+      "date": "2025-09-10",
+      "actual": 8.363,
+      "predicted": 8.72
+    },
+    {
+      "date": "2025-09-11",
+      "actual": 8.373,
+      "predicted": 8.24
+    },
+    {
+      "date": "2025-09-12",
+      "actual": 8.305,
+      "predicted": 8.83
+    },
+    {
+      "date": "2025-09-13",
+      "actual": 8.272,
+      "predicted": 8.507
+    },
+    {
+      "date": "2025-09-14",
+      "actual": 8.173,
+      "predicted": 8.444
+    },
+    {
+      "date": "2025-09-15",
+      "actual": 8.08,
+      "predicted": 8.393
+    },
+    {
+      "date": "2025-09-16",
+      "actual": 8.052,
+      "predicted": 8.068
+    },
+    {
+      "date": "2025-09-17",
+      "actual": 7.971,
+      "predicted": 8.277
+    },
+    {
+      "date": "2025-09-18",
+      "actual": 7.913,
+      "predicted": 8.093
+    },
+    {
+      "date": "2025-09-19",
+      "actual": 7.925,
+      "predicted": 7.832
+    },
+    {
+      "date": "2025-09-20",
+      "actual": 7.876,
+      "predicted": 8.233
+    },
+    {
+      "date": "2025-09-21",
+      "actual": 7.776,
+      "predicted": 8.011
+    },
+    {
+      "date": "2025-09-22",
+      "actual": 7.726,
+      "predicted": 7.814
+    },
+    {
+      "date": "2025-09-23",
+      "actual": 7.897,
+      "predicted": 7.744
+    },
+    {
+      "date": "2025-09-24",
+      "actual": 8.002,
+      "predicted": 8.475
+    },
+    {
+      "date": "2025-09-25",
+      "actual": 7.843,
+      "predicted": 8.13
+    },
+    {
+      "date": "2025-09-26",
+      "actual": 7.57,
+      "predicted": 7.942
+    },
+    {
+      "date": "2025-09-27",
+      "actual": 7.459,
+      "predicted": 7.768
+    },
+    {
+      "date": "2025-09-28",
+      "actual": 7.464,
+      "predicted": 7.771
+    },
+    {
+      "date": "2025-09-29",
+      "actual": 7.433,
+      "predicted": 7.773
+    },
+    {
+      "date": "2025-09-30",
+      "actual": 7.442,
+      "predicted": 7.877
+    },
+    {
+      "date": "2025-10-01",
+      "actual": 7.476,
+      "predicted": 7.881
+    },
+    {
+      "date": "2025-10-02",
+      "actual": 7.476,
+      "predicted": 7.816
+    },
+    {
+      "date": "2025-10-03",
+      "actual": 7.46,
+      "predicted": 7.931
+    },
+    {
+      "date": "2025-10-04",
+      "actual": 7.524,
+      "predicted": 8.005
+    },
+    {
+      "date": "2025-10-05",
+      "actual": 7.577,
+      "predicted": 7.972
+    },
+    {
+      "date": "2025-10-06",
+      "actual": 7.516,
+      "predicted": 7.915
+    },
+    {
+      "date": "2025-10-07",
+      "actual": 7.342,
+      "predicted": 7.892
+    },
+    {
+      "date": "2025-10-08",
+      "actual": 7.284,
+      "predicted": 7.88
+    },
+    {
+      "date": "2025-10-09",
+      "actual": 7.285,
+      "predicted": 7.772
+    },
+    {
+      "date": "2025-10-10",
+      "actual": 7.288,
+      "predicted": 7.831
+    },
+    {
+      "date": "2025-10-11",
+      "actual": 7.242,
+      "predicted": 7.824
+    },
+    {
+      "date": "2025-10-12",
+      "actual": 7.322,
+      "predicted": 8.099
+    },
+    {
+      "date": "2025-10-13",
+      "actual": 7.356,
+      "predicted": 7.821
+    },
+    {
+      "date": "2025-10-14",
+      "actual": 7.44,
+      "predicted": 8.034
+    },
+    {
+      "date": "2025-10-15",
+      "actual": 7.376,
+      "predicted": 7.894
+    },
+    {
+      "date": "2025-10-16",
+      "actual": 7.353,
+      "predicted": 7.89
+    },
+    {
+      "date": "2025-10-17",
+      "actual": 7.289,
+      "predicted": 7.905
+    },
+    {
+      "date": "2025-10-18",
+      "actual": 7.249,
+      "predicted": 7.802
+    },
+    {
+      "date": "2025-10-19",
+      "actual": 7.225,
+      "predicted": 7.857
+    },
+    {
+      "date": "2025-10-20",
+      "actual": 7.264,
+      "predicted": 8.002
+    },
+    {
+      "date": "2025-10-21",
+      "actual": 7.289,
+      "predicted": 7.795
+    },
+    {
+      "date": "2025-10-22",
+      "actual": 7.279,
+      "predicted": 7.83
+    },
+    {
+      "date": "2025-10-23",
+      "actual": 7.205,
+      "predicted": 7.862
+    },
+    {
+      "date": "2025-10-24",
+      "actual": 7.17,
+      "predicted": 7.802
+    },
+    {
+      "date": "2025-10-25",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-10-26",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-10-27",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-10-28",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-10-29",
+      "actual": 7.198,
+      "predicted": 7.874
+    },
+    {
+      "date": "2025-10-30",
+      "actual": 7.211,
+      "predicted": 7.795
+    },
+    {
+      "date": "2025-10-31",
+      "actual": 7.211,
+      "predicted": 7.811
+    },
+    {
+      "date": "2025-11-01",
+      "actual": 7.229,
+      "predicted": 7.941
+    },
+    {
+      "date": "2025-11-02",
+      "actual": 7.253,
+      "predicted": 7.822
+    },
+    {
+      "date": "2025-11-03",
+      "actual": 7.261,
+      "predicted": 7.811
+    },
+    {
+      "date": "2025-11-04",
+      "actual": 7.216,
+      "predicted": 7.845
+    },
+    {
+      "date": "2025-11-05",
+      "actual": 7.226,
+      "predicted": 7.936
+    },
+    {
+      "date": "2025-11-06",
+      "actual": 7.262,
+      "predicted": 7.834
+    },
+    {
+      "date": "2025-11-07",
+      "actual": 7.408,
+      "predicted": 8.145
+    },
+    {
+      "date": "2025-11-08",
+      "actual": 7.452,
+      "predicted": 7.947
+    },
+    {
+      "date": "2025-11-09",
+      "actual": 7.443,
+      "predicted": 7.915
+    },
+    {
+      "date": "2025-11-10",
+      "actual": 7.307,
+      "predicted": 7.898
+    },
+    {
+      "date": "2025-11-11",
+      "actual": 7.262,
+      "predicted": 7.922
+    },
+    {
+      "date": "2025-11-12",
+      "actual": 7.287,
+      "predicted": 7.892
+    },
+    {
+      "date": "2025-11-13",
+      "actual": 7.365,
+      "predicted": 7.988
+    },
+    {
+      "date": "2025-11-14",
+      "actual": 7.354,
+      "predicted": 7.856
+    },
+    {
+      "date": "2025-11-15",
+      "actual": 7.295,
+      "predicted": 7.85
+    },
+    {
+      "date": "2025-11-16",
+      "actual": 7.206,
+      "predicted": 7.862
+    },
+    {
+      "date": "2025-11-17",
+      "actual": 7.215,
+      "predicted": 7.916
+    },
+    {
+      "date": "2025-11-18",
+      "actual": 7.324,
+      "predicted": 8.044
+    },
+    {
+      "date": "2025-11-19",
+      "actual": 7.366,
+      "predicted": 7.829
+    },
+    {
+      "date": "2025-11-20",
+      "actual": 7.321,
+      "predicted": 7.863
+    },
+    {
+      "date": "2025-11-21",
+      "actual": 7.231,
+      "predicted": 7.905
+    },
+    {
+      "date": "2025-11-22",
+      "actual": 7.197,
+      "predicted": 7.793
+    },
+    {
+      "date": "2025-11-23",
+      "actual": 7.251,
+      "predicted": 7.957
+    },
+    {
+      "date": "2025-11-24",
+      "actual": 7.261,
+      "predicted": 7.806
+    },
+    {
+      "date": "2025-11-25",
+      "actual": 7.252,
+      "predicted": 7.816
+    },
+    {
+      "date": "2025-11-26",
+      "actual": 7.197,
+      "predicted": 7.851
+    },
+    {
+      "date": "2025-11-27",
+      "actual": 7.17,
+      "predicted": 7.803
+    },
+    {
+      "date": "2025-11-28",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-11-29",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-11-30",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-12-01",
+      "actual": 7.234,
+      "predicted": 7.992
+    },
+    {
+      "date": "2025-12-02",
+      "actual": 7.265,
+      "predicted": 7.79
+    },
+    {
+      "date": "2025-12-03",
+      "actual": 7.265,
+      "predicted": 7.82
+    },
+    {
+      "date": "2025-12-04",
+      "actual": 7.202,
+      "predicted": 7.858
+    },
+    {
+      "date": "2025-12-05",
+      "actual": 7.23,
+      "predicted": 7.966
+    },
+    {
+      "date": "2025-12-06",
+      "actual": 7.26,
+      "predicted": 7.79
+    },
+    {
+      "date": "2025-12-07",
+      "actual": 7.26,
+      "predicted": 7.819
+    },
+    {
+      "date": "2025-12-08",
+      "actual": 7.232,
+      "predicted": 7.924
+    },
+    {
+      "date": "2025-12-09",
+      "actual": 7.218,
+      "predicted": 7.79
+    },
+    {
+      "date": "2025-12-10",
+      "actual": 7.255,
+      "predicted": 7.901
+    },
+    {
+      "date": "2025-12-11",
+      "actual": 7.242,
+      "predicted": 7.82
+    },
+    {
+      "date": "2025-12-12",
+      "actual": 7.266,
+      "predicted": 7.906
+    },
+    {
+      "date": "2025-12-13",
+      "actual": 7.249,
+      "predicted": 7.824
+    },
+    {
+      "date": "2025-12-14",
+      "actual": 7.23,
+      "predicted": 7.811
+    },
+    {
+      "date": "2025-12-15",
+      "actual": 7.19,
+      "predicted": 7.84
+    },
+    {
+      "date": "2025-12-16",
+      "actual": 7.17,
+      "predicted": 7.804
+    },
+    {
+      "date": "2025-12-17",
+      "actual": 7.17,
+      "predicted": 7.807
+    },
+    {
+      "date": "2025-12-18",
+      "actual": 7.209,
+      "predicted": 7.909
+    },
+    {
+      "date": "2025-12-19",
+      "actual": 7.229,
+      "predicted": 7.792
+    },
+    {
+      "date": "2025-12-20",
+      "actual": 7.229,
+      "predicted": 7.813
+    },
+    {
+      "date": "2025-12-21",
+      "actual": 7.19,
+      "predicted": 7.839
+    },
+    {
+      "date": "2025-12-22",
+      "actual": 7.235,
+      "predicted": 7.986
+    },
+    {
+      "date": "2025-12-23",
+      "actual": 7.267,
+      "predicted": 7.79
+    },
+    {
+      "date": "2025-12-24",
+      "actual": 7.267,
+      "predicted": 7.82
+    },
+    {
+      "date": "2025-12-25",
+      "actual": 7.202,
+      "predicted": 7.858
+    },
+    {
+      "date": "2025-12-26",
+      "actual": 7.254,
+      "predicted": 8.045
+    },
+    {
+      "date": "2025-12-27",
+      "actual": 7.312,
+      "predicted": 7.829
+    },
+    {
+      "date": "2025-12-28",
+      "actual": 7.364,
+      "predicted": 7.923
+    },
+    {
+      "date": "2025-12-29",
+      "actual": 7.302,
+      "predicted": 7.866
+    }
+  ],
+  "feature_names": [
+    "water_level_m",
+    "inflow_ktcmd",
+    "rainfall_roll3",
+    "rainfall_mm"
+  ],
+  "training_time_ms": 1379.2822999999999,
+  "inference_time_ms": 80.09160000005977,
+  "simulator_name": "Pure NumPy Statevector",
+  "training_loss_history": [
+    0.015087,
+    0.046647,
+    0.016273,
+    0.01895,
+    0.011666,
+    0.031171,
+    0.02097,
+    0.011881,
+    0.017167,
+    0.011649,
+    0.011734,
+    0.013618,
+    0.074343,
+    0.013072,
+    0.018643,
+    0.009271,
+    0.017472,
+    0.021511
+  ],
+  "scaling_params": {
+    "feature_mins": {
+      "water_level_m": 7.17,
+      "inflow_ktcmd": 180.0,
+      "rainfall_roll3": 0.0,
+      "rainfall_mm": 0.0
+    },
+    "feature_maxs": {
+      "water_level_m": 10.415,
+      "inflow_ktcmd": 709.62,
+      "rainfall_roll3": 52.4433,
+      "rainfall_mm": 59.39
+    },
+    "target_min": 7.17,
+    "target_max": 10.415
+  },
+  "affine_w": -1.829055747324388,
+  "affine_b": 8.251752218736485,
+  "metadata": {
+    "optimizer": "COBYLA",
+    "max_iter": 15,
+    "random_seed": 42,
+    "data_reuploading": true,
+    "qubit_mapping": {
+      "q0": "water_level_m",
+      "q1": "inflow_ktcmd",
+      "q2": "rainfall_roll3",
+      "q3": "rainfall_mm"
+    }
+  }
+}

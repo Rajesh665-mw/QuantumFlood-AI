@@ -1,0 +1,22 @@
+{
+  "status": "ACTIVATED",
+  "scenario_id": "severe",
+  "name": "Scenario C \u2014 Severe Flood Event",
+  "metrics": {
+    "base_risk_level": "CRITICAL",
+    "critical_zones_count": 36,
+    "high_zones_count": 0,
+    "moderate_zones_count": 0,
+    "low_zones_count": 0,
+    "total_zones": 36,
+    "sensor_coverage_percentage": 66.67,
+    "critical_zone_coverage_percentage": 66.67,
+    "connected_sensors_count": 8,
+    "disconnected_sensors_count": 0,
+    "connectivity_percentage": 100.0,
+    "primary_evac_route_risk": 4.0,
+    "emergency_demand_index": 72,
+    "resources_serviced_zones": 5
+  },
+  "message": "Scenario 'Scenario C \u2014 Severe Flood Event' activated. Risk and infrastructure pipeline updated across dashboard."
+}

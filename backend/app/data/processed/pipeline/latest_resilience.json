@@ -1,0 +1,278 @@
+{
+  "status": "SUCCESS",
+  "simulation_parameters": {
+    "total_comm_nodes": 3,
+    "failed_nodes_count": 3,
+    "failed_node_ids": [
+      "CN-03",
+      "CN-01",
+      "CN-02"
+    ],
+    "comm_range_km": 4.0
+  },
+  "metrics": {
+    "total_sensors": 8,
+    "baseline_connected": 8,
+    "baseline_connectivity_pct": 100.0,
+    "post_failure_connected": 0,
+    "post_failure_disconnected": 8,
+    "post_failure_connectivity_pct": 0.0,
+    "connectivity_loss_pct": 100.0,
+    "affected_critical_sensors": [
+      "C-008",
+      "C-009",
+      "C-010",
+      "C-011",
+      "C-013",
+      "C-015",
+      "C-032",
+      "C-034"
+    ],
+    "surviving_nodes_count": 0
+  },
+  "network_state": {
+    "surviving_nodes": [],
+    "failed_nodes": [
+      {
+        "comm_node_id": "CN-01",
+        "co_located_with": "C-009",
+        "lat": 16.47,
+        "lon": 80.5925,
+        "connects_sensor_ids": [
+          "C-008",
+          "C-009",
+          "C-010"
+        ]
+      },
+      {
+        "comm_node_id": "CN-02",
+        "co_located_with": "C-013",
+        "lat": 16.47,
+        "lon": 80.6775,
+        "connects_sensor_ids": [
+          "C-011",
+          "C-013",
+          "C-015"
+        ]
+      },
+      {
+        "comm_node_id": "CN-03",
+        "co_located_with": "C-032",
+        "lat": 16.53,
+        "lon": 80.56416666666667,
+        "connects_sensor_ids": [
+          "C-032",
+          "C-034"
+        ]
+      }
+    ],
+    "active_connections": [],
+    "severed_connections": [
+      {
+        "sensor_id": "C-008",
+        "comm_node_id": "CN-01",
+        "distance_km": 3.02,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-009",
+        "comm_node_id": "CN-01",
+        "distance_km": 0.0,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-010",
+        "comm_node_id": "CN-01",
+        "distance_km": 3.02,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-011",
+        "comm_node_id": "CN-02",
+        "distance_km": 3.02,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-013",
+        "comm_node_id": "CN-02",
+        "distance_km": 0.0,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-015",
+        "comm_node_id": "CN-02",
+        "distance_km": 3.02,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-032",
+        "comm_node_id": "CN-03",
+        "distance_km": 0.0,
+        "status": "SEVERED"
+      },
+      {
+        "sensor_id": "C-034",
+        "comm_node_id": "CN-03",
+        "distance_km": 3.02,
+        "status": "SEVERED"
+      }
+    ],
+    "disconnected_sensors": [
+      {
+        "candidate_id": "C-008",
+        "lat": 16.47,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-007",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-001",
+          "Z-007",
+          "Z-013"
+        ]
+      },
+      {
+        "candidate_id": "C-009",
+        "lat": 16.47,
+        "lon": 80.5925,
+        "zone_id": "Z-008",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-002",
+          "Z-008",
+          "Z-014"
+        ]
+      },
+      {
+        "candidate_id": "C-010",
+        "lat": 16.47,
+        "lon": 80.62083333333334,
+        "zone_id": "Z-009",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-003",
+          "Z-009",
+          "Z-015"
+        ]
+      },
+      {
+        "candidate_id": "C-011",
+        "lat": 16.47,
+        "lon": 80.64916666666666,
+        "zone_id": "Z-010",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-004",
+          "Z-010",
+          "Z-016"
+        ]
+      },
+      {
+        "candidate_id": "C-013",
+        "lat": 16.47,
+        "lon": 80.6775,
+        "zone_id": "Z-011",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-005",
+          "Z-011",
+          "Z-017"
+        ]
+      },
+      {
+        "candidate_id": "C-015",
+        "lat": 16.47,
+        "lon": 80.70583333333333,
+        "zone_id": "Z-012",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-006",
+          "Z-012",
+          "Z-018"
+        ]
+      },
+      {
+        "candidate_id": "C-032",
+        "lat": 16.53,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-025",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-019",
+          "Z-025",
+          "Z-031"
+        ]
+      },
+      {
+        "candidate_id": "C-034",
+        "lat": 16.53,
+        "lon": 80.5925,
+        "zone_id": "Z-026",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-020",
+          "Z-026",
+          "Z-032"
+        ]
+      }
+    ]
+  },
+  "recovery_plan": {
+    "action_type": "DEPLOY_BACKUP_RELAY",
+    "recommended_site": {
+      "recovery_node_id": "REC-01",
+      "candidate_id": "C-002",
+      "lat": 16.450000000000003,
+      "lon": 80.5925,
+      "reconnected_sensor_ids": [
+        "C-008",
+        "C-009",
+        "C-010"
+      ],
+      "reconnected_count": 3,
+      "restored_connections": [
+        {
+          "sensor_id": "C-008",
+          "recovery_node_id": "REC-01",
+          "distance_km": 3.75,
+          "status": "RESTORED"
+        },
+        {
+          "sensor_id": "C-010",
+          "recovery_node_id": "REC-01",
+          "distance_km": 3.75,
+          "status": "RESTORED"
+        },
+        {
+          "sensor_id": "C-009",
+          "recovery_node_id": "REC-01",
+          "distance_km": 2.22,
+          "status": "RESTORED"
+        }
+      ]
+    },
+    "sensors_reconnected": [
+      "C-008",
+      "C-009",
+      "C-010"
+    ],
+    "reconnected_count": 3,
+    "post_recovery_connectivity_pct": 37.5,
+    "explanation": "Deploy emergency backup communication node at candidate C-002 (ZONE_CENTROID). Algorithmically reconnects 3 isolated sensors (C-008, C-009, C-010), restoring network connectivity from 0.0% back to 37.5%."
+  }
+}

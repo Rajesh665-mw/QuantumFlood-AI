@@ -1,0 +1,4 @@
+event_id,year,month,severity,peak_water_level_m,location,data_source
+EVT-2009,2009,October,CRITICAL,15.2,Vijayawada / Prakasam Barrage,SIMULATED_INPUT
+EVT-2020,2020,August,HIGH,13.1,Vijayawada / Prakasam Barrage,SIMULATED_INPUT
+EVT-2022,2022,July,MODERATE,11.4,Krishna delta upstream stretch,SIMULATED_INPUT

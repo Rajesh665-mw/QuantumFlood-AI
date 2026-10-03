@@ -1,0 +1,46 @@
+{
+  "status": "SUCCESS",
+  "parameters": {
+    "requested_budgets": {
+      "rescue_teams": 0,
+      "medical_teams": 0,
+      "relief_units": 0,
+      "emergency_vehicles": 0
+    },
+    "min_risk_level": "MODERATE"
+  },
+  "summary": {
+    "eligible_zones_count": 36,
+    "zones_serviced_count": 0,
+    "allocated_quantities": {
+      "rescue_teams": 0,
+      "medical_teams": 0,
+      "relief_units": 0,
+      "emergency_vehicles": 0
+    },
+    "unallocated_quantities": {
+      "rescue_teams": 0,
+      "medical_teams": 0,
+      "relief_units": 0,
+      "emergency_vehicles": 0
+    },
+    "budget_exhaustion_pct": {
+      "rescue_teams": 100.0,
+      "medical_teams": 100.0,
+      "relief_units": 100.0,
+      "emergency_vehicles": 100.0
+    }
+  },
+  "allocations": [],
+  "mathematical_formulation": {
+    "objective": "Maximize Priority-Weighted Utility sum(U_r * P_z * log(1 + x_zr))",
+    "decision_variables": "x_zr in {0, 1, ..., M_zr} integer units",
+    "constraints": [
+      "Sum over zones <= Available Resource Budget",
+      "Per-zone allocation <= Zone Operational Capacity",
+      "Allocation prohibited in unimpacted/LOW risk zones"
+    ],
+    "quantum_readiness": "Formulated as Bounded Integer Knapsack / QUBO-convertible binary problem."
+  },
+  "scientific_honesty_note": "Resource quantities are user-configured simulation inputs. This model represents classical operational decision support; it does not represent active emergency deployment orders."
+}

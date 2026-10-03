@@ -1,0 +1,13 @@
+{
+  "based_on_date": "2025-12-30",
+  "horizon_days": 1,
+  "predicted_water_level_m": 7.824,
+  "last_known_rainfall_mm": 0.0,
+  "last_known_inflow_ktcmd": 190.13,
+  "last_known_water_level_m": 7.302,
+  "model_used": "quantum_variational_regressor",
+  "engine_type": "quantum_vqr",
+  "qubits": 4,
+  "qubit_count": 4,
+  "circuit_depth": 11
+}

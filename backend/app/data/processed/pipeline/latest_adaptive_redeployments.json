@@ -1,0 +1,495 @@
+{
+  "status": "SUCCESS",
+  "actions": [
+    {
+      "action": "KEEP",
+      "sensor_id": "C-008",
+      "current_site": {
+        "candidate_id": "C-008",
+        "lat": 16.47,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-007",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-001",
+          "Z-007",
+          "Z-013"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-008",
+        "lat": 16.47,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-007",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-001",
+          "Z-007",
+          "Z-013"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-008 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-009",
+      "current_site": {
+        "candidate_id": "C-009",
+        "lat": 16.47,
+        "lon": 80.5925,
+        "zone_id": "Z-008",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-002",
+          "Z-008",
+          "Z-014"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-009",
+        "lat": 16.47,
+        "lon": 80.5925,
+        "zone_id": "Z-008",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-002",
+          "Z-008",
+          "Z-014"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-009 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-010",
+      "current_site": {
+        "candidate_id": "C-010",
+        "lat": 16.47,
+        "lon": 80.62083333333334,
+        "zone_id": "Z-009",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-003",
+          "Z-009",
+          "Z-015"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-010",
+        "lat": 16.47,
+        "lon": 80.62083333333334,
+        "zone_id": "Z-009",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-003",
+          "Z-009",
+          "Z-015"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-010 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-011",
+      "current_site": {
+        "candidate_id": "C-011",
+        "lat": 16.47,
+        "lon": 80.64916666666666,
+        "zone_id": "Z-010",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-004",
+          "Z-010",
+          "Z-016"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-011",
+        "lat": 16.47,
+        "lon": 80.64916666666666,
+        "zone_id": "Z-010",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-004",
+          "Z-010",
+          "Z-016"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-011 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-013",
+      "current_site": {
+        "candidate_id": "C-013",
+        "lat": 16.47,
+        "lon": 80.6775,
+        "zone_id": "Z-011",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-005",
+          "Z-011",
+          "Z-017"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-013",
+        "lat": 16.47,
+        "lon": 80.6775,
+        "zone_id": "Z-011",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-005",
+          "Z-011",
+          "Z-017"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-013 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-015",
+      "current_site": {
+        "candidate_id": "C-015",
+        "lat": 16.47,
+        "lon": 80.70583333333333,
+        "zone_id": "Z-012",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-006",
+          "Z-012",
+          "Z-018"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-015",
+        "lat": 16.47,
+        "lon": 80.70583333333333,
+        "zone_id": "Z-012",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-006",
+          "Z-012",
+          "Z-018"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-015 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-032",
+      "current_site": {
+        "candidate_id": "C-032",
+        "lat": 16.53,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-025",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-019",
+          "Z-025",
+          "Z-031"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-032",
+        "lat": 16.53,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-025",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-019",
+          "Z-025",
+          "Z-031"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-032 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    },
+    {
+      "action": "KEEP",
+      "sensor_id": "C-034",
+      "current_site": {
+        "candidate_id": "C-034",
+        "lat": 16.53,
+        "lon": 80.5925,
+        "zone_id": "Z-026",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-020",
+          "Z-026",
+          "Z-032"
+        ]
+      },
+      "target_site": {
+        "candidate_id": "C-034",
+        "lat": 16.53,
+        "lon": 80.5925,
+        "zone_id": "Z-026",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-020",
+          "Z-026",
+          "Z-032"
+        ]
+      },
+      "distance_km": 0.0,
+      "reason": "Site C-034 remains optimal under updated risk conditions. Preserves local monitoring continuity."
+    }
+  ],
+  "summary": {
+    "total_sensors_deployed": 8,
+    "sensors_kept": 8,
+    "sensors_relocated": 0,
+    "sensors_added": 0,
+    "sensors_removed": 0,
+    "baseline_coverage": {
+      "covered_zones": [
+        "Z-001",
+        "Z-002",
+        "Z-003",
+        "Z-004",
+        "Z-005",
+        "Z-006",
+        "Z-007",
+        "Z-008",
+        "Z-009",
+        "Z-010",
+        "Z-011",
+        "Z-012",
+        "Z-013",
+        "Z-014",
+        "Z-015",
+        "Z-016",
+        "Z-017",
+        "Z-018",
+        "Z-019",
+        "Z-020",
+        "Z-025",
+        "Z-026",
+        "Z-031",
+        "Z-032"
+      ],
+      "covered_count": 24,
+      "total_zones": 36,
+      "coverage_percentage": 66.67,
+      "critical_coverage_percentage": 66.67,
+      "weighted_risk_coverage": 192.0,
+      "total_weighted_risk": 288.0
+    },
+    "updated_coverage": {
+      "coverage_percentage": 66.67,
+      "critical_coverage_percentage": 66.67,
+      "weighted_risk_coverage": 192.0,
+      "total_weighted_risk": 288.0,
+      "covered_zones_count": 24
+    },
+    "improvements": {
+      "weighted_risk_coverage_gain": 0.0,
+      "coverage_percentage_gain": 0.0,
+      "critical_coverage_percentage_gain": 0.0
+    }
+  },
+  "recommendation_narrative": "Adaptive redeployment recommends moving 0 sensors, yielding a +0.0 increase in weighted risk coverage and raising critical zone coverage to 66.67% under the updated flood risk map.",
+  "target_optimization": {
+    "engine_type": "classical_greedy",
+    "selected_sensors": [
+      {
+        "candidate_id": "C-008",
+        "lat": 16.47,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-007",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-001",
+          "Z-007",
+          "Z-013"
+        ]
+      },
+      {
+        "candidate_id": "C-009",
+        "lat": 16.47,
+        "lon": 80.5925,
+        "zone_id": "Z-008",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-002",
+          "Z-008",
+          "Z-014"
+        ]
+      },
+      {
+        "candidate_id": "C-010",
+        "lat": 16.47,
+        "lon": 80.62083333333334,
+        "zone_id": "Z-009",
+        "risk_weight": 4,
+        "near_river": false,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-003",
+          "Z-009",
+          "Z-015"
+        ]
+      },
+      {
+        "candidate_id": "C-011",
+        "lat": 16.47,
+        "lon": 80.64916666666666,
+        "zone_id": "Z-010",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-004",
+          "Z-010",
+          "Z-016"
+        ]
+      },
+      {
+        "candidate_id": "C-013",
+        "lat": 16.47,
+        "lon": 80.6775,
+        "zone_id": "Z-011",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-005",
+          "Z-011",
+          "Z-017"
+        ]
+      },
+      {
+        "candidate_id": "C-015",
+        "lat": 16.47,
+        "lon": 80.70583333333333,
+        "zone_id": "Z-012",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-006",
+          "Z-012",
+          "Z-018"
+        ]
+      },
+      {
+        "candidate_id": "C-032",
+        "lat": 16.53,
+        "lon": 80.56416666666667,
+        "zone_id": "Z-025",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-019",
+          "Z-025",
+          "Z-031"
+        ]
+      },
+      {
+        "candidate_id": "C-034",
+        "lat": 16.53,
+        "lon": 80.5925,
+        "zone_id": "Z-026",
+        "risk_weight": 4,
+        "near_river": true,
+        "placement_method": "ZONE_CENTROID",
+        "covered_zone_ids": [
+          "Z-020",
+          "Z-026",
+          "Z-032"
+        ]
+      }
+    ],
+    "coverage_percentage": 66.67,
+    "weighted_risk_coverage": 192.0,
+    "total_weighted_risk": 288.0,
+    "critical_zone_coverage_percentage": 66.67,
+    "covered_zone_ids": [
+      "Z-001",
+      "Z-002",
+      "Z-003",
+      "Z-004",
+      "Z-005",
+      "Z-006",
+      "Z-007",
+      "Z-008",
+      "Z-009",
+      "Z-010",
+      "Z-011",
+      "Z-012",
+      "Z-013",
+      "Z-014",
+      "Z-015",
+      "Z-016",
+      "Z-017",
+      "Z-018",
+      "Z-019",
+      "Z-020",
+      "Z-025",
+      "Z-026",
+      "Z-031",
+      "Z-032"
+    ],
+    "uncovered_priority_zone_ids": [
+      "Z-030",
+      "Z-036",
+      "Z-027",
+      "Z-021",
+      "Z-033",
+      "Z-028",
+      "Z-034",
+      "Z-029",
+      "Z-035",
+      "Z-022",
+      "Z-023",
+      "Z-024"
+    ],
+    "num_candidates_considered": 46,
+    "num_sensors_requested": 8,
+    "num_sensors_selected": 8
+  }
+}

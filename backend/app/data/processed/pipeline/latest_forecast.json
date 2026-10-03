@@ -1,0 +1,9 @@
+{
+  "based_on_date": "2025-12-30",
+  "horizon_days": 1,
+  "predicted_water_level_m": 7.244,
+  "last_known_rainfall_mm": 0.0,
+  "last_known_inflow_ktcmd": 190.13,
+  "last_known_water_level_m": 7.302,
+  "model_used": "linear_regression"
+}

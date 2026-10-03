@@ -1,0 +1,143 @@
+{
+  "run_timestamp": "2026-10-01T04:37:22.478935+00:00",
+  "resolution": "low",
+  "aggregate_statistics": {
+    "total_experiments": 1,
+    "greedy_advantage": {
+      "mean": 0.0,
+      "std": 0,
+      "min": 0.0,
+      "max": 0.0,
+      "greedy_wins": 0,
+      "ties": 1,
+      "naive_wins": 0
+    },
+    "greedy_coverage_mean_pct": 12.5,
+    "mean_execution_time_greedy_s": 0.00128,
+    "mean_execution_time_naive_s": 0.0009
+  },
+  "experiments": [
+    {
+      "experiment_id": "EXP-001",
+      "timestamp": "2026-10-01T04:37:22.478573+00:00",
+      "config": {
+        "label": "tiny",
+        "num_sensors": 2,
+        "coverage_radius_km": 2.0,
+        "comm_range_km": 3.0,
+        "max_comm_nodes": 1
+      },
+      "num_candidates": 22,
+      "num_zones": 16,
+      "approach_a_greedy": {
+        "engine_type": "classical_greedy",
+        "objective_score": 16.0,
+        "coverage_percentage": 12.5,
+        "critical_zone_coverage_percentage": 50.0,
+        "sensors_selected": 2,
+        "selected_sensor_ids": [
+          "C-001",
+          "C-007"
+        ],
+        "comm_nodes_used": 1,
+        "comm_node_ids": [
+          "CN-01"
+        ],
+        "connectivity_percentage": 50.0,
+        "uncovered_critical_zones": [
+          "Z-011",
+          "Z-016"
+        ],
+        "execution_time_seconds": 0.00128,
+        "coverage_summary": {
+          "total_zones": 16,
+          "total_coverage_percentage": 12.5,
+          "high_risk_zone_total": 4,
+          "high_risk_zone_covered": 0,
+          "critical_zone_total": 4,
+          "critical_zone_covered": 2,
+          "critical_zone_coverage_percentage": 50.0,
+          "sensor_budget": 2,
+          "sensors_deployed": 2,
+          "comm_node_budget": 1,
+          "comm_nodes_deployed": 1,
+          "comm_node_budget_exhausted": true,
+          "connected_sensors": 1,
+          "disconnected_sensors": 1,
+          "connectivity_percentage": 50.0,
+          "uncovered_priority_zone_ids": [
+            "Z-011",
+            "Z-016",
+            "Z-010",
+            "Z-007",
+            "Z-004",
+            "Z-013",
+            "Z-003",
+            "Z-015",
+            "Z-014",
+            "Z-002",
+            "Z-005",
+            "Z-008",
+            "Z-009",
+            "Z-012"
+          ]
+        }
+      },
+      "approach_b_naive_topk": {
+        "engine_type": "classical_naive_topk",
+        "objective_score": 16.0,
+        "coverage_percentage": 12.5,
+        "critical_zone_coverage_percentage": 50.0,
+        "sensors_selected": 2,
+        "selected_sensor_ids": [
+          "C-001",
+          "C-007"
+        ],
+        "comm_nodes_used": 1,
+        "comm_node_ids": [
+          "CN-01"
+        ],
+        "connectivity_percentage": 50.0,
+        "uncovered_critical_zones": [
+          "Z-011",
+          "Z-016"
+        ],
+        "execution_time_seconds": 0.0009,
+        "coverage_summary": {
+          "total_zones": 16,
+          "total_coverage_percentage": 12.5,
+          "high_risk_zone_total": 4,
+          "high_risk_zone_covered": 0,
+          "critical_zone_total": 4,
+          "critical_zone_covered": 2,
+          "critical_zone_coverage_percentage": 50.0,
+          "sensor_budget": 2,
+          "sensors_deployed": 2,
+          "comm_node_budget": 1,
+          "comm_nodes_deployed": 1,
+          "comm_node_budget_exhausted": true,
+          "connected_sensors": 1,
+          "disconnected_sensors": 1,
+          "connectivity_percentage": 50.0,
+          "uncovered_priority_zone_ids": [
+            "Z-011",
+            "Z-016",
+            "Z-010",
+            "Z-007",
+            "Z-004",
+            "Z-013",
+            "Z-003",
+            "Z-015",
+            "Z-014",
+            "Z-002",
+            "Z-005",
+            "Z-008",
+            "Z-009",
+            "Z-012"
+          ]
+        }
+      },
+      "greedy_advantage_objective_score": 0.0
+    }
+  ]
+}

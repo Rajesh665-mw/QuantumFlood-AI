@@ -1,0 +1,213 @@
+{
+  "metadata": {
+    "name": "Vijayawada Corridor Strategic Road Network Graph",
+    "version": "1.0",
+    "study_area": "Vijayawada–Krishna River Corridor",
+    "provenance": "PARTIALLY_REAL",
+    "provenance_note": "Graph nodes and edges represent major transport arteries of the Vijayawada metropolitan area (NH-16, MG Road, Bandar Road, Eluru Road, Inner Ring Road, Prakasam Barrage link, Kanaka Durga Varadhi). Real-time road inundation/closure sensors are not connected; edge risks are modelled dynamically based on zone flood-risk classification.",
+    "crs": "EPSG:4326 (WGS84 lon/lat)"
+  },
+  "nodes": [
+    { "id": "N-PB", "name": "Prakasam Barrage West Junction", "lat": 16.5061, "lon": 80.6050, "zone_hint": "Z-020" },
+    { "id": "N-KF", "name": "Kanakadurga Flyover / City Approach", "lat": 16.5128, "lon": 80.6039, "zone_hint": "Z-021" },
+    { "id": "N-KDV-N", "name": "Kanaka Durga Varadhi North Intersect", "lat": 16.4950, "lon": 80.6180, "zone_hint": "Z-015" },
+    { "id": "N-KDV-S", "name": "Kanaka Durga Varadhi South Bank (Tadepalli)", "lat": 16.4880, "lon": 80.6210, "zone_hint": "Z-010" },
+    { "id": "N-MG-CTR", "name": "MG Road / Governorpet Central Junction", "lat": 16.5100, "lon": 80.6250, "zone_hint": "Z-021" },
+    { "id": "N-IGS", "name": "Indira Gandhi Stadium / MG Road Intersect", "lat": 16.5072, "lon": 80.6385, "zone_hint": "Z-016" },
+    { "id": "N-BENZ", "name": "Benz Circle (NH-16 / MG Road Interchange)", "lat": 16.5005, "lon": 80.6505, "zone_hint": "Z-017" },
+    { "id": "N-RAMAVAR", "name": "Ramavarappadu Ring Road Junction (NH-16 / Eluru Rd)", "lat": 16.5200, "lon": 80.6700, "zone_hint": "Z-023" },
+    { "id": "N-GGH", "name": "Government General Hospital / Ring Road", "lat": 16.5186, "lon": 80.6608, "zone_hint": "Z-022" },
+    { "id": "N-GUNADALA", "name": "Gunadala Center / Eluru Road", "lat": 16.5250, "lon": 80.6550, "zone_hint": "Z-028" },
+    { "id": "N-AUTONAGAR", "name": "Auto Nagar Gate (Bandar Road / Industrial Area)", "lat": 16.4950, "lon": 80.6620, "zone_hint": "Z-011" },
+    { "id": "N-KANURU", "name": "Kanuru / VR Siddhartha Approach", "lat": 16.4975, "lon": 80.6652, "zone_hint": "Z-011" },
+    { "id": "N-LOYOLA", "name": "Andhra Loyola College Approach (NH-16)", "lat": 16.5030, "lon": 80.6720, "zone_hint": "Z-017" },
+    { "id": "N-SATYA", "name": "Satyanarayanapuram / BRTS Road", "lat": 16.5260, "lon": 80.6340, "zone_hint": "Z-027" },
+    { "id": "N-NH16-S", "name": "NH-16 South Gateway (Mangalagiri / ANU approach)", "lat": 16.4480, "lon": 80.5820, "zone_hint": "Z-002" },
+    { "id": "N-VADDES", "name": "Vaddeswaram Junction (South Bypass)", "lat": 16.4420, "lon": 80.6220, "zone_hint": "Z-004" },
+    { "id": "N-GANNA", "name": "NH-16 East Gateway (Gannavaram / Airport corridor)", "lat": 16.5410, "lon": 80.7150, "zone_hint": "Z-036" },
+    { "id": "N-ENAMAL", "name": "Enamalakuduru South Bank Connector", "lat": 16.4800, "lon": 80.6500, "zone_hint": "Z-011" },
+    { "id": "N-GOLLAPUDI", "name": "Gollapudi Bypass (NH-65 West)", "lat": 16.5350, "lon": 80.5750, "zone_hint": "Z-025" }
+  ],
+  "edges": [
+    {
+      "id": "E-01",
+      "from": "N-GOLLAPUDI",
+      "to": "N-KF",
+      "name": "NH-65 Ibrahimpatnam–Vijayawada Expressway",
+      "road_class": "NATIONAL_HIGHWAY",
+      "speed_kmh": 60,
+      "distance_km": 3.9
+    },
+    {
+      "id": "E-02",
+      "from": "N-KF",
+      "to": "N-PB",
+      "name": "Kanakadurga Flyover Link",
+      "road_class": "ELEVATED_FLYOVER",
+      "speed_kmh": 45,
+      "distance_km": 0.8
+    },
+    {
+      "id": "E-03",
+      "from": "N-PB",
+      "to": "N-KDV-N",
+      "name": "Krishna Riverfront Embankment Road",
+      "road_class": "RIVERFRONT_ROAD",
+      "speed_kmh": 35,
+      "distance_km": 1.8
+    },
+    {
+      "id": "E-04",
+      "from": "N-KDV-N",
+      "to": "N-KDV-S",
+      "name": "Kanaka Durga Varadhi River Bridge",
+      "road_class": "RIVER_BRIDGE",
+      "speed_kmh": 50,
+      "distance_km": 0.9
+    },
+    {
+      "id": "E-05",
+      "from": "N-KDV-S",
+      "to": "N-VADDES",
+      "name": "Tadepalli–Vaddeswaram South Highway Link",
+      "road_class": "NATIONAL_HIGHWAY",
+      "speed_kmh": 55,
+      "distance_km": 5.1
+    },
+    {
+      "id": "E-06",
+      "from": "N-KDV-S",
+      "to": "N-NH16-S",
+      "name": "NH-16 South Arterial to Mangalagiri / ANU",
+      "road_class": "NATIONAL_HIGHWAY",
+      "speed_kmh": 65,
+      "distance_km": 6.2
+    },
+    {
+      "id": "E-07",
+      "from": "N-KF",
+      "to": "N-MG-CTR",
+      "name": "Governorpet Connector / Main Bazaar Link",
+      "road_class": "CITY_ARTERIAL",
+      "speed_kmh": 35,
+      "distance_km": 2.3
+    },
+    {
+      "id": "E-08",
+      "from": "N-MG-CTR",
+      "to": "N-IGS",
+      "name": "MG Road Central Corridor (West)",
+      "road_class": "MAJOR_CITY_ARTERIAL",
+      "speed_kmh": 40,
+      "distance_km": 1.5
+    },
+    {
+      "id": "E-09",
+      "from": "N-IGS",
+      "to": "N-BENZ",
+      "name": "MG Road Central Corridor (East)",
+      "road_class": "MAJOR_CITY_ARTERIAL",
+      "speed_kmh": 45,
+      "distance_km": 1.5
+    },
+    {
+      "id": "E-10",
+      "from": "N-KDV-N",
+      "to": "N-BENZ",
+      "name": "Bandar Road Connecting Link",
+      "road_class": "PRIMARY_ARTERIAL",
+      "speed_kmh": 45,
+      "distance_km": 3.5
+    },
+    {
+      "id": "E-11",
+      "from": "N-BENZ",
+      "to": "N-AUTONAGAR",
+      "name": "Bandar Road Outer Arterial (SH-125)",
+      "road_class": "PRIMARY_ARTERIAL",
+      "speed_kmh": 50,
+      "distance_km": 1.4
+    },
+    {
+      "id": "E-12",
+      "from": "N-AUTONAGAR",
+      "to": "N-KANURU",
+      "name": "Kanuru Campus Access Road",
+      "road_class": "PRIMARY_ARTERIAL",
+      "speed_kmh": 40,
+      "distance_km": 0.5
+    },
+    {
+      "id": "E-13",
+      "from": "N-AUTONAGAR",
+      "to": "N-ENAMAL",
+      "name": "Enamalakuduru Embankment Link",
+      "road_class": "SECONDARY_ROAD",
+      "speed_kmh": 35,
+      "distance_km": 2.1
+    },
+    {
+      "id": "E-14",
+      "from": "N-BENZ",
+      "to": "N-LOYOLA",
+      "name": "NH-16 Northbound Inner Flyover Section",
+      "road_class": "NATIONAL_HIGHWAY",
+      "speed_kmh": 60,
+      "distance_km": 2.3
+    },
+    {
+      "id": "E-15",
+      "from": "N-LOYOLA",
+      "to": "N-RAMAVAR",
+      "name": "NH-16 Ring Road Corridor",
+      "road_class": "NATIONAL_HIGHWAY",
+      "speed_kmh": 60,
+      "distance_km": 1.9
+    },
+    {
+      "id": "E-16",
+      "from": "N-RAMAVAR",
+      "to": "N-GGH",
+      "name": "Inner Ring Road West section",
+      "road_class": "PRIMARY_ARTERIAL",
+      "speed_kmh": 50,
+      "distance_km": 1.0
+    },
+    {
+      "id": "E-17",
+      "from": "N-GGH",
+      "to": "N-GUNADALA",
+      "name": "Gunadala Hill Approach Road",
+      "road_class": "SECONDARY_ARTERIAL",
+      "speed_kmh": 35,
+      "distance_km": 0.9
+    },
+    {
+      "id": "E-18",
+      "from": "N-GUNADALA",
+      "to": "N-SATYA",
+      "name": "Eluru Road to BRTS Connector",
+      "road_class": "CITY_ARTERIAL",
+      "speed_kmh": 40,
+      "distance_km": 2.3
+    },
+    {
+      "id": "E-19",
+      "from": "N-SATYA",
+      "to": "N-KF",
+      "name": "Railway Station North Approach",
+      "road_class": "CITY_ARTERIAL",
+      "speed_kmh": 35,
+      "distance_km": 3.4
+    },
+    {
+      "id": "E-20",
+      "from": "N-RAMAVAR",
+      "to": "N-GANNA",
+      "name": "NH-16 East High-Speed Highway Corridor",
+      "road_class": "NATIONAL_HIGHWAY",
+      "speed_kmh": 70,
+      "distance_km": 5.4
+    }
+  ]
+}

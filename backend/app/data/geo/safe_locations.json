@@ -1,0 +1,173 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "Candidate Public Facilities & Lower-Risk Assembly Sites - Vijayawada Corridor",
+    "version": "1.0",
+    "study_area": "Vijayawada–Krishna River Corridor",
+    "provenance": "PARTIALLY_REAL",
+    "provenance_note": "Coordinates and facility names correspond to real civic/educational/medical complexes in the Vijayawada metropolitan corridor. Elevations are derived from open topographic survey records (SRTM 30m reference). Live shelter occupancy, structural capacity, and official evacuation facility declarations are NOT available from open telemetry; capacity is explicitly labelled as UNAVAILABLE / NOT SURVEYED in accordance with scientific honesty requirements.",
+    "crs": "EPSG:4326 (WGS84 lon/lat)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-01",
+        "name": "VR Siddhartha Engineering College Campus",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "Kanuru / Moghalrajpuram, Vijayawada",
+        "elevation_m": 28.5,
+        "primary_road_access": "Bandar Road (SH-125 / NH-65)",
+        "road_class": "PRIMARY_ARTERIAL",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Spacious elevated educational campus with wide multi-story buildings and multi-gate arterial access."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6652, 16.4975] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-02",
+        "name": "Indira Gandhi Municipal Stadium Complex",
+        "category": "MUNICIPAL_STADIUM",
+        "address": "MG Road, Vijayawada",
+        "elevation_m": 22.0,
+        "primary_road_access": "MG Road",
+        "road_class": "MAJOR_CITY_ARTERIAL",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Large open civic stadium with wide perimeter gates and central urban road connectivity."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6385, 16.5072] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-03",
+        "name": "Government General Hospital & Medical College",
+        "category": "HEALTHCARE_COMPLEX",
+        "address": "Gunadala / Ring Road, Vijayawada",
+        "elevation_m": 26.0,
+        "primary_road_access": "Inner Ring Road",
+        "road_class": "PRIMARY_ARTERIAL",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Key tertiary medical hub with dedicated emergency access corridors and high-ground vantage."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6608, 16.5186] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-04",
+        "name": "PB Siddhartha College of Arts & Science",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "Moghalrajpuram, Vijayawada",
+        "elevation_m": 24.5,
+        "primary_road_access": "Pinnamaneni Polyclinic Road / MG Road",
+        "road_class": "SECONDARY_ARTERIAL",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Central institutional compound set back from river corridor behind natural topographic elevation."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6515, 16.5042] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-05",
+        "name": "Gunadala Mary Matha Upper Ridge Grounds",
+        "category": "HIGH_ELEVATION_COMMUNITY_SITE",
+        "address": "Gunadala Hill slope, Vijayawada",
+        "elevation_m": 48.0,
+        "primary_road_access": "Eluru Road (SH-43)",
+        "road_class": "PRIMARY_ARTERIAL",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Naturally elevated hill-flank grounds well above historical flood inundation levels."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6620, 16.5280] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-06",
+        "name": "Andhra Loyola College Grounds & Complex",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "Veterinary Colony / Ring Road, Vijayawada",
+        "elevation_m": 26.5,
+        "primary_road_access": "Chennai–Kolkata Highway (NH-16)",
+        "road_class": "NATIONAL_HIGHWAY",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Extensive educational grounds directly fronting the national highway corridor."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6720, 16.5030] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-07",
+        "name": "Acharya Nagarjuna University Southern Approach Grounds",
+        "category": "REGIONAL_UNIVERSITY_GROUNDS",
+        "address": "South Corridor along NH-16",
+        "elevation_m": 31.0,
+        "primary_road_access": "Chennai–Kolkata Highway (NH-16)",
+        "road_class": "NATIONAL_HIGHWAY",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Southern high-ground campus perimeter along major interstate evacuation highway."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.5820, 16.4480] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-08",
+        "name": "Gannavaram Highway Community Center Grounds",
+        "category": "CIVIC_COMMUNITY_CENTER",
+        "address": "East Highway Corridor",
+        "elevation_m": 25.0,
+        "primary_road_access": "NH-16 East / Airport Road",
+        "road_class": "NATIONAL_HIGHWAY",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Eastern corridor regional assembly area with broad multi-lane highway connectivity."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.7150, 16.5410] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-09",
+        "name": "Vaddeswaram South Bank High Ground Compound",
+        "category": "INSTITUTIONAL_GROUNDS",
+        "address": "Vaddeswaram, South Bank Corridor",
+        "elevation_m": 23.5,
+        "primary_road_access": "NH-16 Bypass Corridor",
+        "road_class": "NATIONAL_HIGHWAY",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "South bank facility set beyond the river embankment buffer zone."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6220, 16.4420] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SL-10",
+        "name": "Satyanarayanapuram Municipal Civic Grounds",
+        "category": "MUNICIPAL_FACILITY",
+        "address": "Satyanarayanapuram, Vijayawada",
+        "elevation_m": 23.0,
+        "primary_road_access": "BRTS Corridor / Railway Station Road",
+        "road_class": "MAJOR_CITY_ARTERIAL",
+        "capacity_surveyed": false,
+        "capacity_status": "UNAVAILABLE",
+        "notes": "Municipal emergency staging and logistics distribution depot site."
+      },
+      "geometry": { "type": "Point", "coordinates": [80.6340, 16.5260] }
+    }
+  ]
+}

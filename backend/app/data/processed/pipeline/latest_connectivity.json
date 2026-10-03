@@ -1,0 +1,94 @@
+{
+  "comm_nodes": [
+    {
+      "comm_node_id": "CN-01",
+      "co_located_with": "C-009",
+      "lat": 16.47,
+      "lon": 80.5925,
+      "connects_sensor_ids": [
+        "C-008",
+        "C-009",
+        "C-010"
+      ]
+    },
+    {
+      "comm_node_id": "CN-02",
+      "co_located_with": "C-013",
+      "lat": 16.47,
+      "lon": 80.6775,
+      "connects_sensor_ids": [
+        "C-011",
+        "C-013",
+        "C-015"
+      ]
+    },
+    {
+      "comm_node_id": "CN-03",
+      "co_located_with": "C-032",
+      "lat": 16.53,
+      "lon": 80.56416666666667,
+      "connects_sensor_ids": [
+        "C-032",
+        "C-034"
+      ]
+    }
+  ],
+  "connected_sensor_ids": [
+    "C-008",
+    "C-009",
+    "C-010",
+    "C-011",
+    "C-013",
+    "C-015",
+    "C-032",
+    "C-034"
+  ],
+  "disconnected_sensor_ids": [],
+  "connections": [
+    {
+      "sensor_id": "C-008",
+      "comm_node_id": "CN-01",
+      "distance_km": 3.021
+    },
+    {
+      "sensor_id": "C-009",
+      "comm_node_id": "CN-01",
+      "distance_km": 0.0
+    },
+    {
+      "sensor_id": "C-010",
+      "comm_node_id": "CN-01",
+      "distance_km": 3.021
+    },
+    {
+      "sensor_id": "C-011",
+      "comm_node_id": "CN-02",
+      "distance_km": 3.021
+    },
+    {
+      "sensor_id": "C-013",
+      "comm_node_id": "CN-02",
+      "distance_km": 0.0
+    },
+    {
+      "sensor_id": "C-015",
+      "comm_node_id": "CN-02",
+      "distance_km": 3.021
+    },
+    {
+      "sensor_id": "C-032",
+      "comm_node_id": "CN-03",
+      "distance_km": 0.0
+    },
+    {
+      "sensor_id": "C-034",
+      "comm_node_id": "CN-03",
+      "distance_km": 3.02
+    }
+  ],
+  "connectivity_percentage": 100.0,
+  "comm_range_km": 4.0,
+  "max_comm_nodes": 4,
+  "comm_nodes_used": 3,
+  "budget_exhausted": false
+}

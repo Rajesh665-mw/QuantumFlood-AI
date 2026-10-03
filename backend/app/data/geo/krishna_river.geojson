@@ -1,0 +1,42 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "name": "Krishna River centerline - Vijayawada study corridor",
+    "version": "2.0 (sourced-anchor revision)",
+    "source": "Hybrid: 5 of the 14 vertices are REAL, sourced landmark coordinates from Wikipedia/Wikidata (Prakasam Barrage, Bhavani Island, Kanakadurga Flyover, Kanaka Durga Varadhi). The remaining vertices are project-authored interpolation connecting those anchors and extending to the study-area bounding box edges - they are NOT surveyed river-centerline data.",
+    "real_anchor_points": [
+      {"name": "Bhavani Island (mid-river, upstream of barrage)", "lat": 16.522780, "lon": 80.573107, "citation": "Wikipedia: Bhavani Island"},
+      {"name": "Kanakadurga Flyover (crosses river near barrage)", "lat": 16.51278, "lon": 80.60389, "citation": "Wikipedia: Kanakadurga Flyover"},
+      {"name": "Prakasam Barrage", "lat": 16.50611, "lon": 80.60500, "citation": "Wikipedia / Wikidata Q7238160, citing National Register of Large Dams 2019"},
+      {"name": "Kanaka Durga Varadhi (Vijayawada-Guntur bridge)", "lat": 16.49278, "lon": 80.61917, "citation": "Wikipedia: Kanaka Durga Varadhi"}
+    ],
+    "known_limitation": "This is still NOT an authoritative surveyed river-network dataset. India's National Water Data Portal (nwdp.nwic.gov.in, Ministry of Jal Shakli / CWC) publishes an official nationwide River Network GeoJSON, but the file exceeds 30MB (whole-India coverage) and could not be practically fetched/filtered in this environment. Swapping in an extracted, authoritative Krishna-only geometry later requires only replacing this file - all downstream consumers (risk engine, candidate generator) read the same GeoJSON Feature shape.",
+    "crs": "EPSG:4326 (WGS84 lon/lat)",
+    "last_updated": "2026-08-25"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Krishna River" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [80.556, 16.545],
+          [80.562, 16.535],
+          [80.573107, 16.522780],
+          [80.590, 16.518],
+          [80.60389, 16.5128],
+          [80.60500, 16.50611],
+          [80.6100, 16.500],
+          [80.61917, 16.49278],
+          [80.635, 16.485],
+          [80.655, 16.478],
+          [80.672, 16.472],
+          [80.690, 16.465],
+          [80.705, 16.460],
+          [80.720, 16.455]
+        ]
+      }
+    }
+  ]
+}

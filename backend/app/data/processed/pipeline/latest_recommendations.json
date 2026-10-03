@@ -1,0 +1,124 @@
+{
+  "alerts": [
+    {
+      "level": "HIGH",
+      "message": "Study-area forecast indicates HIGH flood risk. Driven by water level m = 11.60, which falls in the HIGH band (\u2265 11.0 for this parameter)."
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-029",
+      "message": "Zone Z-029 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-033",
+      "message": "Zone Z-033 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-021",
+      "message": "Zone Z-021 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-024",
+      "message": "Zone Z-024 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-022",
+      "message": "Zone Z-022 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-035",
+      "message": "Zone Z-035 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-023",
+      "message": "Zone Z-023 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-030",
+      "message": "Zone Z-030 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-028",
+      "message": "Zone Z-028 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-027",
+      "message": "Zone Z-027 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-034",
+      "message": "Zone Z-034 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "SENSOR_DEPLOYMENT",
+      "zone_id": "Z-036",
+      "message": "Zone Z-036 is classified HIGH but currently has no sensor within coverage radius. Prioritise deployment of an additional monitoring sensor in this zone."
+    }
+  ],
+  "priority_monitoring_areas": [
+    {
+      "zone_id": "Z-001",
+      "risk_level": "HIGH",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.56416666666667
+      }
+    },
+    {
+      "zone_id": "Z-002",
+      "risk_level": "HIGH",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.5925
+      }
+    },
+    {
+      "zone_id": "Z-003",
+      "risk_level": "HIGH",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.62083333333334
+      }
+    },
+    {
+      "zone_id": "Z-004",
+      "risk_level": "HIGH",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.64916666666666
+      }
+    },
+    {
+      "zone_id": "Z-005",
+      "risk_level": "HIGH",
+      "centroid": {
+        "lat": 16.450000000000003,
+        "lon": 80.6775
+      }
+    }
+  ]
+}

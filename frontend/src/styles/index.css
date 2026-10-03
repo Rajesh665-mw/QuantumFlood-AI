@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  html, body {
+    background-color: #0B121A;
+    color: #E8ECF1;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  ::selection {
+    background: #2DD4BF;
+    color: #0B121A;
+  }
+  *:focus-visible {
+    outline: 2px solid #2DD4BF;
+    outline-offset: 2px;
+  }
+}
+
+/* Global Subtle Dark Scrollbar (Chromium & WebKit) */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(59, 72, 87, 0.55);
+  border-radius: 9999px;
+  transition: background-color 0.15s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(90, 103, 121, 0.85);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(138, 150, 168, 0.95);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox Scrollbar Standard */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 72, 87, 0.55) transparent;
+}
+
+@layer components {
+  .panel {
+    @apply bg-base-800 border border-base-600 rounded;
+  }
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.14em] text-signal-teal;
+  }
+  .data-label {
+    @apply font-mono text-[11px] uppercase tracking-wider text-ink-500;
+  }
+  .data-value {
+    @apply font-mono text-ink-100;
+  }
+}
+
+/* Signature background: faint topographic contour lines, evoking basin/river
+   elevation maps used in hydrology. Applied once behind the hero. */
+.contour-field {
+  background-image:
+    repeating-radial-gradient(circle at 15% 20%, transparent 0, transparent 26px, rgba(45, 212, 191, 0.05) 27px, transparent 28px, transparent 54px),
+    repeating-radial-gradient(circle at 85% 70%, transparent 0, transparent 34px, rgba(45, 212, 191, 0.04) 35px, transparent 36px, transparent 70px);
+}
+
+/* Leaflet dark theme override */
+.leaflet-container {
+  background: #161F2C;
+  font-family: 'Inter', sans-serif;
+}
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background: #1C2634;
+  color: #E8ECF1;
+}
+.leaflet-control-attribution {
+  background: rgba(11,18,26,0.7) !important;
+  color: #8A96A8 !important;
+}
+.leaflet-control-attribution a { color: #8A96A8 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
