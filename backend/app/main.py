@@ -1,4 +1,11 @@
 import os
+import sys
+from pathlib import Path
+
+# Ensure backend root directory is in sys.path regardless of working directory or hosting container
+_BACKEND_ROOT = str(Path(__file__).resolve().parent.parent)
+if _BACKEND_ROOT not in sys.path:
+    sys.path.insert(0, _BACKEND_ROOT)
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
