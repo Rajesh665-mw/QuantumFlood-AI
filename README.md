@@ -235,8 +235,6 @@ npm run dev
 ```
 Interactive Dashboard will be available at: `http://localhost:5173`
 
-*(On Windows, you can also use `install.bat`, `start-backend.bat`, `start-frontend.bat`, or `start-all.bat`.)*
-
 ---
 
 ## 11. Testing & Verification

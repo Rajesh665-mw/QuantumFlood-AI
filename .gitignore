@@ -39,7 +39,9 @@ backend/app/data/processed/models/*.joblib
 *.sqlite
 *.db
 
-# OS
+# Local scripts & OS
+*.bat
+*.cmd
 .DS_Store
 Thumbs.db
 
