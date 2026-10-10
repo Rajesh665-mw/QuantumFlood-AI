@@ -52,7 +52,7 @@ export default function RiskMap() {
             <LayersOverlay name="Study Area Boundary" checked>
               <StudyAreaBoundaryLayer boundary={layers.boundary} />
             </LayersOverlay>
-            <LayersOverlay name="Krishna River" checked>
+            <LayersOverlay name={layers.study_area?.river ? `${layers.study_area.river}` : 'River Centerline'} checked>
               <RiverLayer river={layers.river} />
             </LayersOverlay>
             <LayersOverlay name="Flood Risk Zones" checked>

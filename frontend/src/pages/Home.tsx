@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { api } from '../services/api'
 import type { StudyArea } from '../types'
+import LocationSelector from '../components/LocationSelector'
 
 const PIPELINE = [
   'Hydro-meteorological data', 'Data validation & cleaning', 'Feature engineering',
@@ -13,18 +14,22 @@ const CAPABILITIES = [
   { title: 'Classical ML Forecasting', body: 'Chronologically-split regression models (Linear, Random Forest, Gradient Boosting) forecast water level from rainfall and inflow history.' },
   { title: 'Rule-Based Risk Assessment', body: 'Documented thresholds convert forecasts into LOW / MODERATE / HIGH / CRITICAL zone classifications with a traceable explanation.' },
   { title: 'Greedy Max-Coverage Optimisation', body: 'A provably near-optimal ((1-1/e)-approximate) greedy algorithm selects sensor sites that maximise weighted flood-risk coverage under a fixed budget.' },
-  { title: 'Connectivity Analysis', body: 'Great-circle distance calculations determine which sensors reach a communication node, and flag any that don\u2019t.' },
+  { title: 'Connectivity Analysis', body: 'Great-circle distance calculations determine which sensors reach a communication node, and flag any that don’t.' },
 ]
 
 export default function Home() {
   const [studyArea, setStudyArea] = useState<StudyArea | null>(null)
 
   useEffect(() => {
-    api.regions().then((r) => setStudyArea(r.regions[0] ?? null)).catch(() => setStudyArea(null))
+    api.currentArea()
+      .then((r) => setStudyArea(r.study_area))
+      .catch(() => {
+        api.regions().then((r) => setStudyArea(r.regions[0] ?? null)).catch(() => setStudyArea(null))
+      })
   }, [])
 
   return (
-    <div className="flex flex-col gap-16">
+    <div className="flex flex-col gap-12">
       <section className="relative overflow-hidden rounded panel contour-field px-6 py-14 md:px-14 md:py-20">
         <div className="relative z-10 max-w-3xl">
           <span className="eyebrow">UC-067 · Quantum Computing / Quantum AI-ML Track</span>
@@ -33,7 +38,7 @@ export default function Home() {
           </h1>
           <p className="text-ink-300 text-lg mt-3 max-w-xl">
             Flood forecasting &amp; smart sensor optimisation for disaster response — quantum-enhanced
-            decision-support system for the Vijayawada&ndash;Krishna River corridor.
+            decision-support platform.
           </p>
           <p className="text-ink-500 text-sm mt-5 max-w-2xl leading-relaxed">
             A quantum-enhanced decision-support platform combining classical forecasting baselines
@@ -57,18 +62,26 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Global Location & Study Area Selector */}
       <section>
-        <span className="eyebrow">Study Area</span>
+        <LocationSelector
+          currentArea={studyArea}
+          onAreaChanged={(newArea) => setStudyArea(newArea)}
+        />
+      </section>
+
+      <section>
+        <span className="eyebrow">Active Study Area Status</span>
         <h2 className="font-display text-2xl text-ink-100 mt-2">{studyArea?.name ?? 'Vijayawada – Krishna River Corridor'}</h2>
         <p className="text-ink-500 text-sm mt-2 max-w-2xl">
           {studyArea?.scope_note ??
-            'Study area: the Vijayawada\u2013Krishna River corridor only \u2014 a single corridor within the broader Krishna-Godavari basin, not full-basin coverage.'}
+            'Study area: the Vijayawada–Krishna River corridor only — a single corridor within the broader Krishna-Godavari basin, not full-basin coverage.'}
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           {[
-            { label: 'River', value: 'Krishna' },
-            { label: 'Reference gauge', value: 'Prakasam Barrage' },
-            { label: 'State', value: 'Andhra Pradesh' },
+            { label: 'River / Waterway', value: studyArea?.river ?? 'Krishna' },
+            { label: 'Reference gauge', value: studyArea?.reference_gauge ?? 'Prakasam Barrage' },
+            { label: 'State / Region', value: studyArea?.state || studyArea?.region || 'Andhra Pradesh' },
             { label: 'Risk zones modelled', value: '36' },
           ].map((f) => (
             <div key={f.label} className="panel p-4">

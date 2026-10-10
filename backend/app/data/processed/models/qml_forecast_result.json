@@ -763,8 +763,8 @@
     "rainfall_roll3",
     "rainfall_mm"
   ],
-  "training_time_ms": 1379.2822999999999,
-  "inference_time_ms": 80.09160000005977,
+  "training_time_ms": 1600.8760999829974,
+  "inference_time_ms": 154.06689999508671,
   "simulator_name": "Pure NumPy Statevector",
   "training_loss_history": [
     0.015087,

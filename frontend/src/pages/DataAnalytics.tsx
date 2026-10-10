@@ -177,7 +177,7 @@ export default function DataAnalytics() {
         </div>
       )}
 
-      {realEvents.length > 0 && (
+      {realEvents.length > 0 ? (
         <div className="panel p-5 border-risk-low/30">
           <span className="data-label">Historical Flood Events — REAL / SOURCED</span>
           <div className="overflow-x-auto mt-3">
@@ -210,6 +210,19 @@ export default function DataAnalytics() {
             A small, citable sample of well-documented events at Prakasam Barrage / Vijayawada — not a
             complete authoritative CWC flood archive. Each row's discharge and severity claim traces to
             the cited source.
+          </p>
+        </div>
+      ) : (
+        <div className="panel p-5 border-base-700 bg-base-900/60">
+          <div className="flex items-center justify-between">
+            <span className="data-label">Historical Flood Events</span>
+            <span className="font-mono text-[10px] uppercase px-1.5 py-0.5 rounded border text-ink-500 border-base-700 bg-base-800">
+              UNAVAILABLE FOR THIS LOCATION
+            </span>
+          </div>
+          <p className="text-ink-400 text-xs mt-2 leading-relaxed">
+            No verified open-telemetry historical flood event catalog is configured for this dynamically selected study area.
+            Documented historical events (1903, 1998, 2009, 2024) are specific to the Vijayawada benchmark corridor.
           </p>
         </div>
       )}
@@ -279,7 +292,7 @@ export default function DataAnalytics() {
           <li>The risk engine uses illustrative thresholds; real deployment requires calibration against CWC/KGBO official flood-stage data.</li>
           <li>The greedy maximum-coverage optimiser is a (1&minus;1/e)-approximate algorithm, not an exact ILP solution — the naive top-K baseline above exists specifically to make that advantage measurable rather than asserted.</li>
           <li>Communication connectivity assumes free-space great-circle distance only; it does not model terrain, obstruction, or real RF propagation. It also respects a hard, user-configurable communication-node budget — sensors can be left honestly disconnected if that budget is exhausted.</li>
-          <li>The current implementation covers the Vijayawada&ndash;Krishna River corridor only, not the full Krishna-Godavari basin.</li>
+          <li>The default benchmark implementation covers the Vijayawada–Krishna River corridor, with full global location selection supported dynamically across any river basin.</li>
           <li>Quantum modules (QAOA sensor placement and 4-qubit VQR forecasting) use classical statevector simulation in pure NumPy with deterministic seeds; no physical quantum hardware execution or empirical quantum advantage is claimed.</li>
         </ul>
       </div>

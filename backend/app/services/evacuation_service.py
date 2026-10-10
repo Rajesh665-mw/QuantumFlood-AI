@@ -46,8 +46,87 @@ logger = logging.getLogger(__name__)
 _road_network_cache = None
 
 
+def _generate_dynamic_road_network(active_area: dict) -> Dict[str, Any]:
+    bbox = active_area.get("bounding_box", {})
+    if not bbox:
+        return {"nodes": [], "edges": []}
+    min_lat = bbox["min_lat"]
+    max_lat = bbox["max_lat"]
+    min_lon = bbox["min_lon"]
+    max_lon = bbox["max_lon"]
+    name_prefix = active_area.get("name", "Regional").replace(" Study Area", "")
+
+    nodes = []
+    node_grid = {}
+    node_id_counter = 1
+    for r in range(3):
+        for c in range(3):
+            lat_frac = 0.2 + r * 0.3
+            lon_frac = 0.2 + c * 0.3
+            lat = round(min_lat + lat_frac * (max_lat - min_lat), 5)
+            lon = round(min_lon + lon_frac * (max_lon - min_lon), 5)
+            n_id = f"N-{node_id_counter:02d}"
+            name = f"{name_prefix} Sector {r+1}-{c+1} Junction"
+            nodes.append({"id": n_id, "name": name, "lat": lat, "lon": lon, "zone_hint": f"Z-{r*3+c+1:03d}"})
+            node_grid[(r, c)] = n_id
+            node_id_counter += 1
+
+    edges = []
+    edge_counter = 1
+    for r in range(3):
+        for c in range(3):
+            u_id = node_grid[(r, c)]
+            if c < 2:
+                v_id = node_grid[(r, c+1)]
+                u_node = next(n for n in nodes if n["id"] == u_id)
+                v_node = next(n for n in nodes if n["id"] == v_id)
+                dist = round(haversine_km(u_node["lat"], u_node["lon"], v_node["lat"], v_node["lon"]), 2)
+                edges.append({
+                    "id": f"E-{edge_counter:02d}",
+                    "from": u_id,
+                    "to": v_id,
+                    "name": f"{name_prefix} Transverse Expressway {edge_counter}",
+                    "road_class": "PRIMARY_ARTERIAL" if r == 1 else "MAJOR_CITY_ARTERIAL",
+                    "speed_kmh": 50,
+                    "distance_km": dist
+                })
+                edge_counter += 1
+            if r < 2:
+                v_id = node_grid[(r+1, c)]
+                u_node = next(n for n in nodes if n["id"] == u_id)
+                v_node = next(n for n in nodes if n["id"] == v_id)
+                dist = round(haversine_km(u_node["lat"], u_node["lon"], v_node["lat"], v_node["lon"]), 2)
+                edges.append({
+                    "id": f"E-{edge_counter:02d}",
+                    "from": u_id,
+                    "to": v_id,
+                    "name": f"{name_prefix} Meridian Arterial {edge_counter}",
+                    "road_class": "NATIONAL_HIGHWAY" if c == 1 else "CITY_ARTERIAL",
+                    "speed_kmh": 60 if c == 1 else 45,
+                    "distance_km": dist
+                })
+                edge_counter += 1
+
+    return {
+        "metadata": {
+            "name": f"{name_prefix} Strategic Road Network Graph",
+            "study_area": active_area.get("name", "Active Study Area"),
+            "provenance": "SIMULATED_GRAPH",
+            "crs": "EPSG:4326 (WGS84 lon/lat)"
+        },
+        "nodes": nodes,
+        "edges": edges
+    }
+
+
 def load_road_network() -> Dict[str, Any]:
-    """Loads the corridor road network dataset from data/geo/road_network.json."""
+    """Loads corridor road network dataset (Vijayawada) or generates dynamic network for active study area."""
+    from app.services.active_area import is_default_area, get_active_area
+    if not is_default_area():
+        active = get_active_area()
+        if active:
+            return _generate_dynamic_road_network(active)
+
     global _road_network_cache
     if _road_network_cache is None:
         path = DATA_GEO_DIR / "road_network.json"
@@ -292,6 +371,7 @@ def calculate_evacuation_routes(
             f"with an average route risk score of {primary_route['estimated_route_risk_score']}."
         )
 
+    from app.services.active_area import is_default_area
     return {
         "status": "SUCCESS",
         "origin": {"lat": origin_lat, "lon": origin_lon, "name": origin_name},
@@ -300,7 +380,7 @@ def calculate_evacuation_routes(
         "alternative_route": alt_route,
         "explanation": explanation,
         "data_provenance": {
-            "road_network": "PARTIALLY_REAL",
+            "road_network": "PARTIALLY_REAL" if is_default_area() else "MODELLED",
             "edge_flood_risk": "MODELLED_SPATIAL",
             "closure_telemetry": "UNAVAILABLE"
         },

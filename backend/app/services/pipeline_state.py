@@ -51,11 +51,18 @@ _FILE_MAP = {
 def _save(key: str, value):
     """Persist a pipeline artifact to disk as JSON (thread-safe)."""
     path = _FILE_MAP.get(key)
-    if path is None or value is None:
+    if path is None:
         return
     try:
-        serializable = asdict(value) if is_dataclass(value) else value
         with _state_lock:
+            if value is None:
+                if path.exists():
+                    try:
+                        path.unlink()
+                    except Exception:
+                        pass
+                return
+            serializable = asdict(value) if is_dataclass(value) else value
             with open(path, "w") as f:
                 json.dump(serializable, f, indent=2, default=str)
     except Exception as e:

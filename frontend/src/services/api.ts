@@ -39,6 +39,16 @@ export const api = {
   health: () => request<{ status: string; system: string; phase: string }>('/health'),
   regions: () => request<{ regions: StudyArea[] }>('/regions'),
 
+  // Study Area Selection & Geocoding
+  selectArea: (payload: { location_query?: string; latitude?: number; longitude?: number; half_size_deg?: number; study_area?: any }) =>
+    request<import('../types').AreaSelectResult>('/area/select', { method: 'POST', body: JSON.stringify(payload) }),
+  resetArea: () =>
+    request<{ status: string; message: string; study_area: StudyArea; data_availability: any }>('/area/reset', { method: 'POST' }),
+  currentArea: () =>
+    request<{ is_default_location: boolean; study_area: StudyArea; data_availability: any }>('/area/current'),
+  searchLocations: (query: string, limit = 5) =>
+    request<{ results: import('../types').LocationSearchResult[] }>(`/area/search?query=${encodeURIComponent(query)}&limit=${limit}`),
+
   datasetSummary: () => request<DatasetSummary>('/data/summary'),
   timeseries: (limit = 180) => request<{ records: HydroRecord[] }>(`/data/timeseries?limit=${limit}`),
   historicalEvents: () => request<{ events: any[] }>('/data/historical-events'),

@@ -99,10 +99,10 @@ class SafeLocationEvaluateRequest(BaseModel):
 
 # --- Module 2: Evacuation Routing ---
 class EvacuationRouteRequest(BaseModel):
-    origin_lat: float = Field(ge=15.0, le=18.0)
-    origin_lon: float = Field(ge=79.0, le=82.0)
-    dest_lat: float = Field(ge=15.0, le=18.0)
-    dest_lon: float = Field(ge=79.0, le=82.0)
+    origin_lat: float = Field(ge=-90.0, le=90.0)
+    origin_lon: float = Field(ge=-180.0, le=180.0)
+    dest_lat: float = Field(ge=-90.0, le=90.0)
+    dest_lon: float = Field(ge=-180.0, le=180.0)
     origin_name: Optional[str] = Field(default="Origin Location")
     dest_name: Optional[str] = Field(default="Destination Facility")
     risk_penalty_beta: float = Field(default=3.0, ge=0.0, le=10.0)

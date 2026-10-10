@@ -73,7 +73,7 @@ export default function SafeLocations() {
         </h1>
         <p className="text-ink-500 text-sm mt-2 max-w-3xl">
           Multi-criteria decision analysis (MCDA) identifying public facilities, community campuses, and
-          high-ground compounds with comparatively lower flood risk across the Vijayawada corridor.
+          high-ground compounds with comparatively lower flood risk across the active corridor.
         </p>
       </div>
 
@@ -195,7 +195,7 @@ export default function SafeLocations() {
               <LayersOverlay name="Study Area Boundary" checked>
                 <StudyAreaBoundaryLayer boundary={layers.boundary} />
               </LayersOverlay>
-              <LayersOverlay name="Krishna River" checked>
+              <LayersOverlay name={layers.study_area?.river ? `${layers.study_area.river}` : 'River Centerline'} checked>
                 <RiverLayer river={layers.river} />
               </LayersOverlay>
               <LayersOverlay name="Modelled Flood Risk Zones" checked>

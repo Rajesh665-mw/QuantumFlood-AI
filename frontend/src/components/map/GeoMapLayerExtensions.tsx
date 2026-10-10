@@ -1,11 +1,11 @@
-import { CircleMarker, Polyline, Polygon, Popup, Tooltip } from 'react-leaflet'
+import { Fragment } from 'react'
+import { CircleMarker, Polyline, Popup, Tooltip } from 'react-leaflet'
 import type { LatLngTuple } from 'leaflet'
 import type {
   SafeLocation,
   EvacuationRoutePlan,
   RedeploymentAction,
   CommNode,
-  SelectedSensor,
   ZoneResourceAllocation,
 } from '../../types'
 
@@ -16,13 +16,16 @@ export function SafeLocationMarkersLayer({
   locations,
   onLocationClick,
 }: {
-  locations: SafeLocation[]
+  locations?: SafeLocation[] | null
   onLocationClick?: (loc: SafeLocation) => void
 }) {
+  if (!locations || !Array.isArray(locations)) return null
+
   return (
     <>
       {locations.map((loc) => {
-        const score = loc.recommendation_score
+        if (!loc || !isFinite(loc.lat) || !isFinite(loc.lon)) return null
+        const score = loc.recommendation_score ?? 50
         const color = score >= 75 ? '#10B981' : score >= 55 ? '#2DD4BF' : '#F59E0B'
         return (
           <CircleMarker
@@ -41,7 +44,7 @@ export function SafeLocationMarkersLayer({
               <div className="font-mono text-xs">
                 <strong>{loc.name}</strong> ({score}/100)
                 <br />
-                <span className="text-[10px] text-ink-500">{loc.category.replace(/_/g, ' ')}</span>
+                <span className="text-[10px] text-ink-500">{loc.category?.replace(/_/g, ' ') ?? 'Facility'}</span>
               </div>
             </Tooltip>
             <Popup maxWidth={300}>
@@ -82,12 +85,13 @@ export function EvacuationRouteLayer({
   origin?: { lat: number; lon: number; name: string } | null
   destination?: { lat: number; lon: number; name: string } | null
 }) {
-  const primaryCoords: LatLngTuple[] = (primaryRoute?.coordinates ?? []).map(
-    ([lon, lat]) => [lat, lon] as LatLngTuple
-  )
-  const altCoords: LatLngTuple[] = (alternativeRoute?.coordinates ?? []).map(
-    ([lon, lat]) => [lat, lon] as LatLngTuple
-  )
+  const primaryCoords: LatLngTuple[] = (primaryRoute?.coordinates ?? [])
+    .filter(([lon, lat]) => isFinite(lon) && isFinite(lat))
+    .map(([lon, lat]) => [lat, lon] as LatLngTuple)
+
+  const altCoords: LatLngTuple[] = (alternativeRoute?.coordinates ?? [])
+    .filter(([lon, lat]) => isFinite(lon) && isFinite(lat))
+    .map(([lon, lat]) => [lat, lon] as LatLngTuple)
 
   return (
     <>
@@ -130,7 +134,7 @@ export function EvacuationRouteLayer({
 
       {/* High-risk segments highlight */}
       {(primaryRoute?.segments ?? [])
-        .filter((s) => s.is_high_risk)
+        .filter((s) => s.is_high_risk && isFinite(s.start_coord?.lat) && isFinite(s.start_coord?.lon) && isFinite(s.end_coord?.lat) && isFinite(s.end_coord?.lon))
         .map((s) => (
           <Polyline
             key={s.edge_id}
@@ -153,7 +157,7 @@ export function EvacuationRouteLayer({
         ))}
 
       {/* Origin Pin */}
-      {origin && (
+      {origin && isFinite(origin.lat) && isFinite(origin.lon) && (
         <CircleMarker
           center={[origin.lat, origin.lon]}
           radius={7}
@@ -166,7 +170,7 @@ export function EvacuationRouteLayer({
       )}
 
       {/* Destination Pin */}
-      {destination && (
+      {destination && isFinite(destination.lat) && isFinite(destination.lon) && (
         <CircleMarker
           center={[destination.lat, destination.lon]}
           radius={7}
@@ -187,12 +191,14 @@ export function EvacuationRouteLayer({
 export function SensorRedeploymentLayer({
   actions,
 }: {
-  actions: RedeploymentAction[]
+  actions?: RedeploymentAction[] | null
 }) {
+  if (!actions || !Array.isArray(actions)) return null
+
   return (
     <>
       {actions.map((act) => {
-        if (act.action === 'KEEP' && act.current_site) {
+        if (act.action === 'KEEP' && act.current_site && isFinite(act.current_site.lat) && isFinite(act.current_site.lon)) {
           return (
             <CircleMarker
               key={`keep-${act.sensor_id}`}
@@ -209,13 +215,21 @@ export function SensorRedeploymentLayer({
           )
         }
 
-        if (act.action === 'RELOCATE' && act.current_site && act.target_site) {
+        if (
+          act.action === 'RELOCATE' &&
+          act.current_site &&
+          act.target_site &&
+          isFinite(act.current_site.lat) &&
+          isFinite(act.current_site.lon) &&
+          isFinite(act.target_site.lat) &&
+          isFinite(act.target_site.lon)
+        ) {
           const arrowCoords: LatLngTuple[] = [
             [act.current_site.lat, act.current_site.lon],
             [act.target_site.lat, act.target_site.lon],
           ]
           return (
-            <div key={`reloc-grp-${act.sensor_id}`}>
+            <Fragment key={`reloc-grp-${act.sensor_id}`}>
               {/* Old site */}
               <CircleMarker
                 center={[act.current_site.lat, act.current_site.lon]}
@@ -253,11 +267,11 @@ export function SensorRedeploymentLayer({
                   </div>
                 </Tooltip>
               </CircleMarker>
-            </div>
+            </Fragment>
           )
         }
 
-        if (act.action === 'ADD' && act.target_site) {
+        if (act.action === 'ADD' && act.target_site && isFinite(act.target_site.lat) && isFinite(act.target_site.lon)) {
           return (
             <CircleMarker
               key={`add-${act.sensor_id}`}
@@ -290,10 +304,10 @@ export function NetworkResilienceLayer({
   severedConnections,
   recoveryNode,
 }: {
-  survivingNodes: CommNode[]
-  failedNodes: CommNode[]
-  activeConnections: { sensor_id: string; comm_node_id: string; distance_km: number; status: string }[]
-  severedConnections: { sensor_id: string; comm_node_id: string; distance_km: number; status: string }[]
+  survivingNodes?: CommNode[] | null
+  failedNodes?: CommNode[] | null
+  activeConnections?: { sensor_id: string; comm_node_id: string; distance_km: number; status: string }[] | null
+  severedConnections?: { sensor_id: string; comm_node_id: string; distance_km: number; status: string }[] | null
   recoveryNode?: {
     lat: number
     lon: number
@@ -305,39 +319,45 @@ export function NetworkResilienceLayer({
   return (
     <>
       {/* Surviving Nodes */}
-      {survivingNodes.map((n) => (
-        <CircleMarker
-          key={n.comm_node_id}
-          center={[n.lat, n.lon]}
-          radius={8}
-          pathOptions={{ color: '#FFFFFF', weight: 2, fillColor: '#10B981', fillOpacity: 1 }}
-        >
-          <Tooltip>
-            <div className="font-mono text-xs">
-              <strong>Node {n.comm_node_id}</strong> (ONLINE)
-            </div>
-          </Tooltip>
-        </CircleMarker>
-      ))}
+      {(survivingNodes ?? []).map((n) => {
+        if (!n || !isFinite(n.lat) || !isFinite(n.lon)) return null
+        return (
+          <CircleMarker
+            key={n.comm_node_id}
+            center={[n.lat, n.lon]}
+            radius={8}
+            pathOptions={{ color: '#FFFFFF', weight: 2, fillColor: '#10B981', fillOpacity: 1 }}
+          >
+            <Tooltip>
+              <div className="font-mono text-xs">
+                <strong>Node {n.comm_node_id}</strong> (ONLINE)
+              </div>
+            </Tooltip>
+          </CircleMarker>
+        )
+      })}
 
       {/* Failed Nodes */}
-      {failedNodes.map((n) => (
-        <CircleMarker
-          key={`fail-${n.comm_node_id}`}
-          center={[n.lat, n.lon]}
-          radius={9}
-          pathOptions={{ color: '#EF4444', weight: 3, fillColor: '#0B121A', fillOpacity: 0.9 }}
-        >
-          <Tooltip direction="top">
-            <div className="font-mono text-xs text-red-400 font-bold">
-              FAILED NODE: {n.comm_node_id} (OFFLINE)
-            </div>
-          </Tooltip>
-        </CircleMarker>
-      ))}
+      {(failedNodes ?? []).map((n) => {
+        if (!n || !isFinite(n.lat) || !isFinite(n.lon)) return null
+        return (
+          <CircleMarker
+            key={`fail-${n.comm_node_id}`}
+            center={[n.lat, n.lon]}
+            radius={9}
+            pathOptions={{ color: '#EF4444', weight: 3, fillColor: '#0B121A', fillOpacity: 0.9 }}
+          >
+            <Tooltip direction="top">
+              <div className="font-mono text-xs text-red-400 font-bold">
+                FAILED NODE: {n.comm_node_id} (OFFLINE)
+              </div>
+            </Tooltip>
+          </CircleMarker>
+        )
+      })}
 
       {/* Recovery Backup Relay Node */}
-      {recoveryNode && (
+      {recoveryNode && isFinite(recoveryNode.lat) && isFinite(recoveryNode.lon) && (
         <CircleMarker
           center={[recoveryNode.lat, recoveryNode.lon]}
           radius={10}
@@ -360,11 +380,14 @@ export function NetworkResilienceLayer({
 export function ResourceAllocationLayer({
   allocations,
 }: {
-  allocations: ZoneResourceAllocation[]
+  allocations?: ZoneResourceAllocation[] | null
 }) {
+  if (!allocations || !Array.isArray(allocations)) return null
+
   return (
     <>
       {allocations.map((a) => {
+        if (!a || !a.centroid || !isFinite(a.centroid.lat) || !isFinite(a.centroid.lon)) return null
         return (
           <CircleMarker
             key={`res-alloc-${a.zone_id}`}
@@ -389,7 +412,7 @@ export function ResourceAllocationLayer({
                   Priority Score: <strong>{a.priority_score}</strong> ({a.risk_level} Risk)
                 </div>
                 <div className="mt-2 text-[11px] text-ink-200">
-                  {Object.entries(a.allocated_resources).map(([res, count]) =>
+                  {Object.entries(a.allocated_resources ?? {}).map(([res, count]) =>
                     count > 0 ? (
                       <div key={res}>
                         • {count} × {res.replace(/_/g, ' ')}

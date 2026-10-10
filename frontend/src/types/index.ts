@@ -14,6 +14,30 @@ export interface StudyArea {
   reference_gauge_source?: string
 }
 
+export interface AreaSelectResult {
+  status: string
+  is_default_location: boolean
+  location_name: string
+  display_name: string
+  country?: string
+  country_code?: string
+  state?: string
+  latitude?: number
+  longitude?: number
+  study_area: StudyArea
+  data_availability: Record<string, any>
+  map_config?: any
+}
+
+export interface LocationSearchResult {
+  latitude: number
+  longitude: number
+  display_name: string
+  country?: string
+  city?: string
+  bounding_box?: { min_lat: number; max_lat: number; min_lon: number; max_lon: number } | null
+}
+
 export interface DataProvenanceEntry {
   status: 'REAL_HISTORICAL' | 'SIMULATED_INPUT' | 'PARTIALLY_REAL' | 'PROJECT_DEFINED' | 'MODELLED_SPATIAL'
   reason: string

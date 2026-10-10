@@ -29,12 +29,14 @@ coverage, not just geometric coverage.
 from app.gis.geo_loader import get_risk_zone_geometry, get_river_linestring
 from app.gis.distance_utils import direction_to_river
 from app.config.settings import STUDY_AREA, CANDIDATE_RIVER_PULL_FRACTION
+from app.services.active_area import get_active_bounding_box
 
 NEAR_RIVER_KM = 1.5  # kept consistent with risk/risk_engine.py's NEAR_RIVER_KM
 
 
 def _clamp_to_study_area(lat: float, lon: float) -> tuple:
-    bbox = STUDY_AREA["bounding_box"]
+    active_bbox = get_active_bounding_box()
+    bbox = active_bbox if active_bbox is not None else STUDY_AREA["bounding_box"]
     clamped_lat = min(max(lat, bbox["min_lat"]), bbox["max_lat"])
     clamped_lon = min(max(lon, bbox["min_lon"]), bbox["max_lon"])
     return clamped_lat, clamped_lon

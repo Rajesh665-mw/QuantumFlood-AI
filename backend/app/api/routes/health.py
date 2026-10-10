@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.config.settings import STUDY_AREA
+from app.services.study_area_service import get_current_study_area
 
 router = APIRouter()
 
@@ -11,4 +11,4 @@ def health_check():
 
 @router.get("/regions")
 def get_regions():
-    return {"regions": [STUDY_AREA]}
+    return {"regions": [get_current_study_area()]}

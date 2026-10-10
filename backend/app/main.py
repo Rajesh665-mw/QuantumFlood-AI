@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from app.api.routes import (
     health, data, forecast, risk, map as map_routes, optimization, network,
     recommendations, dashboard, safe_locations, evacuation, adaptive_sensors,
-    network_resilience, resource_allocation, scenarios
+    network_resilience, resource_allocation, scenarios, area
 )
 from app.ml.data_loader import DataValidationError
 
@@ -79,6 +79,7 @@ app.include_router(adaptive_sensors.router, prefix="/api", tags=["adaptive-senso
 app.include_router(network_resilience.router, prefix="/api", tags=["network-resilience"])
 app.include_router(resource_allocation.router, prefix="/api", tags=["resource-allocation"])
 app.include_router(scenarios.router, prefix="/api", tags=["scenarios"])
+app.include_router(area.router, prefix="/api", tags=["area"])
 
 
 

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.services.pipeline_state import state
-from app.config.settings import STUDY_AREA
+from app.services.study_area_service import get_current_study_area
 
 router = APIRouter()
 
@@ -8,7 +8,7 @@ router = APIRouter()
 @router.get("/dashboard/summary")
 def dashboard_summary():
     return {
-        "study_area": STUDY_AREA,
+        "study_area": get_current_study_area(),
         "forecast_available": state.latest_forecast is not None,
         "latest_forecast": state.latest_forecast,
         "risk_available": state.latest_risk_map is not None,

@@ -44,8 +44,58 @@ ROAD_CLASS_WEIGHTS = {
 _safe_locations_cache = None
 
 
+def _generate_dynamic_safe_locations(active_area: dict) -> List[Dict[str, Any]]:
+    bbox = active_area.get("bounding_box", {})
+    if not bbox:
+        return []
+    min_lat = bbox["min_lat"]
+    max_lat = bbox["max_lat"]
+    min_lon = bbox["min_lon"]
+    max_lon = bbox["max_lon"]
+    name_prefix = active_area.get("name", "Regional").replace(" Study Area", "")
+
+    templates = [
+        {"id": "SL-01", "name": f"{name_prefix} Civic Stadium & Sports Complex", "category": "MUNICIPAL_STADIUM", "road_class": "MAJOR_CITY_ARTERIAL", "elev": 32.0, "lat_frac": 0.75, "lon_frac": 0.35},
+        {"id": "SL-02", "name": f"{name_prefix} Technical University Campus", "category": "EDUCATIONAL_CAMPUS", "road_class": "PRIMARY_ARTERIAL", "elev": 38.5, "lat_frac": 0.80, "lon_frac": 0.70},
+        {"id": "SL-03", "name": f"{name_prefix} District Medical College & Hospital", "category": "HOSPITAL_CAMPUS", "road_class": "PRIMARY_ARTERIAL", "elev": 29.0, "lat_frac": 0.60, "lon_frac": 0.85},
+        {"id": "SL-04", "name": f"{name_prefix} Central Emergency Relief Depot", "category": "DISASTER_SHELTER", "road_class": "NATIONAL_HIGHWAY", "elev": 42.0, "lat_frac": 0.85, "lon_frac": 0.20},
+        {"id": "SL-05", "name": f"{name_prefix} Elevated Transit Hub & Terminus", "category": "TRANSPORT_HUB", "road_class": "ELEVATED_FLYOVER", "elev": 26.5, "lat_frac": 0.50, "lon_frac": 0.45},
+        {"id": "SL-06", "name": f"{name_prefix} North Community Civic Center", "category": "COMMUNITY_CENTER", "road_class": "MAJOR_CITY_ARTERIAL", "elev": 35.0, "lat_frac": 0.70, "lon_frac": 0.60},
+        {"id": "SL-07", "name": f"{name_prefix} High-Ground Exhibition Grounds", "category": "EXHIBITION_GROUNDS", "road_class": "PRIMARY_ARTERIAL", "elev": 45.0, "lat_frac": 0.90, "lon_frac": 0.50},
+        {"id": "SL-08", "name": f"{name_prefix} Public Secondary School Auditorium", "category": "EDUCATIONAL_CAMPUS", "road_class": "SECONDARY_ARTERIAL", "elev": 24.0, "lat_frac": 0.30, "lon_frac": 0.75},
+    ]
+
+    features = []
+    for t in templates:
+        lat = round(min_lat + t["lat_frac"] * (max_lat - min_lat), 5)
+        lon = round(min_lon + t["lon_frac"] * (max_lon - min_lon), 5)
+        features.append({
+            "type": "Feature",
+            "properties": {
+                "id": t["id"],
+                "name": t["name"],
+                "category": t["category"],
+                "address": f"{name_prefix} Municipal District",
+                "elevation_m": t["elev"],
+                "primary_road_access": f"Arterial Sector {t['id']}",
+                "road_class": t["road_class"],
+                "capacity_surveyed": False,
+                "capacity_status": "UNAVAILABLE",
+                "notes": "Modelled candidate public facility for research decision-support."
+            },
+            "geometry": {"type": "Point", "coordinates": [lon, lat]}
+        })
+    return features
+
+
 def load_candidate_safe_locations() -> List[Dict[str, Any]]:
-    """Loads the candidate facilities dataset from data/geo/safe_locations.json."""
+    """Loads candidate facilities dataset for Vijayawada, or dynamic facilities for other study areas."""
+    from app.services.active_area import is_default_area, get_active_area
+    if not is_default_area():
+        active = get_active_area()
+        if active:
+            return _generate_dynamic_safe_locations(active)
+
     global _safe_locations_cache
     if _safe_locations_cache is None:
         path = DATA_GEO_DIR / "safe_locations.json"

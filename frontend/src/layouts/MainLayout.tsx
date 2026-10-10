@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
+import { api } from '../services/api'
 
 interface NavGroup {
   title: string
@@ -176,6 +177,45 @@ const NAV_GROUPS: NavGroup[] = [
 
 export default function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isDefaultArea, setIsDefaultArea] = useState(true)
+
+  useEffect(() => {
+    const fetchArea = () => {
+      api.currentArea()
+        .then((r) => {
+          if (r.study_area?.name) {
+            setCurrentAreaName(r.study_area.name.replace(' Study Area', ''))
+          }
+          setIsDefaultArea(r.is_default_location ?? true)
+        })
+        .catch(() => {})
+    }
+    fetchArea()
+
+    const onAreaChanged = (e: any) => {
+      if (e.detail?.name) {
+        setCurrentAreaName(e.detail.name.replace(' Study Area', ''))
+        setIsDefaultArea(e.detail.name.includes('Vijayawada'))
+      } else {
+        fetchArea()
+      }
+    }
+    window.addEventListener('study-area-changed', onAreaChanged)
+    return () => window.removeEventListener('study-area-changed', onAreaChanged)
+  }, [])
+
+  const handleQuickReset = async () => {
+    try {
+      const res = await api.resetArea()
+      if (res.status === 'OK') {
+        setCurrentAreaName('Vijayawada Benchmark')
+        setIsDefaultArea(true)
+        window.dispatchEvent(new CustomEvent('study-area-changed', { detail: res.study_area }))
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   return (
     <div className="min-h-screen flex bg-base-950 text-ink-100 selection:bg-signal-teal selection:text-base-950 overflow-x-hidden">
@@ -234,11 +274,11 @@ export default function MainLayout() {
         {/* Footer */}
         <div className="p-3 border-t border-base-600/60 bg-base-950/40">
           <div className="flex items-center justify-between text-xs text-ink-500">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Krishna Corridor Active
+            <span className="flex items-center gap-1.5 min-w-0 pr-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="truncate">{currentAreaName} Active</span>
             </span>
-            <span className="font-mono text-[10px] text-ink-700">v2.0</span>
+            <span className="font-mono text-[10px] text-ink-700 shrink-0">v2.0</span>
           </div>
         </div>
       </aside>
@@ -311,7 +351,7 @@ export default function MainLayout() {
         </main>
 
         <footer className="border-t border-base-600 bg-base-900 px-4 py-4 text-xs text-ink-700 flex flex-col gap-1 items-center text-center">
-          <span>QuantumFlood AI — Vijayawada–Krishna River Corridor</span>
+          <span>QuantumFlood AI — {currentAreaName} Corridor</span>
           <span className="font-mono text-[10px]">DISASTER INTELLIGENCE PLATFORM</span>
         </footer>
       </div>
@@ -322,7 +362,7 @@ export default function MainLayout() {
           <Outlet />
         </main>
         <footer className="border-t border-base-600 bg-base-900/60 px-8 py-4 flex items-center justify-between text-xs text-ink-700">
-          <span>QuantumFlood AI — Disaster Intelligence Pipeline · Vijayawada–Krishna River Corridor</span>
+          <span>QuantumFlood AI — Disaster Intelligence Pipeline · {currentAreaName} Corridor</span>
           <span className="font-mono text-[11px] text-ink-500">FASTAPI + REACT DASHBOARD</span>
         </footer>
       </div>

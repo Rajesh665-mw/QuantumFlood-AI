@@ -94,7 +94,8 @@ class QuantumOptimizationEngine:
 
         total_weight = sum(zone_weights_dict.values())
         covered_weight = sum(zone_weights_dict[zid] for zid in covered_zone_ids)
-        coverage_pct = round(100.0 * covered_weight / total_weight, 2) if total_weight > 0 else 0.0
+        geom_coverage_pct = round(100.0 * len(covered_zone_ids) / len(zones), 2) if zones else 0.0
+        weighted_coverage_pct = round(100.0 * covered_weight / total_weight, 2) if total_weight > 0 else 0.0
 
         crit_zones = [z for z in zones if z.get("risk_level") == "CRITICAL"]
         crit_covered = [z for z in crit_zones if z["zone_id"] in covered_zone_ids]
@@ -110,7 +111,7 @@ class QuantumOptimizationEngine:
         opt_result = OptimizationResult(
             engine_type="quantum_qaoa",
             selected_sensors=selected_sensors,
-            coverage_percentage=coverage_pct,
+            coverage_percentage=geom_coverage_pct,
             weighted_risk_coverage=round(covered_weight, 2),
             total_weighted_risk=round(total_weight, 2),
             critical_zone_coverage_percentage=crit_pct,

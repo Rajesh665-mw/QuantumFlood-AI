@@ -94,7 +94,7 @@ export default function EvacuationRouting() {
           Model-Based Evacuation Route Planner
         </h1>
         <p className="text-ink-500 text-sm mt-2 max-w-3xl">
-          Risk-penalised graph routing algorithm across Vijayawada's arterial network, steering transit away
+          Risk-penalised graph routing algorithm across the corridor's arterial network, steering transit away
           from inundated riverfront corridors toward validated lower-risk assembly facilities.
         </p>
       </div>
@@ -184,7 +184,7 @@ export default function EvacuationRouting() {
               <LayersOverlay name="Study Area Boundary" checked>
                 <StudyAreaBoundaryLayer boundary={layers.boundary} />
               </LayersOverlay>
-              <LayersOverlay name="Krishna River" checked>
+              <LayersOverlay name={layers.study_area?.river ? `${layers.study_area.river}` : 'River Centerline'} checked>
                 <RiverLayer river={layers.river} />
               </LayersOverlay>
               <LayersOverlay name="Flood Risk Zones" checked>

@@ -58,12 +58,18 @@ def data_timeseries(limit: int = 180):
 @router.get("/data/historical-events")
 def historical_events():
     """DEMO/illustrative events - kept for backward compatibility."""
+    from app.services.active_area import is_default_area
+    if not is_default_area():
+        return {"events": [], "data_provenance": "UNAVAILABLE", "note": "No historical flood events available for this custom area."}
     return {"events": get_historical_flood_events()}
 
 
 @router.get("/data/historical-events-real")
 def historical_events_real():
     """REAL_HISTORICAL, sourced flood events - see each record's `citation` field."""
+    from app.services.active_area import is_default_area
+    if not is_default_area():
+        return {"events": [], "data_provenance": "UNAVAILABLE", "note": "No historical flood event records available for this custom area. Historical records are specific to the Vijayawada benchmark corridor."}
     return {"events": get_real_historical_flood_events()}
 
 
@@ -73,8 +79,22 @@ def data_provenance():
     Step 15: single endpoint the frontend's Data & Analytics / Data
     Provenance section reads to show, per data category, whether it is
     REAL_HISTORICAL, SIMULATED_INPUT, PARTIALLY_REAL, PROJECT_DEFINED, or MODELLED_SPATIAL - and why.
+
+    Returns dynamic provenance when a non-default study area is active.
     """
-    return {
-        "provenance": DATA_PROVENANCE,
-        "risk_zone_resolutions": RISK_ZONE_RESOLUTIONS,
-    }
+    from app.services.active_area import is_default_area, get_active_area
+    if is_default_area():
+        return {
+            "provenance": DATA_PROVENANCE,
+            "risk_zone_resolutions": RISK_ZONE_RESOLUTIONS,
+        }
+    else:
+        from app.services.geospatial_service import assess_data_availability
+        active = get_active_area()
+        bbox = active.get("bounding_box", {}) if active else {}
+        dynamic_provenance = assess_data_availability(bbox) if bbox else {}
+        return {
+            "provenance": dynamic_provenance,
+            "risk_zone_resolutions": RISK_ZONE_RESOLUTIONS,
+            "is_dynamic_area": True,
+        }

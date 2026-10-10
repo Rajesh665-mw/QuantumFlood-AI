@@ -38,11 +38,12 @@ def evaluate_locations(req: SafeLocationEvaluateRequest):
 @router.get("/safe-locations/candidates")
 def get_candidate_facilities():
     """Returns the unrated catalog of candidate public facilities in the study area."""
+    from app.services.active_area import is_default_area
     candidates = load_candidate_safe_locations()
     return {
         "candidates": candidates,
         "count": len(candidates),
-        "data_provenance": "PARTIALLY_REAL"
+        "data_provenance": "PARTIALLY_REAL" if is_default_area() else "MODELLED"
     }
 
 
