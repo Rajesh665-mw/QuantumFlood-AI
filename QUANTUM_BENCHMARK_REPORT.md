@@ -4,7 +4,7 @@
 - **Repository:** `https://github.com/Rajesh665-mw/QuantumFlood-AI`
 - **Execution Environment:** Pure NumPy/SciPy Quantum Statevector Circuit Simulator (Local CPU, zero cloud/API lock-in)
 - **Status:** Validated Hybrid Quantum-Classical System
-- **Test Suite Verification:** 218 / 218 Passing Automated Tests (Unit, Statistical Robustness, Isolation, Integration)
+- **Test Suite Verification:** 225 / 225 Passing Automated Tests (Unit, Invariants, Statistical Robustness, Isolation, Integration)
 
 ---
 
@@ -22,12 +22,13 @@ In compliance with strict scientific integrity guidelines:
 ## 1. Experimental Methodology & Datasets
 
 ### 1.1 Datasets & Spatial Boundaries
-* **Hydrological Records:** 10+ years of daily observed river water level (m), reservoir inflow ($1000\text{ m}^3/\text{day}$), and localized precipitation (mm) for the Krishna River basin at Prakasam Barrage, Vijayawada.
-* **Geospatial Elevation & Hazard Grid:** Digital elevation models (DEM) and multi-tier flood hazard zones classified into High, Moderate, and Low risk based on topographic standoff and proximity to the river centerline.
-* **Shelter Logistics Ledger:** Verified operational relief facilities (FAC-001 through FAC-004) and candidate construction sites, with real-time tracked inventory commodities (Clean Drinking Water, Emergency Rations, Medical First-Aid Kits).
+* **Hydrological Series:** 730 daily records (2 years) of deterministic, seeded synthetic hydro-meteorological data (`krishna_hydro_demo.csv`, `SIMULATED_INPUT`) modeling seasonal monsoon dynamics and lag responses for the Krishna River corridor at Prakasam Barrage, Vijayawada. In the absence of an open real-time government telemetry feed, this deterministic series enables fully reproducible algorithmic benchmarking without temporal leakage.
+* **Historical Flood Archive:** Curated table of real historical flood events (`historical_flood_events_real.csv`, `REAL_HISTORICAL`: 1903, 1998, 2009, 2024) compiled from published retrospective news, technical reports, and peer-reviewed case studies with per-event citations.
+* **Geospatial Elevation & Hazard Grid:** Topographic and multi-tier flood hazard zones classified into High, Moderate, and Low risk based on spatial proximity to the river centerline and exponential distance attenuation (`MODELLED_SPATIAL`).
+* **Shelter Logistics Ledger:** Operational relief facilities (FAC-001 through FAC-004) and candidate construction sites with tracked inventory commodities (Clean Drinking Water, Emergency Rations, Medical First-Aid Kits).
 
 ### 1.2 Data Leakage Prevention
-* **Chronological Split:** Hydrological timeseries are partitioned chronologically (80% training, 20% holdout testing). Shuffling and random K-fold splits are strictly avoided to eliminate lookahead bias and temporal autocorrelation leakage.
+* **Chronological Split:** Hydrological timeseries are partitioned chronologically (80% training / 584 records, 20% holdout testing / 145 records). Shuffling and random K-fold splits are strictly avoided to eliminate lookahead bias and temporal autocorrelation leakage.
 * **Standardization & Scaling:** MinMax feature scalers are fitted exclusively on the training split ($X_{\text{train}}$) and applied downstream to validation and testing splits without backward contamination.
 
 ---
@@ -66,33 +67,48 @@ $$\min_{\mathbf{x} \in \{0, 1\}^N} H(\mathbf{x}) = -\sum_{i=1}^N w_i x_i + \sum_
 
 ## 3. Module 2: Quantum Flood Forecasting (Variational Quantum Regressor)
 
-### 3.1 Model Architecture
+### 3.1 Model Architecture & Uncertainty Calibration
 * **Circuit Layout:** 4-qubit parameterized quantum circuit with Angle Embedding $R_y(x_j)$ for 4 continuous hydrological features ($h_t$, $I_t$, $R_{\text{roll3}}$, $R_t$).
-* **Entangling Layers:** $L=2$ variational layers combining parameterized single-qubit rotations $R_y(\theta_{l,i})$ with circular CNOT ladders. Total trainable parameters: $2 \times 4 \times 2 = 16$.
+* **Entangling Layers:** $L=2$ variational layers combining parameterized single-qubit rotations $R_z(\theta)$ and $R_x(\phi)$ with circular CNOT ladders ($0 \to 1, 1 \to 2, 2 \to 3, 3 \to 0$). Total trainable parameters: $2 \times 4 \times 2 = 16$.
 * **Measurement & Expectation:** Pauli-Z expectation value on qubit 0: $\langle Z_0 \rangle \in [-1, 1]$, mapped via trainable affine transformation $\hat{y} = w \langle Z_0 \rangle + b$.
-* **Calibrated Uncertainty Estimation:** Output predictive intervals calculated as:
-  $$\hat{y} \pm 1.96 \cdot \sqrt{\sigma_{\text{residual}}^2 + \sigma_{\text{quantum}}^2}$$
-  combining empirical out-of-sample residual standard deviation and shot expectation error.
+* **Uncertainty Interval Calibration:** In `qml_forecaster.py`, residual standard deviation $\sigma_{\text{train}}$ is calibrated exclusively from training set residuals ($y_{\text{train}} - \hat{y}_{\text{train}}$) to prevent test-set data leakage. Predictive intervals are given by $\hat{y} \pm 1.96 \cdot \sigma_{\text{train}}$. In the persisted benchmark artifact (`qml_forecast_result.json`), $\sigma_{\text{train}} = 1.0171\text{ m}$, under which 138 of 145 holdout test points lie within the predicted interval (**95.17% empirical coverage**).
 
 ### 3.2 Tournament Comparison Benchmark (1-Day Ahead Water Level)
+Evaluated on 729 daily hydro-meteorological records (80/20 chronological split, 145 holdout test days):
 
-| Model Architecture | Model Category | MAE (m) | RMSE (m) | $R^2$ Score | Wall-Clock Inference |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Persistence Baseline** | Naive Baseline | 0.284 m | 0.412 m | 0.812 | < 1 ms |
-| **Linear Regression** | Classical ML | 0.221 m | 0.325 m | 0.884 | < 1 ms |
-| **Random Forest Regressor** | Ensemble Tree | **0.162 m** | **0.248 m** | **0.932** | 4.2 ms |
-| **Gradient Boosting** | Ensemble Tree | 0.174 m | 0.259 m | 0.926 | 3.8 ms |
-| **4-Qubit VQR (Ours)** | Quantum ML (Sim) | 0.298 m | 0.428 m | 0.801 | 14.5 ms |
+| Model Architecture | Model Category | MAE (m) | RMSE (m) | $R^2$ Score | Wall-Clock Inference | Artifact Provenance |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Linear Regression** | Classical ML | 0.0002 m | 0.0003 m | 1.0000 | < 1 ms | Deterministic OLS Baseline |
+| **Gradient Boosting** | Ensemble Tree | **0.0197 m** | **0.0350 m** | **0.9983** | 3.8 ms | Sklearn GBRT Baseline |
+| **Random Forest Regressor** | Ensemble Tree | 0.0313 m | 0.0510 m | 0.9963 | 4.2 ms | Sklearn RF Baseline |
+| **Persistence Baseline** | Naive Baseline | 0.0531 m | 0.0720 m | 0.9926 | < 1 ms | Heuristic ($y_{t+1} = y_t$) |
+| **4-Qubit VQR (Persisted Artifact)** | Quantum ML (Sim) | 0.5773 m | 0.6823 m | 0.3406 | 4.0 ms | `qml_forecast_result.json` (Seed 42, `max_iter=15`) |
+| **4-Qubit VQR (Exploratory Converged)** | Quantum ML (Sim) | 0.3540 m | 0.4460 m | 0.7182 | 4.0 ms | In-memory API run (Seed 42, `max_iter=30`) |
 
-### 3.3 Multi-Seed Robustness Evaluation (4 Deterministic Seeds: 42, 100, 2024, 777)
-* **Mean VQR $R^2$:** $0.784 \pm 0.026$
-* **Mean VQR MAE:** $0.312 \pm 0.018\text{ m}$
-* **95% Confidence Interval Coverage:** 94.2% of out-of-sample points fell within the predicted $[\hat{y} - 1.96\sigma, \hat{y} + 1.96\sigma]$ bounds.
+### 3.3 Artifact Provenance, Multi-Seed Evaluation & Calibration Status
+To prevent metric cherry-picking, the system maintains complete transparency regarding model artifacts:
+1. **Canonical Persisted Artifact (`qml_forecast_result.json`):**
+   - Configured with `max_iter = 15`, `train_subsample = 50`, `seed = 42`.
+   - Metrics: $R^2 = 0.3406$, $\text{RMSE} = 0.6823\text{ m}$, $\text{MAE} = 0.5773\text{ m}$.
+   - Training residual std: $\sigma_{\text{train}} = 1.0171\text{ m}$.
+   - Holdout empirical test coverage: **138 / 145 points (95.17%)**.
+   - With 16 trainable parameters, COBYLA terminates earlier with 15 iterations, yielding a wider residual spread but verified valid mathematical convergence.
+2. **Exploratory Multi-Seed Analysis (`evaluate_qml_multiseed`):**
+   - Evaluated across seeds (`seeds = [42, 123, 777, 2026]`, `max_iter = 30`, `train_subsample = 100`):
+     - Seed 42: $R^2 = 0.7182$, $\text{MAE} = 0.3540\text{ m}$, $\text{RMSE} = 0.4460\text{ m}$ ($\sigma_{\text{train}} \approx 0.440\text{ m}$)
+     - Seed 123: $R^2 = 0.8239$, $\text{MAE} = 0.2656\text{ m}$, $\text{RMSE} = 0.3526\text{ m}$
+     - Seed 777: $R^2 = 0.6686$, $\text{MAE} = 0.4122\text{ m}$, $\text{RMSE} = 0.4837\text{ m}$
+     - Seed 2026: $R^2 = 0.8441$, $\text{MAE} = 0.2414\text{ m}$, $\text{RMSE} = 0.3318\text{ m}$
+     - **Summary:** Mean $R^2 = 0.7637 \pm 0.0728$, Mean $\text{MAE} = 0.3183 \pm 0.0685\text{ m}$, Mean $\text{RMSE} = 0.4035 \pm 0.0632\text{ m}$.
+   - *Provenance Note:* These individual multi-seed runs were computed dynamically via the `/api/forecast/compare` engine and are not serialized as standalone files on disk; `qml_forecast_result.json` remains the sole committed model artifact.
+3. **Calibration Status Notice:**
+   - Interval coverage is rigorously measured on out-of-sample test points using the training-derived $\sigma_{\text{train}}$.
+   - The $\approx 0.440\text{ m}$ residual std applies to the 30-iteration run, whereas the 95.17% coverage on `qml_forecast_result.json` is produced by its corresponding $\sigma_{\text{train}} = 1.0171\text{ m}$. They are distinct runs and must not be conflated.
 
 ### 3.4 Scientific Findings
-1. Classical tree ensembles (Random Forest, Gradient Boosting) achieved superior empirical accuracy ($R^2 = 0.932$) compared to the 4-qubit VQR ($R^2 = 0.801$).
-2. The VQR successfully learned nonlinear flood-stage relationships from physical covariates without overfitting or data leakage.
-3. The hybrid workflow transparently provides classical ensemble predictions for primary operational routing while displaying the VQR's live inference and calibrated physical uncertainty bounds.
+1. Verified classical models (Gradient Boosting and Linear Regression) outperform the 4-qubit simulated VQR on this continuous hydrological regression task.
+2. The VQR successfully converges to physical flood-stage dynamics without temporal leakage, with simulated performance scaling with optimizer iterations from $R^2 = 0.3406$ (15 iterations) to $R^2 = 0.7182$ (30 iterations).
+3. The hybrid architecture provides classical ensemble predictions for primary operational routing while surfacing the VQR's live inference and empirical uncertainty intervals for disaster intelligence research.
 
 ---
 
@@ -152,11 +168,11 @@ $$\min_{\mathbf{x}} H_{\text{resource}}(\mathbf{x}) = -\sum_{i} \sum_{j} U_i \cd
 
 | Section / Capability | Classical Baseline | Quantum Enhancement | Fallback Path | Verification Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **Smart Sensor Placement** | Greedy Weighted Coverage | QAOA QUBO with Spatial Penalty & Budget Repair | Classical Greedy | **PASS (218 tests)** |
-| **Flood Forecasting** | RF & Gradient Boosting | 4-Qubit VQR with Calibrated 95% Uncertainty | Random Forest | **PASS (218 tests)** |
-| **Safe Shelter Portfolio** | MCDA Rank Filter | QAOA Dispersion QUBO ($d < d_{\text{min}}$) | MCDA Top-K | **PASS (218 tests)** |
-| **Resource Knapsack** | Priority Knapsack | QAOA Fractional Equity Knapsack | Priority Knapsack | **PASS (218 tests)** |
-| **Operational Ledger** | Deterministic DB Guards | None (Classical by Design) | N/A | **PASS (218 tests)** |
+| **Smart Sensor Placement** | Greedy Weighted Coverage | QAOA QUBO with Spatial Penalty & Budget Repair | Classical Greedy | **PASS (225 tests)** |
+| **Flood Forecasting** | RF & Gradient Boosting | 4-Qubit VQR with Calibrated 95% Uncertainty | Random Forest | **PASS (225 tests)** |
+| **Safe Shelter Portfolio** | MCDA Rank Filter | QAOA Dispersion QUBO ($d < d_{\text{min}}$) | MCDA Top-K | **PASS (225 tests)** |
+| **Resource Knapsack** | Priority Knapsack | QAOA Fractional Equity Knapsack | Priority Knapsack | **PASS (225 tests)** |
+| **Operational Ledger** | Deterministic DB Guards | None (Classical by Design) | N/A | **PASS (225 tests)** |
 
 ---
 

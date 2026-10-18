@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Any
 
 
@@ -8,15 +8,17 @@ class BoundingBoxPayload(BaseModel):
     min_lon: float = Field(ge=-180.0, le=180.0)
     max_lon: float = Field(ge=-180.0, le=180.0)
 
-    @validator("max_lat")
-    def validate_lat_order(cls, v, values):
-        if "min_lat" in values and v < values["min_lat"]:
+    @field_validator("max_lat")
+    @classmethod
+    def validate_lat_order(cls, v: float, info) -> float:
+        if "min_lat" in info.data and v < info.data["min_lat"]:
             raise ValueError("max_lat must be greater than or equal to min_lat")
         return v
 
-    @validator("max_lon")
-    def validate_lon_order(cls, v, values):
-        if "min_lon" in values and v < values["min_lon"]:
+    @field_validator("max_lon")
+    @classmethod
+    def validate_lon_order(cls, v: float, info) -> float:
+        if "min_lon" in info.data and v < info.data["min_lon"]:
             raise ValueError("max_lon must be greater than or equal to min_lon")
         return v
 
@@ -59,6 +61,7 @@ class QmlForecastTrainRequest(BaseModel):
     max_iter: int = Field(default=40, ge=5, le=150, description="Optimizer maximum iterations")
     train_subsample: Optional[int] = Field(default=100, ge=20, le=500, description="Subsample of recent training records for interactive response")
     seed: int = Field(default=42, description="Deterministic random seed")
+    persist_disk: bool = Field(default=True, description="Whether to persist trained model artifact to disk")
 
 
 class QmlForecastPredictRequest(BaseModel):

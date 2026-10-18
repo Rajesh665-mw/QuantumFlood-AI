@@ -341,9 +341,13 @@ class TestQmlApiAndIntegration:
 
     def test_qml_train_and_predict_endpoints(self):
         """POST /api/forecast/qml/train and POST /api/forecast/qml/predict."""
+        from app.ml.model_manager import QML_RESULT_PATH
+        initial_mtime = QML_RESULT_PATH.stat().st_mtime if QML_RESULT_PATH.exists() else None
+        initial_size = QML_RESULT_PATH.stat().st_size if QML_RESULT_PATH.exists() else None
+
         train_resp = client.post(
             "/api/forecast/qml/train",
-            json={"horizon_days": 1, "n_layers": 2, "max_iter": 15, "train_subsample": 50, "seed": 42},
+            json={"horizon_days": 1, "n_layers": 2, "max_iter": 15, "train_subsample": 50, "seed": 42, "persist_disk": False},
         )
         assert train_resp.status_code == 200
         data = train_resp.json()
@@ -351,6 +355,11 @@ class TestQmlApiAndIntegration:
         assert data["n_qubits"] == 4
         assert data["circuit_depth"] == 11
         assert "test_rmse" in data
+
+        # Verify the persistent model artifact on disk was not modified or overwritten
+        if initial_mtime is not None:
+            assert QML_RESULT_PATH.stat().st_mtime == initial_mtime
+            assert QML_RESULT_PATH.stat().st_size == initial_size
 
         # Prediction endpoint
         pred_resp = client.post(

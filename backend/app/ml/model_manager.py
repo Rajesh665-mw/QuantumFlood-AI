@@ -166,7 +166,9 @@ class ModelManager:
             cls._qml_regressors_by_horizon[regressor.horizon_days] = regressor
             cls._qml_results_by_horizon[regressor.horizon_days] = result
 
-            if persist_disk:
+            # Guard against overwriting persistent model artifacts during automated test runs
+            is_testing = bool(os.getenv("PYTEST_CURRENT_TEST") or os.getenv("TESTING") == "true")
+            if persist_disk and not is_testing:
                 _atomic_joblib_dump(regressor, QML_MODEL_PATH)
                 _atomic_json_dump(asdict(result), QML_RESULT_PATH)
 

@@ -294,7 +294,9 @@ def resolve_study_area_context(
 
     # Case 1: Direct study_area_payload provided
     if study_area_payload:
-        if hasattr(study_area_payload, "dict"):
+        if hasattr(study_area_payload, "model_dump"):
+            payload = study_area_payload.model_dump(exclude_none=True)
+        elif hasattr(study_area_payload, "dict"):
             payload = study_area_payload.dict(exclude_none=True)
         elif isinstance(study_area_payload, dict):
             payload = dict(study_area_payload)

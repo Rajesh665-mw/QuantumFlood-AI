@@ -10,6 +10,7 @@ import {
   ReferenceLine,
 } from 'recharts'
 import { api, ApiError } from '../services/api'
+import { DARK_TOOLTIP_STYLE, DARK_AXIS_TICK, DARK_GRID_STYLE } from '../utils/chartTheme'
 import type {
   DataProvenance,
   RealFloodEvent,
@@ -411,8 +412,8 @@ export default function HistoricalIntelligence() {
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
-              <XAxis dataKey="date" stroke="#737373" fontSize={11} tickLine={false} />
+              <CartesianGrid {...DARK_GRID_STYLE} />
+              <XAxis dataKey="date" tick={DARK_AXIS_TICK} tickLine={false} />
               <YAxis
                 yAxisId="left"
                 stroke="#0ea5e9"
@@ -431,13 +432,10 @@ export default function HistoricalIntelligence() {
                 label={{ value: 'Rainfall (mm)', angle: 90, position: 'insideRight', fill: '#10b981', fontSize: 10 }}
               />
               <Tooltip
-                contentStyle={{
-                  backgroundColor: '#171717',
-                  borderColor: '#404040',
-                  borderRadius: '0.5rem',
-                  fontSize: '12px',
-                  color: '#f5f5f5',
-                }}
+                contentStyle={DARK_TOOLTIP_STYLE.contentStyle}
+                labelStyle={DARK_TOOLTIP_STYLE.labelStyle}
+                itemStyle={DARK_TOOLTIP_STYLE.itemStyle}
+                cursor={DARK_TOOLTIP_STYLE.cursor}
                 formatter={(value: any, name: string) => [
                   name === 'water_level_m' ? `${value} m` : `${value} mm`,
                   name === 'water_level_m' ? 'River Stage' : '24h Rainfall',

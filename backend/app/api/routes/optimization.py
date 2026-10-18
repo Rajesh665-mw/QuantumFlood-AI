@@ -92,20 +92,20 @@ def run_optimization(req: OptimizationRunRequest):
         analysis_store.update_field(aid, "optimization", asdict(opt_result))
         analysis_store.update_field(aid, "connectivity", asdict(connectivity_result))
         analysis_store.update_field(aid, "recommendations", recommendations)
-        analysis_store.update_field(aid, "optimization_params", req.dict())
+        analysis_store.update_field(aid, "optimization_params", req.model_dump())
 
     if ENABLE_LEGACY_SHARED_STATE:
         state.latest_optimization = asdict(opt_result)
         state.latest_connectivity = asdict(connectivity_result)
         state.latest_recommendations = recommendations
-        state.optimization_params = req.dict()
+        state.optimization_params = req.model_dump()
 
     return {
         "optimization": asdict(opt_result),
         "connectivity": asdict(connectivity_result),
         "coverage_summary": coverage_summary,
         "candidates_generated": len(candidates),
-        "params": req.dict(),
+        "params": req.model_dump(),
         "study_area": study_area_ctx,
         "analysis_id": aid,
     }
@@ -220,7 +220,7 @@ def run_quantum_optimization(req: QuantumOptimizationRunRequest):
         "quantum": q_result.to_dict(),
         "candidates_generated": len(raw_candidates),
         "candidates_evaluated": len(candidates),
-        "params": req.dict(),
+        "params": req.model_dump(),
         "study_area": study_area_ctx,
         "analysis_id": aid,
     }
@@ -404,7 +404,7 @@ def run_experiments(req: ExperimentRunRequest):
             detail="No risk map available for this analysis. Provide 'analysis_id' with an existing risk map."
         )
 
-    configs = [c.dict() for c in req.configs] if req.configs else None
+    configs = [c.model_dump() for c in req.configs] if req.configs else None
     run_record = run_experiment_suite(zones, configs, req.resolution)
     if req.analysis_id:
         run_record["analysis_id"] = req.analysis_id

@@ -134,19 +134,20 @@ Evaluated on 722 daily hydro-meteorological observations (80/20 chronological tr
 
 | Model | Category | MAE (m) | RMSE (m) | R² Score | Note |
 |---|---|---|---|---|---|
-| **Linear Regression** | Classical ML | 0.0002 | 0.0003 | 1.0000 | Linear fit on lag features |
+| **Linear Regression** | Classical ML | 0.0002 | 0.0003 | 1.0000 | Deterministic linear fit on lag features |
 | **Gradient Boosting** | Classical ML | 0.0197 | 0.0350 | 0.9983 | Production tree ensemble |
 | **Random Forest** | Classical ML | 0.0313 | 0.0510 | 0.9963 | Bagged ensemble baseline |
 | **Persistence Baseline** | Classical Heuristic | 0.0531 | 0.0720 | 0.9926 | Naive "tomorrow = today" |
-| **4-Qubit VQR (Seed 42)** | Quantum ML (Simulated) | 0.3540 | 0.4460 | 0.7182 | Local statevector simulation |
-| **4-Qubit VQR (Seed 123)** | Quantum ML (Simulated) | 0.2656 | 0.3526 | 0.8239 | Local statevector simulation |
-| **4-Qubit VQR (Seed 777)** | Quantum ML (Simulated) | 0.4122 | 0.4837 | 0.6686 | Local statevector simulation |
-| **4-Qubit VQR (Seed 2026)** | Quantum ML (Simulated) | 0.2414 | 0.3318 | 0.8441 | Local statevector simulation |
+| **4-Qubit VQR (Persisted Artifact)** | Quantum ML (Sim) | 0.5773 | 0.6823 | 0.3406 | `qml_forecast_result.json` (Seed 42, `max_iter=15`) |
+| **4-Qubit VQR (Exploratory Converged)** | Quantum ML (Sim) | 0.3540 | 0.4460 | 0.7182 | Dynamic API run (Seed 42, `max_iter=30`) |
 
-**Multi-Seed Statistical Summary:**
-- Mean $R^2$: $0.7637 \pm 0.0728$ (best: 0.8441, worst: 0.6686)
-- Mean MAE: $0.3183\text{ m} \pm 0.0685\text{ m}$
-- Mean RMSE: $0.4035\text{ m} \pm 0.0632\text{ m}$
+**Multi-Seed Exploratory Evaluation (`evaluate_qml_multiseed`, `max_iter = 30`):**
+- Seed 42: $R^2 = 0.7182$, MAE $0.3540\text{ m}$, RMSE $0.4460\text{ m}$
+- Seed 123: $R^2 = 0.8239$, MAE $0.2656\text{ m}$, RMSE $0.3526\text{ m}$
+- Seed 777: $R^2 = 0.6686$, MAE $0.4122\text{ m}$, RMSE $0.4837\text{ m}$
+- Seed 2026: $R^2 = 0.8441$, MAE $0.2414\text{ m}$, RMSE $0.3318\text{ m}$
+- **Summary:** Mean $R^2 = 0.7637 \pm 0.0728$, Mean MAE $0.3183\text{ m} \pm 0.0685\text{ m}$, Mean RMSE $0.4035\text{ m} \pm 0.0632\text{ m}$
+- *Note:* The individual exploratory multi-seed runs are computed dynamically via API evaluation; `qml_forecast_result.json` remains the sole committed model artifact.
 
 *Scientific Finding:* Verified classical models (Gradient Boosting and Linear Regression) outperform the 4-qubit simulated VQR on this continuous hydrological regression task.
 

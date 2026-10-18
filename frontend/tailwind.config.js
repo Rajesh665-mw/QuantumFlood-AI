@@ -21,6 +21,7 @@ export default {
         signal: {
           teal: '#2DD4BF',
           tealDim: '#1F8F82',
+          cyan: '#22D3EE',
         },
         risk: {
           low: '#4E9A6B',

@@ -34,7 +34,7 @@ def compare_flood_scenarios(req: ScenarioCompareRequest):
     """
     Simulates multiple flood scenarios and returns a side-by-side comparative matrix.
     """
-    configs = [s.dict() for s in req.scenarios] if req.scenarios else None
+    configs = [s.model_dump() for s in req.scenarios] if req.scenarios else None
     comparison = compare_scenarios(configs)
     return comparison
 
@@ -44,7 +44,7 @@ def activate_scenario(req: ScenarioActivateRequest):
     """
     Activates a scenario, updating the pipeline state across the entire system.
     """
-    custom = req.custom_params.dict() if req.custom_params else None
+    custom = req.custom_params.model_dump() if req.custom_params else None
     try:
         activation = activate_scenario_in_pipeline(req.scenario_id, custom)
         state.active_scenario = activation

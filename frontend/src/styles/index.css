@@ -103,6 +103,22 @@
    PREMIUM UX – Animations & Transitions
    ────────────────────────────────────────────────────────────── */
 
+/* Toast notification entrance and exit */
+@keyframes toast-enter {
+  from { opacity: 0; transform: translateX(24px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes toast-exit {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(24px) scale(0.95); }
+}
+.animate-toast-enter {
+  animation: toast-enter .3s cubic-bezier(.25,.46,.45,.94) both;
+}
+.animate-toast-exit {
+  animation: toast-exit .25s ease-in both;
+}
+
 /* Page entrance: content fades in and slides up slightly */
 @keyframes page-enter {
   from { opacity: 0; transform: translateY(12px); }
@@ -339,13 +355,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  *:not(.transition-colors):not(.transition-opacity) { transition-duration: 0.01ms !important; }
   .animate-glass-sweep { animation: none !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; }
   .animate-beam-cone { animation: none !important; opacity: 0.6 !important; }
   .hud-corner { animation: none !important; border-color: rgba(45, 212, 191, 0.6) !important; }
   .animate-lockon { animation: none !important; opacity: 1 !important; transform: scale(1) !important; }
   .animate-indeterminate { animation: none !important; width: 100% !important; }
   .animate-pulse-slow { animation: none !important; }
+  .animate-toast-enter, .animate-toast-exit { animation: none !important; opacity: 1 !important; }
 }
 
 /* Slow pulse for spotlight glow around search */

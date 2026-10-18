@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { api } from '../services/api'
 
 interface NavItem {
@@ -70,6 +70,40 @@ export default function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [currentAreaName, setCurrentAreaName] = useState('Vijayawada Benchmark')
   const [isDefaultArea, setIsDefaultArea] = useState(true)
+  const [confirmReset, setConfirmReset] = useState(false)
+  const mobileNavRef = useRef<HTMLDivElement>(null)
+  const location = useLocation()
+
+  // Close mobile nav on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
+
+  // Close mobile nav on outside click
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (mobileNavRef.current && !mobileNavRef.current.contains(e.target as Node)) {
+        setMobileOpen(false)
+      }
+    }
+    // Delay to avoid closing on the same click that opened it
+    const timer = setTimeout(() => document.addEventListener('click', handleClick), 10)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('click', handleClick)
+    }
+  }, [mobileOpen])
+
+  // Close mobile nav on Escape key
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false)
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [mobileOpen])
 
   useEffect(() => {
     const fetchArea = () => {
@@ -96,7 +130,13 @@ export default function MainLayout() {
     return () => window.removeEventListener('study-area-changed', onAreaChanged)
   }, [])
 
-  const handleQuickReset = async () => {
+  const handleQuickReset = useCallback(async () => {
+    if (!confirmReset) {
+      setConfirmReset(true)
+      setTimeout(() => setConfirmReset(false), 3000)
+      return
+    }
+    setConfirmReset(false)
     try {
       const res = await api.resetArea()
       if (res.status === 'OK') {
@@ -107,15 +147,26 @@ export default function MainLayout() {
     } catch {
       // ignore
     }
-  }
+  }, [confirmReset])
 
   return (
     <div className="min-h-screen flex bg-base-950 text-ink-100 selection:bg-signal-teal selection:text-base-950 overflow-x-hidden">
+      {/* Accessible Skip Link for keyboard navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-signal-teal focus:text-base-950 focus:font-bold focus:rounded focus:shadow-lg focus:outline-none"
+      >
+        Skip to main content
+      </a>
+
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-base-900 border-r border-base-600 min-h-screen sticky top-0 h-screen z-30 overflow-hidden">
+      <aside
+        className="hidden lg:flex flex-col w-64 shrink-0 bg-base-900 border-r border-base-600 min-h-screen sticky top-0 h-screen z-30 overflow-hidden"
+        aria-label="Primary navigation"
+      >
         {/* Brand header */}
         <div className="p-4 border-b border-base-600/60 flex items-center justify-between">
-          <NavLink to="/" className="flex items-center gap-3 group">
+          <NavLink to="/" className="flex items-center gap-3 group" aria-label="QuantumFlood AI Home">
             <span className="w-2.5 h-2.5 rounded-full bg-signal-teal shadow-[0_0_10px_rgba(45,212,191,0.8)] group-hover:scale-125 transition-transform" />
             <div>
               <div className="font-display font-bold text-base tracking-tight text-ink-100 group-hover:text-signal-teal transition-colors">
@@ -129,10 +180,10 @@ export default function MainLayout() {
         </div>
 
         {/* Navigation list */}
-        <nav className="flex-1 px-3 py-3 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-3 space-y-1.5 overflow-y-auto" aria-label="Main navigation">
           <div className="px-2.5 pb-2 text-[10px] font-mono uppercase tracking-wider text-ink-500 font-semibold flex items-center justify-between">
             <span>Primary Workflow</span>
-            <span className="text-[9px] text-ink-600">5 Modules</span>
+            <span className="text-[9px] text-ink-700">5 Modules</span>
           </div>
 
           {PRIMARY_SECTIONS.map((item, idx) => (
@@ -140,6 +191,7 @@ export default function MainLayout() {
               key={item.to}
               to={item.to}
               end={item.end}
+              aria-label={item.label}
               className={({ isActive }) =>
                 `group flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-xs transition-all duration-150 relative ${
                   isActive
@@ -168,7 +220,7 @@ export default function MainLayout() {
                       {item.desc}
                     </div>
                   </div>
-                  <span className="text-[9px] font-mono text-ink-600 ml-1 mt-0.5">
+                  <span className="text-[9px] font-mono text-ink-700 ml-1 mt-0.5">
                     0{idx + 1}
                   </span>
                 </>
@@ -177,7 +229,7 @@ export default function MainLayout() {
           ))}
         </nav>
 
-        {/* Footer */}
+        {/* Footer — system status */}
         <div className="p-3 border-t border-base-600/60 bg-base-950/40">
           <div className="flex items-center justify-between text-xs text-ink-500">
             <span className="flex items-center gap-1.5 min-w-0 pr-1">
@@ -186,10 +238,15 @@ export default function MainLayout() {
             </span>
             <button
               onClick={handleQuickReset}
-              className="text-[10px] font-mono text-ink-600 hover:text-signal-teal transition-colors underline shrink-0"
-              title="Reset study area to Vijayawada Benchmark"
+              className={`text-[10px] font-mono transition-colors shrink-0 ${
+                confirmReset
+                  ? 'text-amber-400 font-semibold'
+                  : 'text-ink-700 hover:text-signal-teal underline'
+              }`}
+              title={confirmReset ? 'Click again to confirm reset' : 'Reset study area to Vijayawada Benchmark'}
+              aria-label={confirmReset ? 'Confirm reset to Vijayawada Benchmark' : 'Reset study area'}
             >
-              Reset
+              {confirmReset ? 'Confirm?' : 'Reset'}
             </button>
           </div>
         </div>
@@ -197,8 +254,8 @@ export default function MainLayout() {
 
       {/* Mobile Top Header */}
       <div className="lg:hidden flex flex-col w-full min-h-screen">
-        <header className="bg-base-900 border-b border-base-600 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
-          <NavLink to="/" className="flex items-center gap-2.5">
+        <header className="bg-base-900 border-b border-base-600 px-4 py-3 flex items-center justify-between sticky top-0 z-40" ref={mobileNavRef}>
+          <NavLink to="/" className="flex items-center gap-2.5" aria-label="QuantumFlood AI Home">
             <span className="w-2.5 h-2.5 rounded-full bg-signal-teal shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
             <span className="font-display font-semibold text-ink-100 tracking-tight text-base">
               QuantumFlood AI
@@ -207,7 +264,8 @@ export default function MainLayout() {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="p-2 rounded text-ink-500 hover:text-ink-100 hover:bg-base-800 transition-colors"
-            aria-label="Toggle navigation menu"
+            aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileOpen}
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {mobileOpen ? (
@@ -219,65 +277,78 @@ export default function MainLayout() {
           </button>
         </header>
 
-        {/* Mobile Navigation Dropdown */}
+        {/* Mobile Navigation Overlay + Dropdown */}
         {mobileOpen && (
-          <div className="bg-base-900 border-b border-base-600 px-4 py-3 space-y-2 z-40 max-h-[80vh] overflow-y-auto">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-ink-500 font-semibold px-1 pb-1">
-              Primary Workflow (5 Modules)
-            </div>
-            {PRIMARY_SECTIONS.map((item, idx) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                onClick={() => setMobileOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2.5 rounded text-xs font-medium ${
-                    isActive
-                      ? 'bg-base-700 text-signal-teal font-semibold'
-                      : 'text-ink-400 hover:text-ink-100 hover:bg-base-800'
-                  }`
-                }
-              >
-                <div className="flex items-center gap-2.5">
-                  {item.icon}
-                  <div>
-                    <div className="font-medium">{item.label}</div>
-                    <div className="text-[10px] text-ink-500">{item.desc}</div>
+          <>
+            {/* Backdrop overlay */}
+            <div
+              className="fixed inset-0 bg-base-950/60 backdrop-blur-sm z-30"
+              onClick={() => setMobileOpen(false)}
+              aria-hidden="true"
+            />
+            <nav
+              className="relative z-40 bg-base-900 border-b border-base-600 px-4 py-3 space-y-2 max-h-[80vh] overflow-y-auto scale-in"
+              aria-label="Mobile navigation"
+              role="navigation"
+            >
+              <div className="text-[10px] font-mono uppercase tracking-wider text-ink-500 font-semibold px-1 pb-1">
+                Primary Workflow (5 Modules)
+              </div>
+              {PRIMARY_SECTIONS.map((item, idx) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  onClick={() => setMobileOpen(false)}
+                  aria-label={item.label}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-3 py-2.5 rounded text-xs font-medium ${
+                      isActive
+                        ? 'bg-base-700 text-signal-teal font-semibold'
+                        : 'text-ink-400 hover:text-ink-100 hover:bg-base-800'
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-2.5">
+                    {item.icon}
+                    <div>
+                      <div className="font-medium">{item.label}</div>
+                      <div className="text-[10px] text-ink-500">{item.desc}</div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  {item.badge && (
-                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-signal-teal/15 text-signal-teal border border-signal-teal/30">
-                      {item.badge}
-                    </span>
-                  )}
-                  <span className="text-[9px] font-mono text-ink-600">0{idx + 1}</span>
-                </div>
-              </NavLink>
-            ))}
-          </div>
+                  <div className="flex items-center gap-1.5">
+                    {item.badge && (
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-signal-teal/15 text-signal-teal border border-signal-teal/30">
+                        {item.badge}
+                      </span>
+                    )}
+                    <span className="text-[9px] font-mono text-ink-700">0{idx + 1}</span>
+                  </div>
+                </NavLink>
+              ))}
+            </nav>
+          </>
         )}
 
         {/* Mobile Content */}
-        <main className="flex-1 px-4 py-6">
+        <main className="flex-1 px-4 py-6" id="main-content">
           <Outlet />
         </main>
 
         <footer className="border-t border-base-600 bg-base-900 px-4 py-4 text-xs text-ink-700 flex flex-col gap-1 items-center text-center">
           <span>QuantumFlood AI — {currentAreaName} Corridor</span>
-          <span className="font-mono text-[10px]">DISASTER INTELLIGENCE PLATFORM</span>
+          <span className="font-mono text-[10px]">Quantum-Enhanced Disaster Intelligence</span>
         </footer>
       </div>
 
       {/* Desktop Main Content */}
       <div className="hidden lg:flex flex-col flex-1 min-w-0 min-h-screen overflow-y-auto">
-        <main className="flex-1 p-8 max-w-[1600px] w-full mx-auto">
+        <main className="flex-1 p-8 max-w-[1600px] w-full mx-auto" id="main-content">
           <Outlet />
         </main>
         <footer className="border-t border-base-600 bg-base-900/60 px-8 py-4 flex items-center justify-between text-xs text-ink-700">
-          <span>QuantumFlood AI — Disaster Intelligence Pipeline · {currentAreaName} Corridor</span>
-          <span className="font-mono text-[11px] text-ink-500">FASTAPI + REACT DASHBOARD</span>
+          <span>QuantumFlood AI · {currentAreaName} Corridor · Hybrid Quantum-Classical Pipeline</span>
+          <span className="font-mono text-[11px] text-ink-500">v1.0 · QAOA + VQR + QUBO</span>
         </footer>
       </div>
     </div>

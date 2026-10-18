@@ -6,7 +6,7 @@ import type { StudyArea, LocationSearchResult } from '../types'
 type FlowStep = 'search' | 'configuring' | 'sensor-setup'
 
 const PRESETS = [
-  { name: 'Vijayawada, India', query: 'Vijayawada, Andhra Pradesh, India', desc: 'Krishna River corridor — project benchmark with real gauge data' },
+  { name: 'Vijayawada, India', query: 'Vijayawada, Andhra Pradesh, India', desc: 'Krishna River corridor — project benchmark with calibrated seasonal hydrograph and historical event records' },
   { name: 'Cologne, Germany', query: 'Cologne, Germany', desc: 'Rhine river basin — dense European flood corridor' },
   { name: 'Tokyo, Japan', query: 'Tokyo, Japan', desc: 'Sumida River delta — metropolitan coastal network' },
   { name: 'London, UK', query: 'London, United Kingdom', desc: 'Thames estuary — tidal flood barrier corridor' },

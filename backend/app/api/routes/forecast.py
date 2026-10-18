@@ -146,7 +146,7 @@ def train_qml_forecast(req: QmlForecastTrainRequest):
             horizon_days=req.horizon_days,
             config=config,
         )
-        ModelManager.set_qml_trained(regressor, result)
+        ModelManager.set_qml_trained(regressor, result, persist_disk=req.persist_disk)
         return result.to_dict()
     except Exception as e:
         logger.exception("QML training error: %s", e)
@@ -264,7 +264,7 @@ def compare_forecast(req: ForecastCompareRequest):
         if q_regressor is None or q_regressor.horizon_days != req.horizon_days or q_result is None:
             config = QmlConfig(n_qubits=4, n_layers=2, max_iter=30, train_subsample=100)
             q_regressor, q_result = train_and_evaluate_qml(df=df, horizon_days=req.horizon_days, config=config)
-            ModelManager.set_qml_trained(q_regressor, q_result)
+            ModelManager.set_qml_trained(q_regressor, q_result, persist_disk=False)
 
         q_pred = state.latest_qml_forecast
         if q_pred is None or q_pred.get("horizon_days") != req.horizon_days:

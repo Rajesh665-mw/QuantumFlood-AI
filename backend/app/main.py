@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+from contextlib import asynccontextmanager
 
 # Ensure backend root directory is in sys.path regardless of working directory or hosting container
 _BACKEND_ROOT = str(Path(__file__).resolve().parent.parent)
@@ -17,6 +18,18 @@ from app.api.routes import (
     network_resilience, resource_allocation, scenarios, area, reports
 )
 from app.ml.data_loader import DataValidationError
+from app.services.analysis_store import analysis_store
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Sweeps stale temporary files and expired analyses on process launch."""
+    try:
+        analysis_store.cleanup_expired_analyses()
+    except Exception:
+        pass
+    yield
+
 
 app = FastAPI(
     title="QuantumFlood AI",
@@ -24,6 +37,7 @@ app = FastAPI(
                 "for the Krishna-Godavari basin (UC-067). Features locally simulated QAOA, "
                 "4-qubit VQR, and verified classical baselines.",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS configuration: allows local dev servers, Vercel deployments, and custom FRONTEND_URL
@@ -68,18 +82,6 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     return response
-
-
-from app.services.analysis_store import analysis_store
-
-
-@app.on_event("startup")
-def startup_cleanup():
-    """Sweeps stale temporary files and expired analyses on process launch."""
-    try:
-        analysis_store.cleanup_expired_analyses()
-    except Exception:
-        pass
 
 
 @app.exception_handler(DataValidationError)
