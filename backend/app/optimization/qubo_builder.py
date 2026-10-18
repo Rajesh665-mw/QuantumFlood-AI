@@ -205,6 +205,101 @@ def compute_actual_coverage(
     return round(weighted_coverage, 9)
 
 
+def repair_bitstring_to_budget(
+    bitstring: Union[np.ndarray, List[int]],
+    coverage_matrix: np.ndarray,
+    zone_weights: np.ndarray,
+    budget: int,
+    candidate_ids: Optional[List[str]] = None,
+) -> Tuple[np.ndarray, bool, Dict[str, Any]]:
+    """
+    Transparently repairs a bitstring to satisfy the exact budget constraint sum(x_j) == K.
+    Uses greedy marginal-gain bit flipping:
+      - If under-budget: flips the unselected candidate with maximum marginal coverage gain.
+      - If over-budget: flips the selected candidate with minimum marginal coverage loss.
+
+    Returns:
+        repaired_vector: np.ndarray strictly satisfying sum(repaired_vector) == K.
+        was_repaired: bool indicating if any bits were flipped.
+        repair_metadata: Dict documenting original count, flips performed, and final coverage.
+    """
+    x = validate_binary_vector(bitstring)
+    N = coverage_matrix.shape[1]
+    cand_x = x[:N].copy()
+    initial_count = int(np.sum(cand_x))
+    K = int(budget)
+
+    if initial_count == K:
+        return cand_x, False, {
+            "was_repaired": False,
+            "original_count": initial_count,
+            "target_budget": K,
+            "flips_performed": 0,
+            "flips": [],
+            "repair_status": "strictly_feasible",
+        }
+
+    flips = []
+    # Under-budget: greedily activate candidates adding most marginal coverage
+    while np.sum(cand_x) < K:
+        current_cov = compute_actual_coverage(cand_x, coverage_matrix, zone_weights)
+        best_cand = None
+        best_gain = -1.0
+        for j in range(N):
+            if cand_x[j] == 0:
+                cand_x[j] = 1
+                gain = compute_actual_coverage(cand_x, coverage_matrix, zone_weights) - current_cov
+                cand_x[j] = 0
+                if gain > best_gain:
+                    best_gain = gain
+                    best_cand = j
+        if best_cand is None:
+            best_cand = next(j for j in range(N) if cand_x[j] == 0)
+            best_gain = 0.0
+        cand_x[best_cand] = 1
+        cid = candidate_ids[best_cand] if candidate_ids and best_cand < len(candidate_ids) else f"C-{best_cand}"
+        flips.append({
+            "action": "FLIP_0_TO_1",
+            "candidate_index": int(best_cand),
+            "candidate_id": cid,
+            "marginal_gain": round(float(best_gain), 4),
+        })
+
+    # Over-budget: greedily deactivate candidates whose removal causes least coverage loss
+    while np.sum(cand_x) > K:
+        current_cov = compute_actual_coverage(cand_x, coverage_matrix, zone_weights)
+        least_loss_cand = None
+        least_loss = float("inf")
+        for j in range(N):
+            if cand_x[j] == 1:
+                cand_x[j] = 0
+                loss = current_cov - compute_actual_coverage(cand_x, coverage_matrix, zone_weights)
+                cand_x[j] = 1
+                if loss < least_loss:
+                    least_loss = loss
+                    least_loss_cand = j
+        if least_loss_cand is None:
+            least_loss_cand = next(j for j in range(N) if cand_x[j] == 1)
+            least_loss = 0.0
+        cand_x[least_loss_cand] = 0
+        cid = candidate_ids[least_loss_cand] if candidate_ids and least_loss_cand < len(candidate_ids) else f"C-{least_loss_cand}"
+        flips.append({
+            "action": "FLIP_1_TO_0",
+            "candidate_index": int(least_loss_cand),
+            "candidate_id": cid,
+            "marginal_loss": round(float(least_loss), 4),
+        })
+
+    return cand_x, True, {
+        "was_repaired": True,
+        "original_count": initial_count,
+        "target_budget": K,
+        "flips_performed": len(flips),
+        "flips": flips,
+        "repair_status": "repaired_to_feasible",
+    }
+
+
 def build_exact_sensor_qubo(
     coverage_matrix: np.ndarray,
     zone_weights: np.ndarray,
@@ -602,12 +697,15 @@ def build_sensor_qubo_from_domain(
     critical_weight_multiplier: float = DEFAULT_CRITICAL_WEIGHT_MULTIPLIER,
     objective_mode: str = "budgeted",
     sensor_penalty_lambda: Optional[float] = None,
+    min_distance_km: Optional[float] = None,
 ) -> QuboResult:
     """
     High-level adapter accepting existing QuantumFlood domain objects
     (candidates list and zones list from classical_optimizer / risk_engine).
     Builds the coverage matrix using exact Haversine distances and delegates
     to build_sensor_qubo.
+    Optionally applies a spatial separation penalty for pairs of candidates
+    closer than min_distance_km.
     """
     if not candidates:
         raise ValueError("Candidate list cannot be empty.")
@@ -639,7 +737,7 @@ def build_sensor_qubo_from_domain(
 
     candidate_ids = [c["candidate_id"] for c in candidates]
 
-    return build_sensor_qubo(
+    qubo_res = build_sensor_qubo(
         coverage_matrix=A,
         zone_weights=w,
         budget=budget,
@@ -648,6 +746,27 @@ def build_sensor_qubo_from_domain(
         objective_mode=objective_mode,
         sensor_penalty_lambda=sensor_penalty_lambda,
     )
+
+    # 3. Apply optional minimum distance spatial separation penalty
+    if min_distance_km is not None and min_distance_km > 0.0:
+        dist_penalized_pairs = []
+        p_dist = 1.5 * qubo_res.penalty
+        for j in range(N):
+            for k in range(j + 1, N):
+                d_km = haversine_km(candidates[j]["lat"], candidates[j]["lon"], candidates[k]["lat"], candidates[k]["lon"])
+                if d_km < min_distance_km:
+                    qubo_res.Q[j, k] += p_dist
+                    dist_penalized_pairs.append({
+                        "candidate_a": candidates[j]["candidate_id"],
+                        "candidate_b": candidates[k]["candidate_id"],
+                        "distance_km": round(d_km, 3),
+                        "min_distance_km": min_distance_km,
+                    })
+        qubo_res.metadata["min_distance_km"] = min_distance_km
+        qubo_res.metadata["dist_penalized_pairs_count"] = len(dist_penalized_pairs)
+        qubo_res.metadata["dist_penalized_pairs"] = dist_penalized_pairs
+
+    return qubo_res
 
 
 def compute_minimal_nodes_frontier_from_domain(

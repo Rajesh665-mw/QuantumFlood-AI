@@ -9,6 +9,185 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   </head>
   <body>
+    <!-- Initial full-screen application startup experience -->
+    <div id="qf-splash" style="
+      position:fixed;inset:0;width:100vw;height:100vh;z-index:99999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background-color:#060C14;
+      background-image:
+        linear-gradient(to right, rgba(45,212,191,0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(45,212,191,0.06) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, #0F2032 0%, #060C14 100%);
+      background-size:44px 44px, 44px 44px, 100% 100%;
+      background-repeat:repeat, repeat, no-repeat;
+      color:#E8ECF1;font-family:'IBM Plex Sans',sans-serif;
+      overflow:hidden;
+      transition:opacity .5s cubic-bezier(0.4, 0, 0.2, 1), visibility .5s ease;
+    ">
+      <style>
+        @media(prefers-reduced-motion:reduce){
+          #qf-splash .qf-radar-outer{animation:none!important}
+          #qf-splash .qf-radar-inner{animation:none!important}
+          #qf-splash .qf-bg-sweep{animation:none!important}
+          #qf-splash .qf-pulse-corner{animation:none!important}
+          #qf-splash .qf-line{animation:none!important;width:100%!important}
+        }
+        @keyframes qf-pulse-outer{
+          0%{transform:scale(.85);opacity:.25}
+          50%{transform:scale(1.22);opacity:.6}
+          100%{transform:scale(.85);opacity:.25}
+        }
+        @keyframes qf-pulse-inner{
+          0%{transform:scale(.92);opacity:.5}
+          50%{transform:scale(1.08);opacity:.95}
+          100%{transform:scale(.92);opacity:.5}
+        }
+        @keyframes qf-bg-rotate{
+          0%{transform:rotate(0deg)}
+          100%{transform:rotate(360deg)}
+        }
+        @keyframes qf-fadein{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes qf-line-slide{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+        @keyframes qf-corner-glow{
+          0%, 100%{border-color:rgba(45,212,191,0.3);box-shadow:0 0 6px rgba(45,212,191,0.1)}
+          50%{border-color:rgba(45,212,191,0.85);box-shadow:0 0 14px rgba(45,212,191,0.35)}
+        }
+
+        .qf-corner{
+          position:absolute;width:24px;height:24px;pointer-events:none;
+          animation:qf-corner-glow 3s ease-in-out infinite;
+        }
+        .qf-card{
+          position:relative;z-index:20;
+          display:flex;flex-direction:column;align-items:center;text-align:center;
+          padding:38px 48px;border-radius:18px;
+          background:rgba(10, 18, 28, 0.92);backdrop-filter:blur(16px);
+          border:1px solid rgba(45,212,191,0.35);
+          box-shadow:0 0 50px rgba(0,0,0,0.8), 0 0 30px rgba(45,212,191,0.15);
+        }
+        .qf-radar-container{
+          position:relative;width:72px;height:72px;
+          display:flex;align-items:center;justify-content:center;
+        }
+        .qf-radar-outer{
+          position:absolute;inset:0;border-radius:50%;
+          border:1.5px solid rgba(45,212,191,.45);
+          animation:qf-pulse-outer 2.8s ease-in-out infinite;
+        }
+        .qf-radar-inner{
+          position:absolute;inset:8px;border-radius:50%;
+          border:2px solid rgba(45,212,191,.8);
+          box-shadow:0 0 24px rgba(45,212,191,.45),inset 0 0 14px rgba(45,212,191,.25);
+          animation:qf-pulse-inner 2s ease-in-out infinite;
+          display:flex;align-items:center;justify-content:center;
+          background:rgba(8,16,25,0.85);
+        }
+        .qf-radar-core{
+          width:14px;height:14px;border-radius:50%;
+          background:#2DD4BF;box-shadow:0 0 14px #2DD4BF;
+        }
+        .qf-fadein{animation:qf-fadein .5s ease-out forwards;opacity:0}
+        .qf-track{
+          width:220px;height:3px;background:rgba(30,41,59,0.9);
+          border-radius:999px;overflow:hidden;position:relative;margin-top:22px;
+        }
+        .qf-line{
+          position:absolute;top:0;bottom:0;left:0;width:85px;
+          background:#2DD4BF;border-radius:999px;
+          animation:qf-line-slide 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+          box-shadow:0 0 12px rgba(45,212,191,0.9);
+        }
+        .qf-hud-tag{
+          position:absolute;z-index:15;font-family:'IBM Plex Mono',monospace;
+          font-size:10px;color:#64748B;letter-spacing:.08em;
+          background:rgba(8, 15, 24, 0.65);padding:6px 12px;border-radius:6px;
+          border:1px solid rgba(45,212,191,0.15);backdrop-filter:blur(4px);
+        }
+      </style>
+
+      <!-- Four Viewport HUD Corner Brackets -->
+      <div class="qf-corner" style="top:20px;left:20px;border-top:2px solid rgba(45,212,191,0.4);border-left:2px solid rgba(45,212,191,0.4)"></div>
+      <div class="qf-corner" style="top:20px;right:20px;border-top:2px solid rgba(45,212,191,0.4);border-right:2px solid rgba(45,212,191,0.4)"></div>
+      <div class="qf-corner" style="bottom:20px;left:20px;border-bottom:2px solid rgba(45,212,191,0.4);border-left:2px solid rgba(45,212,191,0.4)"></div>
+      <div class="qf-corner" style="bottom:20px;right:20px;border-bottom:2px solid rgba(45,212,191,0.4);border-right:2px solid rgba(45,212,191,0.4)"></div>
+
+      <!-- Four Viewport Geospatial Telemetry HUD Anchors -->
+      <div class="qf-hud-tag" style="top:28px;left:56px">
+        <span style="color:#2DD4BF;font-weight:600">GEOMAP TELEMETRY</span> · 16.5061° N, 80.6050° E
+      </div>
+      <div class="qf-hud-tag" style="top:28px;right:56px">
+        <span style="color:#2DD4BF;font-weight:600">QUANTUM CORE</span> · QAOA (p=2) / 4-QUBIT VQR
+      </div>
+      <div class="qf-hud-tag" style="bottom:28px;left:56px">
+        <span style="color:#2DD4BF;font-weight:600">DECISION SUPPORT</span> · ATTENUATION MESH ACTIVE
+      </div>
+      <div class="qf-hud-tag" style="bottom:28px;right:56px">
+        <span style="color:#2DD4BF;font-weight:600">UC-067</span> · KRISHNA-GODAVARI BASIN
+      </div>
+
+      <!-- Background Concentric Radar Range Circles & Radial Sweep Beam -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5">
+        <!-- 800px Radar Ring -->
+        <div style="position:absolute;width:820px;height:820px;border-radius:50%;border:1px dashed rgba(45,212,191,0.18);"></div>
+        <!-- 560px Radar Ring -->
+        <div style="position:absolute;width:560px;height:560px;border-radius:50%;border:1px solid rgba(45,212,191,0.14);"></div>
+        <!-- 360px Radar Ring -->
+        <div style="position:absolute;width:360px;height:360px;border-radius:50%;border:1px dashed rgba(45,212,191,0.22);"></div>
+
+        <!-- 360-degree rotating radar sweep cone -->
+        <div class="qf-bg-sweep" style="
+          position:absolute;width:820px;height:820px;border-radius:50%;
+          background:conic-gradient(from 0deg, transparent 0deg, transparent 310deg, rgba(45,212,191,0.08) 360deg);
+          animation:qf-bg-rotate 8s linear infinite;
+        "></div>
+      </div>
+
+      <!-- Background Flowing Topographic & Hydrologic Contour Vector Field -->
+      <svg
+        style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+        viewBox="0 0 1200 700"
+      >
+        <!-- Upper elevation contours -->
+        <path d="M0,120 C250,60 420,180 650,110 C880,40 1020,160 1200,90" fill="none" stroke="rgba(45,212,191,0.22)" stroke-width="1.2" stroke-dasharray="5 7" />
+        <path d="M0,180 C280,110 460,240 700,160 C920,90 1060,210 1200,150" fill="none" stroke="rgba(56,189,248,0.18)" stroke-width="1" />
+        <path d="M0,240 C300,170 500,290 750,210 C960,140 1100,260 1200,210" fill="none" stroke="rgba(45,212,191,0.14)" stroke-width="0.8" />
+
+        <!-- Lower river corridor & bathymetric wave contours -->
+        <path d="M0,480 C240,410 450,560 700,470 C920,390 1080,520 1200,450" fill="none" stroke="rgba(45,212,191,0.18)" stroke-width="1" stroke-dasharray="8 6" />
+        <path d="M0,540 C280,460 490,620 740,530 C960,450 1110,580 1200,520" fill="none" stroke="rgba(56,189,248,0.22)" stroke-width="1.2" />
+        <path d="M0,600 C320,520 540,680 790,590 C1000,510 1140,640 1200,580" fill="none" stroke="rgba(45,212,191,0.25)" stroke-width="1.4" />
+      </svg>
+
+      <!-- Main Central Intelligence Card -->
+      <div class="qf-card">
+        <div class="qf-radar-container">
+          <div class="qf-radar-outer"></div>
+          <div class="qf-radar-inner">
+            <div class="qf-radar-core"></div>
+          </div>
+        </div>
+
+        <div class="qf-fadein" style="margin-top:22px;font-weight:700;font-size:25px;letter-spacing:-.025em;animation-delay:.12s;color:#FFFFFF">
+          QuantumFlood AI
+        </div>
+
+        <div class="qf-fadein" style="margin-top:5px;font-size:12px;color:#94A3B8;animation-delay:.22s;font-family:'Inter',sans-serif">
+          Quantum-Enhanced Flood Decision Intelligence
+        </div>
+
+        <div class="qf-fadein" style="margin-top:16px;display:flex;align-items:center;gap:7px;padding:5px 14px;border-radius:999px;background:rgba(45,212,191,0.12);border:1px solid rgba(45,212,191,0.3);font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#2DD4BF;animation-delay:.32s">
+          <span style="width:6px;height:6px;border-radius:50%;background:#2DD4BF;box-shadow:0 0 8px #2DD4BF"></span>
+          Initializing flood intelligence…
+        </div>
+
+        <div class="qf-track">
+          <div class="qf-line"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -87,14 +87,15 @@ def solve_adaptive_redeployment(
     updated_zones: List[Dict[str, Any]],
     sensor_budget: int = 8,
     coverage_radius_km: float = 2.5,
-    resolution: str = "default"
+    resolution: str = "default",
+    study_area: dict = None,
 ) -> Dict[str, Any]:
     """
     Compares current deployment against optimal deployment under the updated risk map,
     computing concrete redeployment actions and objective improvements.
     """
     zone_risk_lookup = {z["zone_id"]: z.get("risk_score", 1) for z in updated_zones}
-    candidates = generate_candidates(zone_risk_lookup, resolution)
+    candidates = generate_candidates(zone_risk_lookup, resolution, study_area=study_area)
 
     # 1. Run optimization under the updated risk conditions
     engine = ClassicalOptimizationEngine()

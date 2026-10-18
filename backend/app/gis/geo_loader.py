@@ -55,8 +55,15 @@ def _load_river_geojson() -> dict:
     return _river_geojson_cache
 
 
-def _get_effective_river_geojson() -> dict:
-    """Returns the river GeoJSON for the currently active area."""
+def _get_effective_river_geojson(study_area: dict = None) -> dict:
+    """Returns the river GeoJSON for the provided or currently active area."""
+    if study_area:
+        if study_area.get("river_geojson"):
+            return study_area["river_geojson"]
+        if study_area.get("is_default_location") or study_area.get("name") == STUDY_AREA["name"]:
+            return _load_river_geojson()
+        return _load_river_geojson()
+
     if is_default_area():
         return _load_river_geojson()
     dynamic_river = get_active_river_geojson()
@@ -66,31 +73,39 @@ def _get_effective_river_geojson() -> dict:
     return _load_river_geojson()
 
 
-def _get_effective_bbox() -> dict:
-    """Returns the bounding box for the currently active area."""
+def _get_effective_bbox(study_area: dict = None) -> dict:
+    """Returns the bounding box for the provided or currently active area."""
+    if study_area and study_area.get("bounding_box"):
+        return study_area["bounding_box"]
     dynamic_bbox = get_active_bounding_box()
     if dynamic_bbox is not None:
         return dynamic_bbox
     return STUDY_AREA["bounding_box"]
 
 
-def _get_effective_study_area() -> dict:
-    """Returns the full study area config for the currently active area."""
+def _get_effective_study_area(study_area: dict = None) -> dict:
+    """Returns the full study area config for the provided or currently active area."""
+    if study_area:
+        return study_area
     active = get_active_area()
     if active is not None:
         return active
     return STUDY_AREA
 
 
-def get_river_linestring():
+def get_river_linestring(study_area: dict = None):
     """Public accessor for the cached shapely LineString of the river
     geometry, reusable by other modules (e.g. optimization.candidate_generator)
     that need real geometry-aware calculations against the river.
 
-    Returns the linestring for the currently active area (dynamic or default).
+    Returns the linestring for the requested area, active area, or default.
     """
     global _river_linestring_cache
     global _dynamic_river_linestring_cache, _dynamic_river_area_key
+
+    if study_area:
+        river_geojson = _get_effective_river_geojson(study_area)
+        return build_river_linestring(river_geojson)
 
     if is_default_area():
         if _river_linestring_cache is None:
@@ -109,13 +124,13 @@ def get_river_linestring():
     return _dynamic_river_linestring_cache
 
 
-def get_study_area_boundary() -> dict:
+def get_study_area_boundary(study_area: dict = None) -> dict:
     """Returns the study area boundary as a GeoJSON Feature (Polygon).
 
-    Uses the currently active area (dynamic or default Vijayawada).
+    Uses the provided study area, currently active area, or default Vijayawada.
     """
-    bbox = _get_effective_bbox()
-    study_area = _get_effective_study_area()
+    bbox = _get_effective_bbox(study_area)
+    effective_area = _get_effective_study_area(study_area)
 
     # Rectangular boundary polygon - a scoping frame for the prototype, not
     # an official administrative/hydrological boundary (see module docstring).
@@ -129,47 +144,42 @@ def get_study_area_boundary() -> dict:
     return {
         "type": "Feature",
         "properties": {
-            "name": study_area.get("name", "Study Area"),
-            "region": study_area.get("region", ""),
+            "name": effective_area.get("name", "Study Area"),
+            "region": effective_area.get("region", ""),
             "boundary_type": "RECTANGULAR_SCOPING_FRAME",
         },
         "geometry": {"type": "Polygon", "coordinates": [coords]},
     }
 
 
-def get_river_centerline() -> dict:
-    """Returns the river as a GeoJSON Feature for the active area.
+def get_river_centerline(study_area: dict = None) -> dict:
+    """Returns the river as a GeoJSON Feature for the provided or active area.
 
     For the default (Vijayawada) area, this comes from the local
     project-managed GeoJSON. For dynamic areas, it may come from
     OSM or be a synthetic centerline.
     """
-    return _get_effective_river_geojson()
+    return _get_effective_river_geojson(study_area)
 
 
-def get_risk_zone_geometry(resolution: str = "default") -> list:
+def get_risk_zone_geometry(resolution: str = "default", study_area: dict = None) -> list:
     """
-    Returns a deterministic NxN grid of sub-zones covering the active study
-    area bounding box (MODELLED_GRID spatial model - documented, not an official
-    flood-zone polygon set). `resolution` controls the grid granularity:
+    Returns a deterministic NxN grid of sub-zones covering the target study
+    area bounding box (MODELLED_GRID spatial model). `resolution` controls the grid granularity:
       "low"     -> 4x4  = 16 zones  (coarse, fast)
       "default" -> 6x6  = 36 zones  (balanced)
       "high"    -> 10x10 = 100 zones (finer analysis for experiments)
 
-    Uses the currently active area (dynamic or default Vijayawada).
-    Each zone gets a stable ID and a real distance-to-river measurement in
-    kilometres, computed against the nearest point on the actual river
-    LineString geometry (not a crude degree difference, not limited to
-    comparing against a few waypoints - see gis.distance_utils.distance_to_river_km).
+    Uses the provided study area, currently active area, or default Vijayawada.
     """
     if resolution not in RISK_ZONE_RESOLUTIONS:
         resolution = "default"
-    bbox = _get_effective_bbox()
+    bbox = _get_effective_bbox(study_area)
     n = RISK_ZONE_RESOLUTIONS[resolution]
     lat_step = (bbox["max_lat"] - bbox["min_lat"]) / n
     lon_step = (bbox["max_lon"] - bbox["min_lon"]) / n
 
-    river_line = get_river_linestring()
+    river_line = get_river_linestring(study_area)
 
     zones = []
     zone_idx = 0

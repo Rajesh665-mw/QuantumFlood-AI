@@ -52,6 +52,7 @@ def select_study_area(
     longitude: Optional[float] = None,
     half_size_deg: Optional[float] = None,
     study_area_polygon: Optional[Dict] = None,
+    set_as_active: bool = True,
 ) -> Dict[str, Any]:
     """
     Selects and configures a study area from either a text query or coordinates.
@@ -61,6 +62,7 @@ def select_study_area(
         latitude, longitude: Direct coordinates. Used if location_query is None.
         half_size_deg: Half-size of the study area bounding box in degrees.
         study_area_polygon: Optional custom polygon override (GeoJSON format).
+        set_as_active: If True, sets active area singleton (legacy mode). If False, purely returns context.
 
     Returns:
         Complete study area configuration dict including:
@@ -81,8 +83,20 @@ def select_study_area(
             }
         lat = geo_result["latitude"]
         lon = geo_result["longitude"]
-        location_name = geo_result.get("city") or location_query
-        display_name = geo_result["display_name"]
+        location_name = (
+            geo_result.get("name_en")
+            or geo_result.get("name")
+            or geo_result.get("city")
+            or location_query
+        )
+        if any(ord(c) > 127 for c in str(location_name)):
+            clean_q = location_query.split(",")[0].strip()
+            if clean_q and all(ord(c) <= 127 for c in clean_q):
+                location_name = clean_q
+        display_name = geo_result.get("display_name", location_query)
+        if any(ord(c) > 127 for c in str(display_name)):
+            country_val = geo_result.get("country", "")
+            display_name = f"{location_name}, {country_val}" if country_val else str(location_name)
         country = geo_result.get("country", "")
         country_code = geo_result.get("country_code", "")
         state = geo_result.get("state", "")
@@ -104,11 +118,22 @@ def select_study_area(
         lon = longitude
         rev = reverse_geocode(lat, lon)
         if rev:
-            city = (rev.get("city") or rev.get("town") or rev.get("village") or "").strip()
+            city = (
+                rev.get("name_en")
+                or rev.get("name")
+                or rev.get("city")
+                or rev.get("town")
+                or rev.get("village")
+                or ""
+            ).strip()
             state_val = (rev.get("state") or "").strip()
             country_val = (rev.get("country") or "").strip()
             location_name = city or state_val or country_val or f"{lat:.4f}, {lon:.4f}"
+            if any(ord(c) > 127 for c in str(location_name)):
+                location_name = rev.get("name_en") or f"{lat:.4f}, {lon:.4f}"
             display_name = rev.get("display_name") or location_name
+            if any(ord(c) > 127 for c in str(display_name)):
+                display_name = f"{location_name}, {country_val}" if country_val else str(location_name)
             country = country_val
             country_code = rev.get("country_code", "")
             state = state_val
@@ -127,7 +152,8 @@ def select_study_area(
     # 2. Check if this is the default Vijayawada location
     if _is_vijayawada_location(lat, lon):
         # Revert to the default (Vijayawada) study area with real local data
-        clear_active_area()
+        if set_as_active:
+            clear_active_area()
         from app.config.settings import STUDY_AREA, DATA_PROVENANCE
         return {
             "status": "OK",
@@ -168,6 +194,10 @@ def select_study_area(
         river_feature = get_primary_waterway(bbox)
         if river_feature:
             river_source = "REAL"
+            r_props = river_feature.get("properties", {})
+            r_name = r_props.get("name", "")
+            if any(ord(c) > 127 for c in str(r_name)):
+                r_props["name"] = f"{location_name} River"
             logger.info("Found real waterway data for %s", location_name)
     except Exception as e:
         logger.warning("Failed to fetch waterways for %s: %s", location_name, e)
@@ -204,8 +234,9 @@ def select_study_area(
         "river_geojson": river_feature,
     }
 
-    # 9. Set as active area
-    set_active_area(study_area_config)
+    # 9. Set as active area only when requested
+    if set_as_active:
+        set_active_area(study_area_config)
 
     # 10. Build map config
     map_config = _build_map_config(bbox, center)
@@ -224,6 +255,142 @@ def select_study_area(
         "data_availability": data_availability,
         "map_config": map_config,
     }
+
+
+def resolve_study_area_context(
+    study_area_payload: Optional[Any] = None,
+    location_query: Optional[str] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
+    half_size_deg: Optional[float] = None,
+    study_area_polygon: Optional[Dict[str, Any]] = None,
+    use_benchmark: bool = False,
+    allow_fallback: Optional[bool] = None,
+) -> Dict[str, Any]:
+    """
+    Produces a validated, request-scoped study area context dictionary without mutating
+    any module-level or process-wide active area singleton.
+
+    Priority order:
+    1. Explicit benchmark flag (use_benchmark=True) -> returns documented Vijayawada benchmark
+    2. Direct study_area_payload dictionary (validated & sanitized)
+    3. Explicit coordinates (latitude, longitude) or location_query (geocoded/resolved)
+    4. If allow_fallback is True (or ENABLE_LEGACY_SHARED_STATE is True):
+       - Global active area (if set)
+       - Default Vijayawada study area (STUDY_AREA from settings)
+    5. If allow_fallback is False:
+       - Raises ValueError demanding explicit study area or benchmark flag.
+    """
+    from app.config.settings import STUDY_AREA, ENABLE_LEGACY_SHARED_STATE
+
+    if allow_fallback is None:
+        allow_fallback = ENABLE_LEGACY_SHARED_STATE
+
+    # Case 0: Explicit benchmark mode requested
+    if use_benchmark:
+        sa = dict(STUDY_AREA)
+        sa["is_default_location"] = True
+        return sa
+
+    # Case 1: Direct study_area_payload provided
+    if study_area_payload:
+        if hasattr(study_area_payload, "dict"):
+            payload = study_area_payload.dict(exclude_none=True)
+        elif isinstance(study_area_payload, dict):
+            payload = dict(study_area_payload)
+        else:
+            payload = {}
+
+        if payload.get("use_benchmark") is True:
+            sa = dict(STUDY_AREA)
+            sa["is_default_location"] = True
+            return sa
+
+        if "study_area" in payload and isinstance(payload["study_area"], dict):
+            payload = payload["study_area"]
+
+        bbox = payload.get("bounding_box")
+        if bbox and isinstance(bbox, dict):
+            min_lat = float(bbox.get("min_lat", 0))
+            max_lat = float(bbox.get("max_lat", 0))
+            min_lon = float(bbox.get("min_lon", 0))
+            max_lon = float(bbox.get("max_lon", 0))
+
+            if not (-90.0 <= min_lat <= max_lat <= 90.0 and -180.0 <= min_lon <= max_lon <= 180.0):
+                raise ValueError(f"Invalid bounding box coordinates: {bbox}")
+
+            center = payload.get("center")
+            if not center or not isinstance(center, dict):
+                center = {
+                    "lat": round((min_lat + max_lat) / 2.0, 6),
+                    "lon": round((min_lon + max_lon) / 2.0, 6),
+                }
+
+            name = str(payload.get("name") or "Custom Study Area").strip()[:100]
+            region = str(payload.get("region") or f"{name} Region").strip()[:100]
+            state_name = str(payload.get("state") or "").strip()[:100]
+            river_name = str(payload.get("river") or "Study Waterway").strip()[:100]
+
+            river_geojson = payload.get("river_geojson")
+            if not river_geojson or not isinstance(river_geojson, dict):
+                if _is_vijayawada_location(center["lat"], center["lon"]):
+                    from app.gis.geo_loader import _load_river_geojson
+                    river_geojson = _load_river_geojson()
+                else:
+                    river_geojson = generate_synthetic_river(
+                        {"min_lat": min_lat, "max_lat": max_lat, "min_lon": min_lon, "max_lon": max_lon},
+                        name=f"{name} Waterway"
+                    )
+
+            return {
+                "name": name,
+                "region": region,
+                "basin": payload.get("basin") or f"{name} Basin",
+                "scope_note": payload.get("scope_note") or f"Request-scoped study area for {name}.",
+                "state": state_name,
+                "bounding_box": {"min_lat": min_lat, "max_lat": max_lat, "min_lon": min_lon, "max_lon": max_lon},
+                "center": {"lat": round(float(center["lat"]), 6), "lon": round(float(center["lon"]), 6)},
+                "river": river_name,
+                "reference_gauge": payload.get("reference_gauge") or f"{name} Virtual Gauge",
+                "reference_gauge_coords": center,
+                "reference_gauge_source": payload.get("reference_gauge_source") or "Request-scoped virtual gauge",
+                "river_geojson": river_geojson,
+                "is_default_location": _is_vijayawada_location(center["lat"], center["lon"]),
+            }
+
+    # Case 2: Explicit location query or coordinates
+    if location_query or (latitude is not None and longitude is not None):
+        res = select_study_area(
+            location_query=location_query,
+            latitude=latitude,
+            longitude=longitude,
+            half_size_deg=half_size_deg,
+            study_area_polygon=study_area_polygon,
+            set_as_active=False,
+        )
+        if res.get("status") == "OK" and "study_area" in res:
+            sa = dict(res["study_area"])
+            sa["is_default_location"] = res.get("is_default_location", False)
+            return sa
+
+    # Case 3: In strict multi-user mode without fallback, reject missing context
+    if not allow_fallback:
+        raise ValueError(
+            "Missing required study area context in multi-user mode. "
+            "Please provide 'study_area', 'analysis_id', or explicitly set 'use_benchmark=True'."
+        )
+
+    # Case 4: Legacy backward compatibility fallback
+    active = get_active_area()
+    if active:
+        sa = dict(active)
+        sa["is_default_location"] = False
+        return sa
+
+    # Case 5: Default Vijayawada study area (legacy fallback)
+    sa = dict(STUDY_AREA)
+    sa["is_default_location"] = True
+    return sa
 
 
 def reset_to_default() -> Dict[str, Any]:
@@ -268,9 +435,9 @@ def _build_map_config(bbox: dict, center: dict) -> dict:
         "min_zoom": max(3, default_zoom - 4),
         "max_zoom": 17,
         "bounds_buffer_deg": round(buffer, 4),
-        "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "tile_subdomains": ["a", "b", "c"],
-        "tile_attribution": '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        "tile_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        "tile_subdomains": [],
+        "tile_attribution": 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, METI, TomTom',
         "no_wrap": True,
         "world_copy_jump": False,
         "max_bounds_viscosity": 0.8,

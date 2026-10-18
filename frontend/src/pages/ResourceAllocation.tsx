@@ -61,7 +61,7 @@ export default function ResourceAllocation() {
   const allocations = data?.allocations ?? []
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       {/* Header */}
       <div>
         <span className="eyebrow">Module 5 · Tactical Logistics &amp; Relief Planning</span>

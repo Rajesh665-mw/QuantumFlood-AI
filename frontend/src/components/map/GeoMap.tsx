@@ -5,7 +5,33 @@ import type { ReactNode } from 'react'
 import type { LatLngBoundsExpression, LatLngTuple } from 'leaflet'
 import type { MapConfig, MaxBounds } from '../../types'
 
-export function boundsToLeaflet(bounds?: MaxBounds | null, center?: LatLngTuple | null): LatLngBoundsExpression {
+/**
+ * Permanent, global English-label basemap: Esri World Street Map.
+ * Renders English/Latin geographic labels globally across all continents without API keys.
+ */
+export const ESRI_ENGLISH_STREETS_URL =
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+
+export const ESRI_ATTRIBUTION =
+  'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, METI, TomTom'
+
+export interface FlyCommand {
+  id: number
+  bounds: LatLngBoundsExpression
+  center?: LatLngTuple
+  duration?: number
+}
+
+/**
+ * Universal bounds normalizer: safely converts MaxBounds, BoundingBox, or center
+ * coordinates into a strictly ordered, finite LatLngBoundsExpression [[minLat, minLon], [maxLat, maxLon]].
+ * Completely prevents Leaflet NaN or inverted bounds errors.
+ */
+export function boundsToLeaflet(
+  bounds?: any | null,
+  center?: LatLngTuple | { lat: number; lon: number } | null
+): LatLngBoundsExpression {
+  // Case 1: MaxBounds object { south_west: { lat, lon }, north_east: { lat, lon } }
   if (bounds && bounds.south_west && bounds.north_east) {
     const swLat = Number(bounds.south_west.lat)
     const swLon = Number(bounds.south_west.lon)
@@ -14,65 +40,169 @@ export function boundsToLeaflet(bounds?: MaxBounds | null, center?: LatLngTuple 
 
     if (isFinite(swLat) && isFinite(swLon) && isFinite(neLat) && isFinite(neLon)) {
       return [
-        [swLat, swLon],
-        [neLat, neLon],
+        [Math.min(swLat, neLat), Math.min(swLon, neLon)],
+        [Math.max(swLat, neLat), Math.max(swLon, neLon)],
       ]
     }
   }
 
-  if (center && isFinite(center[0]) && isFinite(center[1])) {
-    const cLat = Number(center[0])
-    const cLon = Number(center[1])
-    return [
-      [cLat - 0.08, cLon - 0.08],
-      [cLat + 0.08, cLon + 0.08],
-    ]
+  // Case 2: BoundingBox object { min_lat, max_lat, min_lon, max_lon }
+  if (bounds && (bounds.min_lat !== undefined || bounds.max_lat !== undefined)) {
+    const minLat = Number(bounds.min_lat)
+    const maxLat = Number(bounds.max_lat)
+    const minLon = Number(bounds.min_lon)
+    const maxLon = Number(bounds.max_lon)
+
+    if (isFinite(minLat) && isFinite(maxLat) && isFinite(minLon) && isFinite(maxLon)) {
+      return [
+        [Math.min(minLat, maxLat), Math.min(minLon, maxLon)],
+        [Math.max(minLat, maxLat), Math.max(minLon, maxLon)],
+      ]
+    }
   }
 
+  // Case 3: Already an array [[lat1, lon1], [lat2, lon2]]
+  if (Array.isArray(bounds) && bounds.length >= 2 && Array.isArray(bounds[0]) && Array.isArray(bounds[1])) {
+    const p1Lat = Number(bounds[0][0])
+    const p1Lon = Number(bounds[0][1])
+    const p2Lat = Number(bounds[1][0])
+    const p2Lon = Number(bounds[1][1])
+    if (isFinite(p1Lat) && isFinite(p1Lon) && isFinite(p2Lat) && isFinite(p2Lon)) {
+      return [
+        [Math.min(p1Lat, p2Lat), Math.min(p1Lon, p2Lon)],
+        [Math.max(p1Lat, p2Lat), Math.max(p1Lon, p2Lon)],
+      ]
+    }
+  }
+
+  // Case 4: Derive bounding box from center coordinate (±0.06 deg buffer ~ 6.5km)
+  if (center) {
+    const cLat = Array.isArray(center) ? Number(center[0]) : Number(center.lat)
+    const cLon = Array.isArray(center) ? Number(center[1]) : Number(center.lon)
+    if (isFinite(cLat) && isFinite(cLon)) {
+      return [
+        [cLat - 0.06, cLon - 0.06],
+        [cLat + 0.06, cLon + 0.06],
+      ]
+    }
+  }
+
+  // Fallback: Default Vijayawada Corridor baseline
   return [
     [16.32, 80.43],
     [16.68, 80.84],
   ]
 }
 
-function MapRecenterHelper({ bounds, center }: { bounds: LatLngBoundsExpression; center: LatLngTuple }) {
+/**
+ * Dedicated Leaflet camera controller: handles container size invalidation,
+ * monotonic fly commands, and camera animation lifecycle without remount races.
+ */
+function MapCameraController({
+  flyCommand,
+  onFlyComplete,
+  defaultBounds,
+}: {
+  flyCommand?: FlyCommand | null
+  onFlyComplete?: (commandId: number) => void
+  defaultBounds: LatLngBoundsExpression
+}) {
   const map = useMap()
-  const isFirstMountRef = useRef(true)
-  const prevCenterKeyRef = useRef(`${center[0].toFixed(4)},${center[1].toFixed(4)}`)
+  const lastExecutedIdRef = useRef<number>(-1)
 
+  // Ensure Leaflet has computed accurate container pixel dimensions on mount and resize
   useEffect(() => {
-    // On initial mount: map is already initialized with center & zoom by MapContainer.
-    // Trigger invalidateSize after paint so Leaflet recalculates pixel boundaries cleanly.
-    if (isFirstMountRef.current) {
-      isFirstMountRef.current = false
-      const timer = setTimeout(() => {
-        try {
-          map.invalidateSize()
-        } catch {
-          // ignore
-        }
-      }, 100)
-      return () => clearTimeout(timer)
+    const invalidate = () => {
+      try {
+        map.invalidateSize({ animate: false })
+      } catch {}
+    }
+    const t1 = setTimeout(invalidate, 60)
+    const t2 = setTimeout(invalidate, 250)
+    const t3 = setTimeout(invalidate, 600)
+
+    const container = map.getContainer()
+    let observer: ResizeObserver | null = null
+    if (typeof ResizeObserver !== 'undefined' && container) {
+      observer = new ResizeObserver(() => {
+        invalidate()
+      })
+      observer.observe(container)
+    }
+    window.addEventListener('resize', invalidate)
+
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+      clearTimeout(t3)
+      observer?.disconnect()
+      window.removeEventListener('resize', invalidate)
+    }
+  }, [map])
+
+  // Execute fly command whenever an explicit new command is issued
+  useEffect(() => {
+    if (!flyCommand) return
+    if (flyCommand.id === lastExecutedIdRef.current) return
+    lastExecutedIdRef.current = flyCommand.id
+
+    const cmdId = flyCommand.id
+    const targetBounds = flyCommand.bounds || defaultBounds
+    let finished = false
+
+    const notifyComplete = () => {
+      if (finished) return
+      finished = true
+      onFlyComplete?.(cmdId)
     }
 
-    // On subsequent prop changes: only fly to bounds if center has meaningfully changed
-    const currentCenterKey = `${center[0].toFixed(4)},${center[1].toFixed(4)}`
-    if (prevCenterKeyRef.current !== currentCenterKey) {
-      prevCenterKeyRef.current = currentCenterKey
-      const timer = setTimeout(() => {
-        try {
-          map.invalidateSize()
-          const size = map.getSize()
-          if (size && size.x > 0 && size.y > 0) {
-            map.flyToBounds(bounds, { padding: [24, 24], duration: 0.7 })
-          }
-        } catch (e) {
-          console.warn('Map flyToBounds skipped:', e)
+    // Step 1: Invalidate map viewport size to account for container visibility/layout changes
+    try {
+      map.invalidateSize({ animate: false })
+    } catch {}
+
+    const executeFly = () => {
+      try {
+        const size = map.getSize()
+        if (!size || size.x === 0 || size.y === 0) {
+          // If container has not yet painted dimensions, retry on next frame
+          requestAnimationFrame(() => {
+            try {
+              map.invalidateSize({ animate: false })
+              map.flyToBounds(targetBounds, {
+                padding: [36, 36],
+                duration: flyCommand.duration || 1.1,
+                maxZoom: 14,
+              })
+              map.once('moveend', notifyComplete)
+            } catch {
+              notifyComplete()
+            }
+          })
+          return
         }
-      }, 50)
-      return () => clearTimeout(timer)
+
+        map.flyToBounds(targetBounds, {
+          padding: [36, 36],
+          duration: flyCommand.duration || 1.1,
+          maxZoom: 14,
+        })
+        map.once('moveend', notifyComplete)
+      } catch (e) {
+        console.warn('[GeoMap] flyToBounds execution fallback:', e)
+        notifyComplete()
+      }
     }
-  }, [map, center[0], center[1], JSON.stringify(bounds)])
+
+    executeFly()
+
+    // Safety timeout: guaranteed transition even if moveend doesn't fire
+    const safetyTimeout = setTimeout(notifyComplete, (flyCommand.duration || 1.1) * 1000 + 350)
+    return () => {
+      clearTimeout(safetyTimeout)
+      map.off('moveend', notifyComplete)
+    }
+  }, [flyCommand, map, defaultBounds, onFlyComplete])
 
   return null
 }
@@ -83,66 +213,98 @@ export default function GeoMap({
   center,
   height = '520px',
   children,
+  onTilesLoaded,
+  onTileError,
+  flyCommand,
+  onFlyComplete,
 }: {
   mapConfig?: MapConfig | null
-  bounds?: MaxBounds | null
-  center?: LatLngTuple | null
+  bounds?: any | null
+  center?: LatLngTuple | { lat: number; lon: number } | null
   height?: string
   children?: ReactNode
+  onTilesLoaded?: () => void
+  onTileError?: () => void
+  flyCommand?: FlyCommand | null
+  onFlyComplete?: (commandId: number) => void
 }) {
-  const safeLat = center && isFinite(center[0]) ? Number(center[0]) : 16.5061
-  const safeLon = center && isFinite(center[1]) ? Number(center[1]) : 80.6050
-  const safeCenter: LatLngTuple = [safeLat, safeLon]
+  const safeLat = center
+    ? Array.isArray(center)
+      ? Number(center[0])
+      : Number(center.lat)
+    : 16.5061
+  const safeLon = center
+    ? Array.isArray(center)
+      ? Number(center[1])
+      : Number(center.lon)
+    : 80.6050
+
+  const safeCenter: LatLngTuple = [
+    isFinite(safeLat) ? safeLat : 16.5061,
+    isFinite(safeLon) ? safeLon : 80.6050,
+  ]
   const leafletBounds = boundsToLeaflet(bounds, safeCenter)
 
   const cfg = mapConfig || {
     default_zoom: 12,
-    min_zoom: 4,
+    min_zoom: 3,
     max_zoom: 17,
-    tile_url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    tile_subdomains: ['a', 'b', 'c'],
-    tile_attribution: '&copy; OpenStreetMap contributors',
+    tile_url: ESRI_ENGLISH_STREETS_URL,
+    tile_subdomains: [],
+    tile_attribution: ESRI_ATTRIBUTION,
     no_wrap: true,
     world_copy_jump: false,
     max_bounds_viscosity: 0.8,
   }
 
-  const containerKey = `map-${safeLat.toFixed(3)}-${safeLon.toFixed(3)}`
+  const tileUrl = cfg.tile_url || ESRI_ENGLISH_STREETS_URL
+  const tileSubdomains = cfg.tile_subdomains || []
+  const tileAttribution = cfg.tile_attribution || ESRI_ATTRIBUTION
 
   return (
     <div style={{ height, width: '100%' }} className="rounded overflow-hidden relative bg-base-900">
       <MapContainer
-        key={containerKey}
+        key="quantumflood-map-viewport"
         center={safeCenter}
         zoom={cfg.default_zoom || 12}
-        minZoom={cfg.min_zoom || 4}
+        minZoom={cfg.min_zoom || 3}
         maxZoom={cfg.max_zoom || 17}
-        maxBounds={leafletBounds}
-        maxBoundsViscosity={cfg.max_bounds_viscosity ?? 0.8}
         worldCopyJump={cfg.world_copy_jump ?? false}
         style={{ height: '100%', width: '100%', background: '#161F2C' }}
       >
         <TileLayer
-          url={cfg.tile_url || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'}
-          subdomains={cfg.tile_subdomains || ['a', 'b', 'c']}
-          attribution={cfg.tile_attribution || '&copy; OpenStreetMap contributors'}
+          url={tileUrl}
+          subdomains={tileSubdomains}
+          attribution={tileAttribution}
+          maxZoom={cfg.max_zoom || 18}
           noWrap={cfg.no_wrap ?? true}
+          eventHandlers={{
+            load: () => {
+              onTilesLoaded?.()
+            },
+            tileerror: () => {
+              onTileError?.()
+            },
+          }}
         />
 
         {children}
 
-        <MapRecenterHelper bounds={leafletBounds} center={safeCenter} />
+        <MapCameraController
+          flyCommand={flyCommand}
+          onFlyComplete={onFlyComplete}
+          defaultBounds={leafletBounds}
+        />
         <ResetViewControl bounds={leafletBounds} />
       </MapContainer>
     </div>
   )
 }
 
-/** Re-exports so pages can compose layer toggles without importing
- * react-leaflet directly (keeps the map system's public surface in one
- * place). Wrap toggleable layer groups in <LayersControl><LayersOverlay>. */
+/** Re-exports for composeable layer control */
 export const LayersControl = RLLayersControl
 export const LayersOverlay = RLLayersControl.Overlay
+export const BaseLayer = RLLayersControl.BaseLayer
 
 function ResetViewControl({ bounds }: { bounds: LatLngBoundsExpression }) {
   const map = useMap()

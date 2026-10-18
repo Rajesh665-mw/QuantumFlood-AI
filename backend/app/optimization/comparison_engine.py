@@ -87,6 +87,7 @@ class OptimizationComparisonEngine:
         shots: int = 1024,
         seed: Optional[int] = 42,
         run_exhaustive_if_feasible: bool = True,
+        min_distance_km: Optional[float] = None,
     ) -> Dict[str, Any]:
         """
         Executes both solvers on identical inputs and generates a comparative assessment.
@@ -104,7 +105,14 @@ class OptimizationComparisonEngine:
         # 2. Quantum QAOA Execution
         t1 = time.perf_counter()
         quantum_opt, quantum_raw = self.quantum_engine.optimize(
-            candidates, zones, coverage_radius_km, num_sensors, p=p, shots=shots, seed=seed
+            candidates,
+            zones,
+            coverage_radius_km,
+            num_sensors,
+            p=p,
+            shots=shots,
+            seed=seed,
+            min_distance_km=min_distance_km,
         )
         quantum_time_ms = round((time.perf_counter() - t1) * 1000.0, 2)
 

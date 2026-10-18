@@ -15,8 +15,24 @@ const BAND_LABELS: Record<string, string> = {
 function toLatLngCoords(geojsonCoords: any): LatLngTuple[] {
   if (!geojsonCoords || !Array.isArray(geojsonCoords)) return []
   return geojsonCoords
-    .filter((c: any) => Array.isArray(c) && c.length >= 2 && isFinite(c[0]) && isFinite(c[1]))
-    .map(([lon, lat]: [number, number]) => [Number(lat), Number(lon)] as LatLngTuple)
+    .map((c: any) => {
+      if (typeof c === 'string') {
+        const parts = c.trim().split(/\s+/)
+        if (parts.length >= 2) {
+          const lon = parseFloat(parts[0])
+          const lat = parseFloat(parts[1])
+          if (isFinite(lat) && isFinite(lon)) return [lat, lon] as LatLngTuple
+        }
+        return null
+      }
+      if (Array.isArray(c) && c.length >= 2) {
+        const lon = Number(c[0])
+        const lat = Number(c[1])
+        if (isFinite(lat) && isFinite(lon)) return [lat, lon] as LatLngTuple
+      }
+      return null
+    })
+    .filter((c): c is LatLngTuple => c !== null)
 }
 
 /** Study-area boundary — a rectangular scoping frame, not an official
@@ -71,11 +87,15 @@ export function RiverLayer({ river }: { river: any }) {
  * map is available; otherwise renders neutral geometry-only outlines.
  */
 export function RiskZoneLayer({
-  zones, riskLookup, onZoneClick,
+  zones,
+  riskLookup,
+  onZoneClick,
+  onZoneHover,
 }: {
   zones?: RiskZone[] | null
   riskLookup?: Map<string, RiskZone>
   onZoneClick?: (zoneId: string) => void
+  onZoneHover?: (zone: RiskZone | null, latLng?: LatLngTuple) => void
 }) {
   if (!zones || !Array.isArray(zones)) return null
 
@@ -86,55 +106,26 @@ export function RiskZoneLayer({
           return null
         }
         const risk = riskLookup?.get(z.zone_id)
+        const rf = risk?.risk_factors
         const color = risk ? RISK_COLORS[risk.risk_level] : '#3B4857'
         const boundsCoords: LatLngTuple[] = [
           [z.bounds.min_lat, z.bounds.min_lon], [z.bounds.min_lat, z.bounds.max_lon],
           [z.bounds.max_lat, z.bounds.max_lon], [z.bounds.max_lat, z.bounds.min_lon],
         ]
-        const rf = risk?.risk_factors
+        const centerLat = (z.bounds.min_lat + z.bounds.max_lat) / 2
+        const centerLon = (z.bounds.min_lon + z.bounds.max_lon) / 2
+
         return (
           <Polygon
             key={z.zone_id}
             positions={boundsCoords}
-            pathOptions={{ color, weight: 1, fillOpacity: risk ? 0.28 : 0.06 }}
-            eventHandlers={onZoneClick ? { click: () => onZoneClick(z.zone_id) } : undefined}
-          >
-            <Popup maxWidth={320}>
-              <div className="font-mono text-xs leading-relaxed" style={{ minWidth: 220 }}>
-                <div className="font-semibold mb-1 text-sm">{z.zone_id}</div>
-                {risk ? (
-                  <>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className="inline-block w-2.5 h-2.5 rounded-full"
-                        style={{ background: RISK_COLORS[risk.risk_level] }}
-                      />
-                      <span>Risk: <strong>{risk.risk_level}</strong> (score {risk.risk_score})</span>
-                    </div>
-                    <div className="mb-1">Distance to river: {typeof risk.distance_to_river_km === 'number' ? risk.distance_to_river_km.toFixed(2) : 'N/A'} km</div>
-
-                    {rf && (
-                      <div className="mt-2 pt-2 border-t border-gray-300" style={{ borderColor: '#ddd' }}>
-                        <div className="font-semibold mb-1 text-[10px] uppercase tracking-wider opacity-70">
-                          Risk Factor Breakdown
-                        </div>
-                        <div className="space-y-0.5">
-                          <div>Proximity: <strong>{BAND_LABELS[rf.proximity_band] ?? rf.proximity_band}</strong> (factor {rf.river_proximity_factor})</div>
-                          <div>Eff. water level: {rf.effective_water_level_m} m <span className="opacity-60">(base {rf.base_water_level_m} m)</span></div>
-                          <div>Eff. inflow: {rf.effective_inflow_ktcmd} kTCM/d <span className="opacity-60">(base {rf.base_inflow_ktcmd})</span></div>
-                          <div>Rainfall: {rf.rainfall_mm_24h} mm <span className="opacity-60">(uniform)</span></div>
-                          <div className="mt-1 opacity-80">Driver: {rf.driving_factor?.replace(/_/g, ' ') ?? 'None'}</div>
-                          <div className="opacity-60 text-[10px] mt-1">{rf.attenuation_model?.replace(/_/g, ' ').toLowerCase() ?? ''}</div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="opacity-70">No active forecast. Risk classification unassigned.</div>
-                )}
-              </div>
-            </Popup>
-          </Polygon>
+            pathOptions={{ color, weight: 1, fillOpacity: risk ? 0.11 : 0.02 }}
+            eventHandlers={{
+              click: () => onZoneClick?.(z.zone_id),
+              mouseover: () => onZoneHover?.(risk || z, [centerLat, centerLon]),
+              mouseout: () => onZoneHover?.(null),
+            }}
+          />
         )
       })}
     </>

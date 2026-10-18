@@ -86,7 +86,7 @@ export default function EvacuationRouting() {
   const alternative = routeData?.alternative_route
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       {/* Header */}
       <div>
         <span className="eyebrow">Module 2 · Dynamic Evacuation Routing</span>

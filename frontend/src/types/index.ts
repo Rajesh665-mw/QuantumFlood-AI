@@ -49,7 +49,8 @@ export interface DataProvenance {
 }
 
 export interface RealFloodEvent {
-  event_id: string
+  event_id?: string
+  id?: string
   year: number
   month: string | null
   location: string
@@ -58,6 +59,17 @@ export interface RealFloodEvent {
   severity_note: string
   citation: string
   data_source: string
+  severity_class?: string
+  severity_calculation_method?: string
+  inundated_risk_zones?: string[]
+  sensor_placement_relevance?: string
+  affected_locations?: string[]
+  affected_population_estimate?: string
+  summary?: string
+  impact_summary?: string
+  title?: string
+  peak_water_level_m?: number | null
+  severity_label?: string
 }
 
 export interface ExperimentSingleResult {
@@ -150,6 +162,10 @@ export interface ForecastPrediction {
   last_known_inflow_ktcmd: number
   last_known_water_level_m: number
   model_used: string
+  confidence_lower_m?: number
+  confidence_upper_m?: number
+  uncertainty_std_m?: number
+  inference_status?: string
 }
 
 export interface ForecastResults {
@@ -303,6 +319,7 @@ export interface SpatialModel {
 }
 
 export interface RiskMap {
+  analysis_id?: string
   base_classification: RiskClassification
   zones: RiskZone[]
   critical_zone_count: number
@@ -340,6 +357,12 @@ export interface SelectedSensor {
   near_river: boolean
   placement_method?: string
   covered_zone_ids: string[]
+  selection_rank?: number
+  marginal_covered_zones?: string[]
+  marginal_gain?: number
+  redundant_covered_zones?: string[]
+  selection_reason?: string
+  historical_evidence_note?: string
 }
 
 export interface OptimizationResult {
@@ -347,6 +370,7 @@ export interface OptimizationResult {
   selected_sensors: SelectedSensor[]
   coverage_percentage: number
   weighted_risk_coverage: number
+  weighted_coverage?: number
   total_weighted_risk: number
   critical_zone_coverage_percentage: number
   covered_zone_ids: string[]
@@ -395,11 +419,13 @@ export interface QuantumOptimizationResult {
 }
 
 export interface QuantumOptimizationResponse {
+  analysis_id?: string
   optimization: OptimizationResult
   quantum: QuantumOptimizationResult
   candidates_generated: number
   candidates_evaluated: number
   params: Record<string, any>
+  quantum_metrics?: any
 }
 
 export interface MinimalNodesFrontierEntry {
@@ -527,6 +553,7 @@ export interface CoverageSummary {
 }
 
 export interface OptimizationRunResponse {
+  analysis_id?: string
   optimization: OptimizationResult
   connectivity: ConnectivityResult
   coverage_summary: CoverageSummary
@@ -599,10 +626,18 @@ export interface SafeLocation {
   score_breakdown: SafeLocationScoreBreakdown
   explanation: string
   status_label: string
+  shelter_type?: 'OPERATIONAL_SHELTER' | 'PROPOSED_CANDIDATE'
+  is_operational?: boolean
+  operational_status?: string
+  capacity_estimate?: string | number | null
+  suitability_score?: number
 }
 
 export interface SafeLocationEvaluationResponse {
   locations: SafeLocation[]
+  operational_shelters?: SafeLocation[]
+  proposed_candidate_sites?: SafeLocation[]
+  has_operational_shelters?: boolean
   total_candidates: number
   total_recommended: number
   weights_used: {
@@ -857,5 +892,154 @@ export interface ScenarioActivationResponse {
   name: string
   metrics: ScenarioRunMetrics
   message: string
+}
+
+// ==========================================
+// SECTIONS 4 & 5: Shelter Requests & Resource Fulfillment
+// ==========================================
+export type ShelterRequestUrgency = 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL'
+export type ShelterRequestStatus = 'PENDING' | 'PARTIALLY_ALLOCATED' | 'ALLOCATED' | 'PARTIALLY_FULFILLED' | 'FULFILLED' | 'CANCELLED'
+
+export interface ShelterRequest {
+  id: string
+  shelter_id: string
+  shelter_name: string
+  resource_type: string
+  requested_quantity: number
+  urgency: ShelterRequestUrgency
+  status: ShelterRequestStatus
+  allocated_quantity: number
+  fulfilled_quantity: number
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface ShelterRequestCreatePayload {
+  shelter_id: string
+  shelter_name: string
+  resource_type: string
+  requested_quantity: number
+  urgency?: ShelterRequestUrgency
+  notes?: string
+}
+
+export interface InventoryItem {
+  item: string
+  unit: string
+  total_stock: number
+  allocated: number
+  available: number
+  category: string
+}
+
+export interface DemandSummaryItem {
+  resource_type: string
+  unit: string
+  requested: number
+  allocated: number
+  fulfilled: number
+  available_stock: number
+  shortage: number
+}
+
+export interface DemandSummaryResponse {
+  total_requests: number
+  fulfilled_requests: number
+  pending_requests: number
+  demand_by_resource: DemandSummaryItem[]
+}
+
+export interface AuditLogEntry {
+  timestamp: string
+  action: string
+  request_id: string
+  details: string
+  actor: string
+}
+
+export interface ShelterPortfolioQuantumResponse {
+  engine_type: string
+  solver_metadata: {
+    solver: string
+    num_qubits: number
+    p_steps: number
+    shots: number
+    circuit_depth: number
+    cnot_count: number
+    execution_time_ms: number
+    backend: string
+  }
+  budget: number
+  num_candidates_evaluated: number
+  selected_shelters: Array<{
+    id: string
+    name: string
+    lat: number
+    lon: number
+    suitability_score: number
+    elevation_m?: number
+    estimated_capacity?: number
+  }>
+  mean_suitability_score: number
+  minimum_pairwise_distance_km: number
+  separation_penalty_incurred: number
+  objective_value: number
+  classical_baseline: {
+    selected_ids: string[]
+    mean_suitability: number
+    minimum_pairwise_distance_km: number
+    objective_value: number
+    execution_time_ms: number
+  }
+  exhaustive_optimum?: {
+    selected_ids: string[]
+    mean_suitability: number
+    minimum_pairwise_distance_km: number
+    objective_value: number
+  }
+}
+
+export interface QuantumResourceAllocationResponse {
+  engine_type: string
+  solver_metadata: {
+    solver: string
+    num_qubits: number
+    p_steps: number
+    shots: number
+    circuit_depth: number
+    cnot_count: number
+    execution_time_ms: number
+    backend: string
+  }
+  resource_type: string
+  available_stock: number
+  total_requested: number
+  total_allocated: number
+  unmet_demand: number
+  is_feasible: boolean
+  allocations: Array<{
+    request_id: string
+    shelter_name: string
+    urgency: string
+    requested_quantity: number
+    allocated_quantity: number
+    fraction_allocated: number
+  }>
+  classical_baseline: {
+    allocations: Array<{
+      request_id: string
+      allocated_quantity: number
+      fraction_allocated: number
+    }>
+    total_allocated: number
+    unmet_demand: number
+    is_feasible: boolean
+    execution_time_ms: number
+  }
+  qubo_metrics: {
+    total_decision_variables: number
+    inventory_penalty_multiplier: number
+  }
 }
 

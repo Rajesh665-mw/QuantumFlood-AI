@@ -146,7 +146,7 @@ export default function Forecasting() {
   if (loading) return <LoadingState label="Loading hydrological dataset…" />
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 page-enter">
       <div>
         <div className="flex items-center gap-2">
           <span className="eyebrow">Module 2 · Forecasting & QML</span>
@@ -340,6 +340,13 @@ export default function Forecasting() {
                   <span className="font-mono text-3xl text-signal-blue">{qmlPrediction.predicted_water_level_m}</span>
                   <span className="text-ink-500">m predicted water level, {horizon} day(s) ahead</span>
                 </div>
+                {qmlPrediction.confidence_lower_m !== undefined && qmlPrediction.confidence_upper_m !== undefined && (
+                  <div className="mt-2 p-2 rounded bg-signal-blue/10 border border-signal-blue/30 text-xs font-mono flex items-center justify-between text-signal-blue">
+                    <span>95% Calibrated Interval:</span>
+                    <strong>[{qmlPrediction.confidence_lower_m.toFixed(2)}m – {qmlPrediction.confidence_upper_m.toFixed(2)}m]</strong>
+                    <span className="text-[10px] text-ink-400">±1.96σ (σ={qmlPrediction.uncertainty_std_m?.toFixed(3)}m)</span>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-2 mt-2 text-xs text-ink-500 font-mono">
                   <div>Qubits: <span className="text-ink-300">4</span></div>
                   <div>Circuit Depth: <span className="text-ink-300">11</span></div>

@@ -19,7 +19,7 @@ export default function CommandCenter() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 page-enter">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <span className="eyebrow">System Status &amp; Rollup</span>
@@ -34,7 +34,7 @@ export default function CommandCenter() {
       {error && <ErrorState message={error} />}
 
       {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-children">
           {Array.from({ length: 8 }).map((_, i) => <StatCardSkeleton key={i} />)}
         </div>
       ) : data ? (
@@ -116,7 +116,7 @@ export default function CommandCenter() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
               <Link
                 to="/safe-locations"
-                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-colors group"
+                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-all duration-200 group panel-glow"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-signal-teal uppercase">Module 1</span>
@@ -132,7 +132,7 @@ export default function CommandCenter() {
 
               <Link
                 to="/evacuation-routing"
-                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-colors group"
+                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-all duration-200 group panel-glow"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-signal-teal uppercase">Module 2</span>
@@ -148,7 +148,7 @@ export default function CommandCenter() {
 
               <Link
                 to="/adaptive-redeployment"
-                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-colors group"
+                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-all duration-200 group panel-glow"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-signal-teal uppercase">Module 3</span>
@@ -164,7 +164,7 @@ export default function CommandCenter() {
 
               <Link
                 to="/network-resilience"
-                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-colors group"
+                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-all duration-200 group panel-glow"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-signal-teal uppercase">Module 4</span>
@@ -180,7 +180,7 @@ export default function CommandCenter() {
 
               <Link
                 to="/resource-allocation"
-                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-colors group"
+                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-all duration-200 group panel-glow"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-signal-teal uppercase">Module 5</span>
@@ -196,7 +196,7 @@ export default function CommandCenter() {
 
               <Link
                 to="/scenario-comparison"
-                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-colors group"
+                className="p-3 bg-base-900/60 border border-base-700 hover:border-signal-teal rounded transition-all duration-200 group panel-glow"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[10px] text-signal-teal uppercase">Module 6</span>

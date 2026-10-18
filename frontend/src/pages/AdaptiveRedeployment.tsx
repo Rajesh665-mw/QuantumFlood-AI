@@ -55,7 +55,7 @@ export default function AdaptiveRedeployment() {
   const summary = data?.summary
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       {/* Header */}
       <div>
         <span className="eyebrow">Module 3 · Dynamic Sensor Reconfiguration</span>

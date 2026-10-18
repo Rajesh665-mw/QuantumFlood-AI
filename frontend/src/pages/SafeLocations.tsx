@@ -64,7 +64,7 @@ export default function SafeLocations() {
   const locations = data?.locations ?? []
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       {/* Header */}
       <div>
         <span className="eyebrow">Module 1 · Risk-Aware Lower-Risk Location Finder</span>

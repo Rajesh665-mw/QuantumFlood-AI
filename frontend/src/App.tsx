@@ -1,56 +1,99 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
 import MainLayout from './layouts/MainLayout'
-import { LoadingState } from './components/LoadingState'
+import { PageSkeleton } from './components/LoadingState'
+import { api } from './services/api'
 
-// Route-level code splitting
+// Primary 5 Navigation Sections
 const Home = lazy(() => import('./pages/Home'))
-const CommandCenter = lazy(() => import('./pages/CommandCenter'))
-const Forecasting = lazy(() => import('./pages/Forecasting'))
-const RiskMap = lazy(() => import('./pages/RiskMap'))
-const SensorOptimisation = lazy(() => import('./pages/SensorOptimisation'))
-const NetworkCoverage = lazy(() => import('./pages/NetworkCoverage'))
-const DisasterResponse = lazy(() => import('./pages/DisasterResponse'))
-const DataAnalytics = lazy(() => import('./pages/DataAnalytics'))
-
-// 6 New Integrated Modules
-const SafeLocations = lazy(() => import('./pages/SafeLocations'))
-const EvacuationRouting = lazy(() => import('./pages/EvacuationRouting'))
-const AdaptiveRedeployment = lazy(() => import('./pages/AdaptiveRedeployment'))
-const NetworkResilience = lazy(() => import('./pages/NetworkResilience'))
-const ResourceAllocation = lazy(() => import('./pages/ResourceAllocation'))
-const ScenarioComparison = lazy(() => import('./pages/ScenarioComparison'))
+const SensorPlacement = lazy(() => import('./pages/SensorPlacement'))
+const HistoricalIntelligence = lazy(() => import('./pages/HistoricalIntelligence'))
+const SafeShelters = lazy(() => import('./pages/SafeShelters'))
+const ResourcePlanning = lazy(() => import('./pages/ResourcePlanning'))
 
 export default function App() {
+  // Manage startup splash screen lifecycle
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const isTestingSplash = urlParams.get('splash') === '1' || urlParams.get('test-splash') === 'true'
+
+    // Expose dev helper functions to test/inspect startup splash at any time
+    ;(window as any).__showSplash = () => {
+      const splash = document.getElementById('qf-splash')
+      if (splash) {
+        splash.style.display = 'flex'
+        splash.style.opacity = '1'
+        splash.style.pointerEvents = 'auto'
+        splash.style.visibility = 'visible'
+      }
+    }
+    ;(window as any).__dismissSplash = () => {
+      const splash = document.getElementById('qf-splash')
+      if (splash) {
+        splash.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s ease'
+        splash.style.opacity = '0'
+        splash.style.pointerEvents = 'none'
+        setTimeout(() => {
+          splash.style.display = 'none'
+        }, 550)
+      }
+    }
+
+    // Genuine startup initialization: verify backend health & study area context
+    const initBackend = api.currentArea().catch(() => null)
+    Promise.all([
+      initBackend,
+      new Promise((resolve) => setTimeout(resolve, 1000)),
+    ]).finally(() => {
+      if (isTestingSplash) {
+        console.info('[QuantumFlood AI] Startup splash held open for inspection via ?splash=1')
+        return
+      }
+      const splash = document.getElementById('qf-splash')
+      if (splash) {
+        splash.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s ease'
+        splash.style.opacity = '0'
+        splash.style.pointerEvents = 'none'
+        setTimeout(() => {
+          splash.style.display = 'none'
+        }, 550)
+      }
+    })
+  }, [])
+
   return (
     <BrowserRouter>
-      <Suspense fallback={<LoadingState label="Loading module…" />}>
+      <Suspense fallback={<PageSkeleton />}>
         <Routes>
           <Route element={<MainLayout />}>
-            {/* Core Overview */}
+            {/* The 5 Non-Negotiable Primary Sections */}
             <Route path="/" element={<Home />} />
-            <Route path="/command-center" element={<CommandCenter />} />
+            <Route path="/sensor-placement" element={<SensorPlacement />} />
+            <Route path="/historical-intelligence" element={<HistoricalIntelligence />} />
+            <Route path="/shelters" element={<SafeShelters />} />
+            <Route path="/resource-planning" element={<ResourcePlanning />} />
 
-            {/* Flood Intelligence */}
-            <Route path="/forecasting" element={<Forecasting />} />
-            <Route path="/risk-map" element={<RiskMap />} />
-            <Route path="/scenarios" element={<ScenarioComparison />} />
-            <Route path="/scenario-comparison" element={<ScenarioComparison />} />
+            {/* Seamless Redirects for Legacy / Deep URLs */}
+            <Route path="/sensor-optimisation" element={<Navigate to="/sensor-placement" replace />} />
+            <Route path="/adaptive-redeployment" element={<Navigate to="/sensor-placement" replace />} />
+            <Route path="/network-coverage" element={<Navigate to="/sensor-placement" replace />} />
+            <Route path="/network-resilience" element={<Navigate to="/sensor-placement" replace />} />
 
-            {/* Infrastructure */}
-            <Route path="/sensor-optimisation" element={<SensorOptimisation />} />
-            <Route path="/adaptive-redeployment" element={<AdaptiveRedeployment />} />
-            <Route path="/network-coverage" element={<NetworkCoverage />} />
-            <Route path="/network-resilience" element={<NetworkResilience />} />
+            <Route path="/forecasting" element={<Navigate to="/historical-intelligence" replace />} />
+            <Route path="/risk-map" element={<Navigate to="/historical-intelligence" replace />} />
+            <Route path="/scenarios" element={<Navigate to="/historical-intelligence" replace />} />
+            <Route path="/scenario-comparison" element={<Navigate to="/historical-intelligence" replace />} />
+            <Route path="/data-analytics" element={<Navigate to="/historical-intelligence" replace />} />
 
-            {/* Emergency Response */}
-            <Route path="/safe-locations" element={<SafeLocations />} />
-            <Route path="/evacuation-routing" element={<EvacuationRouting />} />
-            <Route path="/resource-allocation" element={<ResourceAllocation />} />
-            <Route path="/disaster-response" element={<DisasterResponse />} />
+            <Route path="/safe-locations" element={<Navigate to="/shelters" replace />} />
+            <Route path="/evacuation-routing" element={<Navigate to="/shelters" replace />} />
 
-            {/* Analytics */}
-            <Route path="/data-analytics" element={<DataAnalytics />} />
+            <Route path="/resource-allocation" element={<Navigate to="/resource-planning" replace />} />
+            <Route path="/disaster-response" element={<Navigate to="/resource-planning" replace />} />
+            <Route path="/command-center" element={<Navigate to="/resource-planning" replace />} />
+
+            {/* Catch-all fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </Suspense>

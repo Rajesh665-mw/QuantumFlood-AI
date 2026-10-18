@@ -48,8 +48,10 @@ _FILE_MAP = {
 }
 
 
+import os
+
 def _save(key: str, value):
-    """Persist a pipeline artifact to disk as JSON (thread-safe)."""
+    """Persist a pipeline artifact to disk as JSON (thread-safe and atomic)."""
     path = _FILE_MAP.get(key)
     if path is None:
         return
@@ -63,10 +65,13 @@ def _save(key: str, value):
                         pass
                 return
             serializable = asdict(value) if is_dataclass(value) else value
-            with open(path, "w") as f:
+            tmp_path = path.with_suffix(f".tmp_{os.getpid()}_{threading.get_ident()}")
+            with open(tmp_path, "w", encoding="utf-8") as f:
                 json.dump(serializable, f, indent=2, default=str)
+            tmp_path.replace(path)
     except Exception as e:
         logger.warning("Failed to persist pipeline state '%s': %s", key, e)
+
 
 
 def _load(key: str):

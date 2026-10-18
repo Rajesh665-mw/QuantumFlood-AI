@@ -34,23 +34,31 @@ from app.services.active_area import get_active_bounding_box
 NEAR_RIVER_KM = 1.5  # kept consistent with risk/risk_engine.py's NEAR_RIVER_KM
 
 
-def _clamp_to_study_area(lat: float, lon: float) -> tuple:
-    active_bbox = get_active_bounding_box()
-    bbox = active_bbox if active_bbox is not None else STUDY_AREA["bounding_box"]
+def _clamp_to_study_area(lat: float, lon: float, study_area: dict = None) -> tuple:
+    if study_area and study_area.get("bounding_box"):
+        bbox = study_area["bounding_box"]
+    else:
+        active_bbox = get_active_bounding_box()
+        bbox = active_bbox if active_bbox is not None else STUDY_AREA["bounding_box"]
     clamped_lat = min(max(lat, bbox["min_lat"]), bbox["max_lat"])
     clamped_lon = min(max(lon, bbox["min_lon"]), bbox["max_lon"])
     return clamped_lat, clamped_lon
 
 
-def generate_candidates(zone_risk_lookup: dict = None, resolution: str = "default") -> list:
+def generate_candidates(
+    zone_risk_lookup: dict = None,
+    resolution: str = "default",
+    study_area: dict = None,
+) -> list:
     """
     zone_risk_lookup: optional {zone_id: risk_score} from risk_engine output.
     If not supplied, all zones get a neutral weight of 1.
     resolution: risk-zone grid resolution ("low"/"default"/"high") - must
     match the resolution used to produce zone_risk_lookup, if supplied.
+    study_area: optional request-scoped study area context.
     """
-    zones = get_risk_zone_geometry(resolution)
-    river_line = get_river_linestring()
+    zones = get_risk_zone_geometry(resolution, study_area=study_area)
+    river_line = get_river_linestring(study_area=study_area)
 
     candidates = []
     cand_id = 0
@@ -80,7 +88,7 @@ def generate_candidates(zone_risk_lookup: dict = None, resolution: str = "defaul
             # direction, not an arbitrary fixed offset.
             pulled_lat = centroid_lat + (direction["nearest_lat"] - centroid_lat) * CANDIDATE_RIVER_PULL_FRACTION
             pulled_lon = centroid_lon + (direction["nearest_lon"] - centroid_lon) * CANDIDATE_RIVER_PULL_FRACTION
-            pulled_lat, pulled_lon = _clamp_to_study_area(pulled_lat, pulled_lon)
+            pulled_lat, pulled_lon = _clamp_to_study_area(pulled_lat, pulled_lon, study_area=study_area)
 
             cand_id += 1
             candidates.append({

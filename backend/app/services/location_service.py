@@ -45,12 +45,20 @@ def _rate_limit():
 
 
 def _nominatim_request(endpoint: str, params: dict) -> Optional[Any]:
-    """Makes a rate-limited request to Nominatim with proper User-Agent."""
+    """Makes a rate-limited request to Nominatim with proper User-Agent and English language headers."""
     _rate_limit()
+    # Enforce English language across all query endpoints
+    params["accept-language"] = "en"
     query_string = urllib.parse.urlencode(params)
     url = f"{_NOMINATIM_BASE}/{endpoint}?{query_string}"
 
-    req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": _USER_AGENT,
+            "Accept-Language": "en,en-US;q=0.9",
+        },
+    )
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             return json.loads(resp.read().decode("utf-8"))
@@ -67,20 +75,7 @@ def _nominatim_request(endpoint: str, params: dict) -> Optional[Any]:
 
 def geocode(query: str) -> Optional[Dict[str, Any]]:
     """
-    Geocodes a location string (e.g. "Tokyo, Japan") into lat/lon + metadata.
-
-    Returns:
-        {
-            "latitude": float,
-            "longitude": float,
-            "display_name": str,
-            "place_type": str,
-            "importance": float,
-            "bounding_box": {"min_lat": ..., "max_lat": ..., "min_lon": ..., "max_lon": ...},
-            "country": str,
-            "country_code": str,
-        }
-        or None if not found or error.
+    Geocodes a location string (e.g. "Tokyo, Japan") into lat/lon + metadata with English labels.
     """
     query_lower = query.strip().lower()
     if not query_lower:
@@ -97,6 +92,8 @@ def geocode(query: str) -> Optional[Dict[str, Any]]:
         "limit": 1,
         "addressdetails": 1,
         "extratags": 1,
+        "namedetails": 1,
+        "accept-language": "en",
     }
 
     data = _nominatim_request("search", params)
@@ -120,12 +117,54 @@ def geocode(query: str) -> Optional[Dict[str, Any]]:
     else:
         geo_bbox = None
 
-    address = result.get("address", {})
+    address = result.get("address") or {}
+    namedetails = result.get("namedetails") or {}
+
+    # Extract verified English name
+    raw_name = (
+        namedetails.get("name:en")
+        or namedetails.get("int_name")
+        or namedetails.get("name:latin")
+        or result.get("name")
+    )
+    english_name = raw_name
+    if english_name and any(ord(c) > 127 for c in str(english_name)):
+        clean_q = query.split(",")[0].strip()
+        if clean_q and all(ord(c) <= 127 for c in clean_q):
+            english_name = clean_q
+        else:
+            # Transliterate or strip accents
+            import unicodedata
+            norm = unicodedata.normalize("NFKD", str(english_name)).encode("ascii", "ignore").decode("ascii").strip()
+            english_name = norm if norm else clean_q
+
+    city_val = (
+        address.get("city")
+        or address.get("town")
+        or address.get("village")
+        or address.get("municipality")
+        or address.get("state")
+        or ""
+    )
+    if any(ord(c) > 127 for c in str(city_val)) and english_name:
+        city_val = english_name
+    elif not city_val and english_name:
+        city_val = english_name
+
+    display_name_val = result.get("display_name", query)
+    if any(ord(c) > 127 for c in str(display_name_val)):
+        country_val = address.get("country", "")
+        if english_name and country_val:
+            display_name_val = f"{english_name}, {country_val}"
+        elif english_name:
+            display_name_val = english_name
 
     geocode_result = {
         "latitude": lat,
         "longitude": lon,
-        "display_name": result.get("display_name", query),
+        "name": english_name or city_val or query,
+        "name_en": english_name or city_val or query,
+        "display_name": display_name_val,
         "place_type": result.get("type", "unknown"),
         "class": result.get("class", "unknown"),
         "importance": float(result.get("importance", 0.0)),
@@ -133,7 +172,7 @@ def geocode(query: str) -> Optional[Dict[str, Any]]:
         "country": address.get("country", ""),
         "country_code": address.get("country_code", ""),
         "state": address.get("state", ""),
-        "city": address.get("city", address.get("town", address.get("village", ""))),
+        "city": city_val,
     }
 
     # Cache result
@@ -143,8 +182,7 @@ def geocode(query: str) -> Optional[Dict[str, Any]]:
 
 def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:
     """
-    Reverse-geocodes a lat/lon into a place name.
-    Returns a dict with display_name, country, city, etc. or None.
+    Reverse-geocodes a lat/lon into an English place name.
     """
     cache_key = f"rev_{lat:.5f}_{lon:.5f}"
     if cache_key in _geocode_cache:
@@ -155,19 +193,57 @@ def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:
         "lon": lon,
         "format": "json",
         "addressdetails": 1,
+        "namedetails": 1,
+        "accept-language": "en",
     }
 
     data = _nominatim_request("reverse", params)
     if not data or "error" in data:
         return None
 
-    address = data.get("address", {})
+    address = data.get("address") or {}
+    namedetails = data.get("namedetails") or {}
+
+    english_name = (
+        namedetails.get("name:en")
+        or namedetails.get("int_name")
+        or namedetails.get("name:latin")
+        or data.get("name")
+    )
+    if english_name and any(ord(c) > 127 for c in str(english_name)):
+        import unicodedata
+        norm = unicodedata.normalize("NFKD", str(english_name)).encode("ascii", "ignore").decode("ascii").strip()
+        english_name = norm if norm else (address.get("country") or f"{lat:.4f}, {lon:.4f}")
+
+    city_val = (
+        address.get("city")
+        or address.get("town")
+        or address.get("village")
+        or address.get("municipality")
+        or address.get("state")
+        or ""
+    )
+    if any(ord(c) > 127 for c in str(city_val)) and english_name:
+        city_val = english_name
+    elif not city_val and english_name:
+        city_val = english_name
+
+    display_name_val = data.get("display_name", f"{lat:.4f}, {lon:.4f}")
+    if any(ord(c) > 127 for c in str(display_name_val)):
+        country_val = address.get("country", "")
+        if english_name and country_val:
+            display_name_val = f"{english_name}, {country_val}"
+        elif english_name:
+            display_name_val = english_name
+
     result = {
-        "display_name": data.get("display_name", f"{lat}, {lon}"),
+        "name": english_name or city_val,
+        "name_en": english_name or city_val,
+        "display_name": display_name_val,
         "country": address.get("country", ""),
         "country_code": address.get("country_code", ""),
         "state": address.get("state", ""),
-        "city": address.get("city", address.get("town", address.get("village", ""))),
+        "city": city_val,
     }
 
     _geocode_cache[cache_key] = result
@@ -176,8 +252,7 @@ def reverse_geocode(lat: float, lon: float) -> Optional[Dict[str, Any]]:
 
 def search_locations(query: str, limit: int = 5) -> list:
     """
-    Searches for locations matching query, returning multiple candidates.
-    Useful for interactive search and auto-complete in UI.
+    Searches for locations matching query, returning multiple candidates with English names.
     """
     query_clean = query.strip()
     if not query_clean:
@@ -188,6 +263,8 @@ def search_locations(query: str, limit: int = 5) -> list:
         "format": "json",
         "limit": min(limit, 10),
         "addressdetails": 1,
+        "namedetails": 1,
+        "accept-language": "en",
     }
 
     data = _nominatim_request("search", params)
@@ -205,13 +282,48 @@ def search_locations(query: str, limit: int = 5) -> list:
                 "min_lon": float(bbox[2]),
                 "max_lon": float(bbox[3]),
             }
-        addr = item.get("address", {})
+        addr = item.get("address") or {}
+        namedetails = item.get("namedetails") or {}
+        english_name = (
+            namedetails.get("name:en")
+            or namedetails.get("int_name")
+            or namedetails.get("name:latin")
+            or item.get("name")
+        )
+        if english_name and any(ord(c) > 127 for c in str(english_name)):
+            import unicodedata
+            norm = unicodedata.normalize("NFKD", str(english_name)).encode("ascii", "ignore").decode("ascii").strip()
+            clean_q = query.split(",")[0].strip()
+            english_name = norm if norm else clean_q
+
+        city_val = (
+            addr.get("city")
+            or addr.get("town")
+            or addr.get("village")
+            or addr.get("municipality")
+            or addr.get("state")
+            or ""
+        )
+        if any(ord(c) > 127 for c in str(city_val)) and english_name:
+            city_val = english_name
+        elif not city_val and english_name:
+            city_val = english_name
+
+        disp_val = item.get("display_name", "")
+        if any(ord(c) > 127 for c in str(disp_val)):
+            country_val = addr.get("country", "")
+            if english_name and country_val:
+                disp_val = f"{english_name}, {country_val}"
+            elif english_name:
+                disp_val = english_name
+
         results.append({
             "latitude": float(item["lat"]),
             "longitude": float(item["lon"]),
-            "display_name": item.get("display_name", ""),
+            "name": english_name or city_val,
+            "display_name": disp_val,
             "country": addr.get("country", ""),
-            "city": addr.get("city", addr.get("town", addr.get("village", ""))),
+            "city": city_val,
             "bounding_box": geo_bbox,
         })
     return results

@@ -64,7 +64,7 @@ export default function DataAnalytics() {
   if (error || !summary) return <ErrorState message={error ?? 'No data available.'} />
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 page-enter">
       <div>
         <span className="eyebrow">Module 1 / Data Provenance &amp; Methodology</span>
         <h1 className="font-display text-2xl text-ink-100 mt-1">Data &amp; Analytics</h1>

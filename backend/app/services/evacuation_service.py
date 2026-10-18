@@ -119,10 +119,15 @@ def _generate_dynamic_road_network(active_area: dict) -> Dict[str, Any]:
     }
 
 
-def load_road_network() -> Dict[str, Any]:
+def load_road_network(study_area: dict = None) -> Dict[str, Any]:
     """Loads corridor road network dataset (Vijayawada) or generates dynamic network for active study area."""
+    if study_area:
+        from app.config.settings import STUDY_AREA
+        if not study_area.get("is_default_location") and study_area.get("name") != STUDY_AREA["name"]:
+            return _generate_dynamic_road_network(study_area)
+
     from app.services.active_area import is_default_area, get_active_area
-    if not is_default_area():
+    if not is_default_area() and study_area is None:
         active = get_active_area()
         if active:
             return _generate_dynamic_road_network(active)
@@ -245,12 +250,13 @@ def calculate_evacuation_routes(
     zones: List[Dict[str, Any]],
     origin_name: str = "Origin Point",
     dest_name: str = "Destination Location",
-    risk_penalty_beta: float = 3.0
+    risk_penalty_beta: float = 3.0,
+    study_area: dict = None,
 ) -> Dict[str, Any]:
     """
     Computes primary risk-averse evacuation route and alternative route.
     """
-    network = load_road_network()
+    network = load_road_network(study_area=study_area)
     nodes = network.get("nodes", [])
     edges = network.get("edges", [])
 

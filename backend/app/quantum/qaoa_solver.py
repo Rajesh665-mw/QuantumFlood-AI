@@ -34,6 +34,7 @@ from app.optimization.qubo_builder import (
     evaluate_qubo,
     decode_solution,
     compute_actual_coverage,
+    repair_bitstring_to_budget,
     QuboResult,
 )
 
@@ -213,10 +214,44 @@ class QaoaSolver:
             # Sort by energy ascending (min energy)
             feasible_samples.sort(key=lambda s: s["energy"])
             best_sample = feasible_samples[0]
+            repair_info = {
+                "was_repaired": False,
+                "original_count": len(best_sample["selected_indices"]),
+                "target_budget": budget,
+                "repair_status": "strictly_feasible",
+                "flips": [],
+            }
         else:
-            # Fallback to overall lowest energy state if no feasible state was sampled
+            # Transparently repair the overall lowest energy state to feasibility
             evaluated_samples.sort(key=lambda s: s["energy"])
-            best_sample = evaluated_samples[0]
+            raw_sample = evaluated_samples[0]
+            repaired_vec, was_repaired, repair_info = repair_bitstring_to_budget(
+                raw_sample["bitstring"],
+                coverage_matrix=coverage_matrix,
+                zone_weights=zone_weights,
+                budget=budget,
+                candidate_ids=candidate_ids,
+            )
+            decoded = decode_solution(
+                repaired_vec,
+                candidate_ids=candidate_ids,
+                expected_budget=budget,
+                num_candidates=num_candidates,
+            )
+            repaired_cov = compute_actual_coverage(repaired_vec, coverage_matrix, zone_weights)
+            repaired_energy = evaluate_qubo(repaired_vec, Q, offset)
+            best_sample = {
+                "state_idx": raw_sample["state_idx"],
+                "bitstring": repaired_vec.tolist(),
+                "candidate_vector": repaired_vec.tolist(),
+                "selected_indices": decoded["selected_indices"],
+                "selected_ids": decoded["selected_candidate_ids"],
+                "is_feasible": True,
+                "energy": float(repaired_energy),
+                "coverage": float(repaired_cov),
+                "count": raw_sample["count"],
+                "probability": raw_sample["probability"],
+            }
 
         execution_time_ms = (time.perf_counter() - start_time) * 1000.0
 
@@ -226,6 +261,11 @@ class QaoaSolver:
             "".join(str(int(b)) for b in basis[idx]): float(probs[idx])
             for idx in top_prob_indices
         }
+
+        # Circuit gate diagnostics
+        non_zero_couplings = int(np.count_nonzero(np.triu(Q, k=1)))
+        cnot_count = 2 * p * non_zero_couplings
+        circuit_depth = 1 + p * (2 * min(non_zero_couplings, total_qubits) + 1)
 
         # Build candidate coverage details
         cand_details = []
@@ -271,6 +311,12 @@ class QaoaSolver:
                 "feasible_samples_count": len(feasible_samples),
                 "formulation_mode": cfg.formulation_mode,
                 "auxiliary_qubits": total_qubits - num_candidates,
+                "was_repaired": repair_info["was_repaired"],
+                "repair_status": repair_info["repair_status"],
+                "repair_flips": repair_info.get("flips", []),
+                "cnot_count": cnot_count,
+                "circuit_depth": circuit_depth,
+                "non_zero_couplings": non_zero_couplings,
             },
         )
 

@@ -194,6 +194,7 @@ class QuantumVariationalRegressor:
         # Affine output transformation: y_hat = affine_w * <Z0> + affine_b
         self.affine_w: float = 1.0
         self.affine_b: float = 0.0
+        self.residual_std: float = 0.1
 
         # Model weights
         self.parameters: Optional[np.ndarray] = None
@@ -307,6 +308,11 @@ class QuantumVariationalRegressor:
             self.affine_w = float(cov_zy / var_z)
             self.affine_b = float(y_mean - self.affine_w * z_mean)
 
+        # Calibrate residual standard deviation on training set
+        train_preds = self.affine_w * final_exp + self.affine_b
+        res_std = float(np.std(y_vec - train_preds))
+        self.residual_std = max(0.05, res_std)
+
         self.is_fitted = True
         return self
 
@@ -399,6 +405,8 @@ def train_and_evaluate_qml(
             "date": pd.Timestamp(d).strftime("%Y-%m-%d"),
             "actual": round(float(a), 3),
             "predicted": round(float(p), 3),
+            "confidence_lower": round(float(p - 1.96 * model.residual_std), 3),
+            "confidence_upper": round(float(p + 1.96 * model.residual_std), 3),
         }
         for d, a, p in zip(dates_test, y_test, test_preds)
     ]
@@ -430,11 +438,14 @@ def train_and_evaluate_qml(
         scaling_params=scaling_params,
         affine_w=model.affine_w,
         affine_b=model.affine_b,
+        residual_std=round(float(model.residual_std), 4),
+        uncertainty_calibrated=True,
         metadata={
             "optimizer": cfg.optimizer_method,
             "max_iter": cfg.max_iter,
             "random_seed": cfg.seed,
             "data_reuploading": True,
+            "residual_std_m": round(float(model.residual_std), 4),
             "qubit_mapping": {f"q{i}": feat for i, feat in enumerate(APPROVED_QML_FEATURES)},
         },
     )
@@ -450,6 +461,7 @@ def predict_next_qml(
     """
     Generates a single forward forecast for day t + horizon_days using the latest available observation.
     Maintains compatibility with downstream risk generation.
+    Computes calibrated 95% uncertainty intervals from shot variance and training residual error.
     """
     if not model.is_fitted:
         raise RuntimeError("QML Model must be trained before calling predict_next_qml().")
@@ -462,10 +474,23 @@ def predict_next_qml(
     pred_val = float(model.predict(latest_row)[0])
     last_known = df.iloc[-1]
 
+    # Compute calibrated uncertainty standard deviation
+    scaled_row = model._scale_features(latest_row[model.feature_names].to_numpy(dtype=float))
+    psi = simulate_vqr_circuit(scaled_row[0], model.parameters, n_qubits=model.n_qubits, layers=model.layers)
+    exp_z0 = expectation_z0(psi, n_qubits=model.n_qubits)
+    shot_std = abs(model.affine_w) * float(np.sqrt(max(0.0, 1.0 - exp_z0 ** 2) / 1024.0))
+    res_std = getattr(model, "residual_std", 0.1)
+    total_std = float(np.sqrt(res_std ** 2 + shot_std ** 2))
+    conf_lower = round(pred_val - 1.96 * total_std, 3)
+    conf_upper = round(pred_val + 1.96 * total_std, 3)
+
     return {
         "based_on_date": pd.Timestamp(latest_date).strftime("%Y-%m-%d"),
         "horizon_days": horizon_days,
         "predicted_water_level_m": round(pred_val, 3),
+        "confidence_lower_m": conf_lower,
+        "confidence_upper_m": conf_upper,
+        "uncertainty_std_m": round(total_std, 3),
         "last_known_rainfall_mm": round(float(last_known["rainfall_mm"]), 2),
         "last_known_inflow_ktcmd": round(float(last_known["inflow_ktcmd"]), 2),
         "last_known_water_level_m": round(float(last_known["water_level_m"]), 3),
@@ -474,6 +499,8 @@ def predict_next_qml(
         "qubits": model.n_qubits,
         "qubit_count": model.n_qubits,
         "circuit_depth": model.config.circuit_depth,
+        "forecast_status": "LIVE_INFERENCE",
+        "uncertainty_calibrated": True,
     }
 
 

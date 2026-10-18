@@ -32,7 +32,7 @@ export default function DisasterResponse() {
   if (loading) return <LoadingState label="Compiling recommendations…" />
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 page-enter">
       <div>
         <span className="eyebrow">Module 9 · Disaster Response Recommendation Engine</span>
         <h1 className="font-display text-2xl text-ink-100 mt-1">Disaster Response</h1>

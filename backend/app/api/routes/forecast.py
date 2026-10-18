@@ -27,6 +27,13 @@ router = APIRouter()
 
 @router.post("/forecast/train")
 def train_forecast(req: ForecastTrainRequest):
+    from app.services.active_area import is_default_area
+    if not is_default_area():
+        raise HTTPException(
+            status_code=400,
+            detail="Insufficient hydrological data: river gauge and hydro-meteorological time-series are unavailable for this custom study area. Forecasting models require at least 60 daily telemetry records, currently available only in the Krishna River / Vijayawada benchmark corridor."
+        )
+
     df = get_clean_dataset()
     if len(df) < 60:
         raise HTTPException(status_code=400, detail="Not enough data to train (need at least 60 rows).")
@@ -48,27 +55,54 @@ def train_forecast(req: ForecastTrainRequest):
 
 @router.post("/forecast/predict")
 def predict_forecast(req: ForecastPredictRequest):
-    engine = ModelManager.get_engine()
-    if engine is None:
-        raise HTTPException(status_code=400, detail="No trained model available. Call /api/forecast/train first.")
+    from app.config.settings import ENABLE_LEGACY_SHARED_STATE
+    from app.services.analysis_store import analysis_store
+    from app.services.active_area import is_default_area
 
-    if engine.horizon_days != req.horizon_days:
-        # Retrain quickly for the requested horizon to keep the demo simple
-        df = get_clean_dataset()
-        engine = ClassicalForecastingEngine(horizon_days=req.horizon_days)
-        result = engine.train_and_evaluate(df)
-        ModelManager.set_trained(engine, result)
+    if not is_default_area():
+        raise HTTPException(
+            status_code=400,
+            detail="Insufficient hydrological data: river gauge and hydro-meteorological time-series are unavailable for this custom study area. Forecasting models require at least 60 daily telemetry records, currently available only in the Krishna River / Vijayawada benchmark corridor."
+        )
 
     df = get_clean_dataset()
+    engine = ModelManager.get_engine(horizon_days=req.horizon_days)
+    if engine is None:
+        # Check if any model exists; if so, train/cache for requested horizon safely
+        if not ModelManager.is_trained() and len(df) < 60:
+            raise HTTPException(status_code=400, detail="No trained model available. Call /api/forecast/train first.")
+        engine = ModelManager.get_or_train_engine(req.horizon_days, df)
+
     prediction = engine.predict_next(df)
-    state.latest_forecast = prediction
+
+    aid = req.analysis_id
+    if aid and analysis_store.is_valid_id(aid):
+        prediction["analysis_id"] = aid
+        analysis_store.update_field(aid, "forecast", prediction)
+
+    if ENABLE_LEGACY_SHARED_STATE or not aid:
+        state.latest_forecast = prediction
+
     return prediction
 
 
 @router.get("/forecast/results")
-def get_forecast_results():
+def get_forecast_results(analysis_id: str = None):
+    from app.config.settings import ENABLE_LEGACY_SHARED_STATE
+    from app.services.analysis_store import analysis_store
+
+    if analysis_id and analysis_store.is_valid_id(analysis_id):
+        bundle = analysis_store.get(analysis_id)
+        if bundle and "forecast" in bundle:
+            return {
+                "analysis_id": analysis_id,
+                "latest_prediction": bundle["forecast"],
+            }
+
     result = ModelManager.get_last_result()
     if result is None:
+        if not ENABLE_LEGACY_SHARED_STATE and analysis_id:
+            raise HTTPException(status_code=404, detail=f"No forecast found for analysis '{analysis_id}'.")
         raise HTTPException(status_code=404, detail="No forecast results yet. Train a model first.")
     return {
         "engine_type": result.engine_type,
@@ -88,6 +122,13 @@ def get_forecast_results():
 
 @router.post("/forecast/qml/train")
 def train_qml_forecast(req: QmlForecastTrainRequest):
+    from app.services.active_area import is_default_area
+    if not is_default_area():
+        raise HTTPException(
+            status_code=400,
+            detail="Insufficient hydrological data: river gauge and hydro-meteorological time-series are unavailable for this custom study area. Forecasting models require at least 60 daily telemetry records, currently available only in the Krishna River / Vijayawada benchmark corridor."
+        )
+
     df = get_clean_dataset()
     if len(df) < 60:
         raise HTTPException(status_code=400, detail="Not enough data to train (need at least 60 rows).")
@@ -114,22 +155,39 @@ def train_qml_forecast(req: QmlForecastTrainRequest):
 
 @router.post("/forecast/qml/predict")
 def predict_qml_forecast(req: QmlForecastPredictRequest):
-    regressor = ModelManager.get_qml_regressor()
+    from app.config.settings import ENABLE_LEGACY_SHARED_STATE
+    from app.services.analysis_store import analysis_store
+    from app.services.active_area import is_default_area
+
+    if not is_default_area():
+        raise HTTPException(
+            status_code=400,
+            detail="Insufficient hydrological data: river gauge and hydro-meteorological time-series are unavailable for this custom study area. Forecasting models require at least 60 daily telemetry records, currently available only in the Krishna River / Vijayawada benchmark corridor."
+        )
+
+    regressor = ModelManager.get_qml_regressor(horizon_days=req.horizon_days)
     df = get_clean_dataset()
 
-    if regressor is None or regressor.horizon_days != req.horizon_days:
-        # Retrain QML model with default parameters
+    if regressor is None:
+        # Train QML model with default parameters for this horizon
         config = QmlConfig(n_qubits=4, n_layers=2, max_iter=30, train_subsample=100)
         try:
             regressor, result = train_and_evaluate_qml(df=df, horizon_days=req.horizon_days, config=config)
-            ModelManager.set_qml_trained(regressor, result)
+            # Only persist to disk if not already existing
+            ModelManager.set_qml_trained(regressor, result, persist_disk=False)
         except Exception as e:
             logger.exception("QML on-demand retraining error: %s", e)
             raise HTTPException(status_code=500, detail=f"QML model execution failed: {str(e)}")
 
     try:
         prediction = predict_next_qml(regressor, df)
-        state.latest_qml_forecast = prediction
+        aid = req.analysis_id
+        if aid and analysis_store.is_valid_id(aid):
+            prediction["analysis_id"] = aid
+            analysis_store.update_field(aid, "qml_forecast", prediction)
+
+        if ENABLE_LEGACY_SHARED_STATE or not aid:
+            state.latest_qml_forecast = prediction
         return prediction
     except Exception as e:
         logger.exception("QML prediction error: %s", e)
@@ -152,6 +210,13 @@ def compare_forecast(req: ForecastCompareRequest):
     Tournament comparison between classical production models and QML VQR.
     Ensures QML failure isolation: classical results always succeed even if QML fails.
     """
+    from app.services.active_area import is_default_area
+    if not is_default_area():
+        raise HTTPException(
+            status_code=400,
+            detail="Insufficient hydrological data: river gauge and hydro-meteorological time-series are unavailable for this custom study area. Forecasting models require at least 60 daily telemetry records, currently available only in the Krishna River / Vijayawada benchmark corridor."
+        )
+
     df = get_clean_dataset()
 
     # 1. Classical baseline
@@ -214,6 +279,10 @@ def compare_forecast(req: ForecastCompareRequest):
                 "r2": q_result.test_r2,
             },
             "predicted_water_level_m": q_pred.get("predicted_water_level_m"),
+            "confidence_lower_m": q_pred.get("confidence_lower_m"),
+            "confidence_upper_m": q_pred.get("confidence_upper_m"),
+            "uncertainty_std_m": q_pred.get("uncertainty_std_m"),
+            "uncertainty_calibrated": True,
             "training_time_s": q_result.training_time_s,
             "inference_time_s": q_result.inference_time_s,
             "n_qubits": q_result.n_qubits,

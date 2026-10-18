@@ -17,21 +17,18 @@ Flooding along the Krishna River basin—particularly at the bottleneck near the
 
 ---
 
-## 2. Key Features
+## 2. Platform Capabilities & Key Features
 
+- **Core Navigation Modules (Five Primary Sections):**
+  1. **Overview & Intelligence Home (`/`):** Executive flood risk posture, real-time gauge telemetry indicators, recent flood warnings, and workflow entrypoints.
+  2. **Smart Sensor Placement (`/sensor-placement`):** Interactive map scanner, candidate generator, classical greedy vs. quantum QAOA optimizer, Pareto frontier minimal-node analysis, and RF line-of-sight connectivity telemetry.
+  3. **Historical Flood Intelligence (`/historical-intelligence`):** Documented historical flood incidents at Prakasam Barrage (1903, 1998, 2009, 2024), peak discharge comparisons, zone inundation correlation, and strict data provenance transparency.
+  4. **Safe Shelters & Logistics (`/shelters`):** Multi-Criteria Decision Analysis (MCDA) ranking, verified operational relief centers vs. proposed candidate sites, risk-averse evacuation routing ($\beta = 3.0$), and shelter operator resource requests.
+  5. **Resource Planning & Fulfillment (`/resource-planning`):** Central inventory dashboard, multi-resource knapsack allocation, algorithmic demand estimation, shelter supply approval & dispatch workflows, and immutable audit logs.
 - **Multi-Model Hydrological Forecasting:** 1-day ahead water-level prediction evaluating Linear Regression, Random Forest, Gradient Boosting, a Persistence baseline, and an experimental 4-qubit Variational Quantum Regressor (VQR).
-- **Rule-Based Spatial Flood Risk Mapping:** Deterministic risk scoring (LOW, MODERATE, HIGH, CRITICAL) mapped over configurable spatial grids (16, 36, or 100 zones) with distance-to-river spatial attenuation.
-- **Minimal-Node Sensor Placement Optimization:**
-  - *Classical Greedy Solver:* Maximum coverage heuristic with a provable $(1 - 1/e) \approx 63.2\%$ approximation ratio.
-  - *Quantum QAOA Solver:* Quadratic Unconstrained Binary Optimization (QUBO) formulation solved via classical statevector simulation with exact Rosenberg polynomial reduction for multi-overlaps.
-  - *Parsimonious Objective:* Diagonal penalty and Pareto frontier analysis determining the saturation point ($k^*$) where extra sensors yield diminishing coverage.
-- **RF Communication & Network Resilience:** Haversine line-of-sight connectivity analysis between sensors and relay gateways, including failure-node simulation and graph connectivity tracking.
-- **Downstream Disaster Response Support:**
-  - *Safe Evacuation Centers:* Multi-Criteria Decision Analysis (MCDA) evaluating elevation, flood risk, distance to river, and road accessibility.
-  - *Evacuation Routing:* Risk-penalized Dijkstra shortest path with superlinear risk aversion ($\beta = 3.0$) avoiding inundated zones.
-  - *Adaptive Sensor Redeployment:* Bipartite minimum-cost matching (Hungarian algorithm) to reposition sensors with minimal transit distance.
-  - *Emergency Resource Allocation:* Multi-resource knapsack with diminishing marginal returns ($\ln(1 + x)$) respecting capacity caps.
-  - *Multi-Scenario Simulation:* Four presets (Dry Season, Monsoon Normal, Extreme Inflow, Heavy Downpour) propagating updates across all downstream modules.
+- **Rule-Based Spatial Flood Risk Mapping:** Deterministic risk scoring (LOW, MODERATE, HIGH, CRITICAL) mapped over configurable spatial grids with distance-to-river spatial attenuation.
+- **RF Communication & Network Resilience:** Line-of-sight connectivity analysis between sensors and relay gateways with failure-node simulation.
+- **Multi-Scenario Simulation:** Presets (Dry Season, Monsoon Normal, Extreme Inflow, Heavy Downpour) propagating updates across all downstream modules.
 
 ---
 
@@ -118,7 +115,7 @@ The application is structured into decoupled frontend and backend layers:
 
 - **Backend:** Python 3.10+, FastAPI 0.115, Uvicorn, Pydantic v2, NumPy 1.26, SciPy, Pandas, Scikit-Learn 1.5, Shapely, GeoPandas, Joblib, Pytest.
 - **Frontend:** TypeScript 5.5, React 18.3, Vite 5.4, React Router 6, Tailwind CSS 3.4, Recharts, Leaflet / React-Leaflet, Lucide React.
-- **Testing:** Pytest (136 unit, integration, and audit tests).
+- **Testing:** Pytest (198 unit, integration, and audit tests).
 
 ---
 
@@ -207,8 +204,8 @@ See `.env.example`, `frontend/.env.example`, and `backend/.env.example`.
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/quantumflood-ai.git
-cd quantumflood-ai
+git clone https://github.com/Rajesh665-mw/QuantumFlood-AI.git
+cd QuantumFlood-AI
 
 # Install backend dependencies
 cd backend
@@ -239,7 +236,7 @@ Interactive Dashboard will be available at: `http://localhost:5173`
 
 ## 11. Testing & Verification
 
-Run the full pytest suite (136 tests):
+Run the full pytest suite (198 tests):
 ```bash
 cd backend
 python -m pytest -v

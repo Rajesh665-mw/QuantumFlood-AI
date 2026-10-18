@@ -52,6 +52,21 @@ def select_area(req: AreaSelectRequest):
     After selection, all analysis endpoints (risk, optimization, sensor
     placement) will operate on the newly selected area.
     """
+    if req.study_area and not req.location_query and req.latitude is None:
+        center = req.study_area.get("center") or {}
+        if "lat" in center and "lon" in center:
+            req.latitude = float(center["lat"])
+            req.longitude = float(center["lon"])
+        elif "latitude" in req.study_area and "longitude" in req.study_area:
+            req.latitude = float(req.study_area["latitude"])
+            req.longitude = float(req.study_area["longitude"])
+        elif req.study_area.get("bounding_box"):
+            bbox = req.study_area["bounding_box"]
+            req.latitude = (bbox["min_lat"] + bbox["max_lat"]) / 2.0
+            req.longitude = (bbox["min_lon"] + bbox["max_lon"]) / 2.0
+        elif req.study_area.get("name"):
+            req.location_query = str(req.study_area["name"])
+
     if not req.location_query and req.latitude is None:
         raise HTTPException(
             status_code=400,
@@ -74,7 +89,7 @@ def select_area(req: AreaSelectRequest):
     if result.get("status") == "ERROR":
         raise HTTPException(status_code=404, detail=result.get("error", "Location selection failed."))
 
-    # Clear previous analysis results since the area has changed
+    # Clear previous singleton pipeline state for the new area
     state.latest_risk_map = None
     state.latest_optimization = None
     state.latest_connectivity = None
@@ -95,9 +110,9 @@ def select_area(req: AreaSelectRequest):
 def reset_area():
     """
     Resets the study area to the default Vijayawada–Krishna River Corridor.
-    Clears all previous analysis results.
+    In legacy mode, clears process-wide state; in multi-user mode, returns clean default context.
     """
-    # Clear all analysis state
+    # Reset active singleton pipeline state (isolated analysis_store items remain unaffected)
     state.latest_risk_map = None
     state.latest_optimization = None
     state.latest_connectivity = None

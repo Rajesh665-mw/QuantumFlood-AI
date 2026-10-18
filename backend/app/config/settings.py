@@ -4,7 +4,20 @@ Central configuration for QuantumFlood AI (Classical Implementation).
 All tunable constants live here so modules stay decoupled from
 hardcoded magic numbers scattered through the codebase.
 """
+import os
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Multi-User & Pre-Deployment Hardening Configuration
+# ---------------------------------------------------------------------------
+# By default, public multi-user mode rejects implicit fallbacks to ambient process-global state.
+# Legacy single-operator state fallback is gated behind this setting.
+ENABLE_LEGACY_SHARED_STATE: bool = os.getenv("ENABLE_LEGACY_SHARED_STATE", "false").lower() in ("1", "true", "yes")
+
+# Storage retention & bound parameters for request-scoped AnalysisStore
+ANALYSIS_STORE_TTL_HOURS: float = float(os.getenv("ANALYSIS_STORE_TTL_HOURS", "24.0"))
+ANALYSIS_STORE_MAX_DISK_MB: float = float(os.getenv("ANALYSIS_STORE_MAX_DISK_MB", "500.0"))
+ANALYSIS_STORE_MAX_MEMORY: int = int(os.getenv("ANALYSIS_STORE_MAX_MEMORY", "500"))
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -75,10 +88,10 @@ MAP_CONFIG = {
     "max_zoom": 17,
     "default_zoom": 12,
     "bounds_buffer_deg": 0.12,
-    "tile_url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    "tile_subdomains": ["a", "b", "c"],
+    "tile_url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    "tile_subdomains": [],
     "tile_attribution": (
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, METI, TomTom'
     ),
     "no_wrap": True,
     "world_copy_jump": False,

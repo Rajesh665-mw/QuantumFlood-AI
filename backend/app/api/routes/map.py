@@ -8,23 +8,29 @@ router = APIRouter()
 
 
 @router.get("/map/layers")
-def get_map_layers():
+def get_map_layers(lat: float = None, lon: float = None, half_size_deg: float = None, name: str = None):
     """
     Single source of truth for every map in the frontend: study area,
     base geometry layers, AND the map's display configuration (zoom limits,
-    max bounds, tile provider) - so no page hardcodes its own zoom/bounds
-    behaviour and every map page renders consistent geography.
+    max bounds, tile provider).
 
-    When a dynamic study area is active, returns its configuration.
-    Otherwise falls back to the default Vijayawada study area.
+    When latitude and longitude are supplied, resolves a request-scoped
+    study area context without mutating the global active area.
+    Otherwise falls back to current active or default study area.
     """
-    study_area = get_current_study_area()
+    if lat is not None and lon is not None:
+        from app.services.study_area_service import resolve_study_area_context, _is_vijayawada_location
+        study_area = resolve_study_area_context(latitude=lat, longitude=lon, half_size_deg=half_size_deg)
+        is_default = _is_vijayawada_location(lat, lon)
+    else:
+        study_area = get_current_study_area()
+        is_default = is_default_area()
 
-    if is_default_area():
+    if is_default:
         map_config = MAP_CONFIG
         max_bounds = get_max_bounds()
     else:
-        # Build dynamic map config from the active area
+        # Build dynamic map config from the study area
         from app.services.study_area_service import _build_map_config
         bbox = study_area.get("bounding_box", {})
         center = study_area.get("center", {})
@@ -45,11 +51,11 @@ def get_map_layers():
 
     return {
         "study_area": study_area,
-        "boundary": get_study_area_boundary(),
-        "river": get_river_centerline(),
-        "zones": get_risk_zone_geometry(),
+        "boundary": get_study_area_boundary(study_area=study_area),
+        "river": get_river_centerline(study_area=study_area),
+        "zones": get_risk_zone_geometry(study_area=study_area),
         "geometry_mode": "MODELLED_SPATIAL",
         "map_config": map_config,
         "max_bounds": max_bounds,
-        "is_default_area": is_default_area(),
+        "is_default_area": is_default,
     }

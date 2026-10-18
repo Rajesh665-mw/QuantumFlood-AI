@@ -99,6 +99,285 @@
 }
 .leaflet-control-attribution a { color: #8A96A8 !important; }
 
+/* ──────────────────────────────────────────────────────────────
+   PREMIUM UX – Animations & Transitions
+   ────────────────────────────────────────────────────────────── */
+
+/* Page entrance: content fades in and slides up slightly */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-enter .45s cubic-bezier(.25,.46,.45,.94) both;
+}
+
+/* Stagger children animation — each direct child fades in sequentially */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-up .4s cubic-bezier(.25,.46,.45,.94) forwards;
+}
+.stagger-children > *:nth-child(1)  { animation-delay: .05s; }
+.stagger-children > *:nth-child(2)  { animation-delay: .10s; }
+.stagger-children > *:nth-child(3)  { animation-delay: .15s; }
+.stagger-children > *:nth-child(4)  { animation-delay: .20s; }
+.stagger-children > *:nth-child(5)  { animation-delay: .25s; }
+.stagger-children > *:nth-child(6)  { animation-delay: .30s; }
+.stagger-children > *:nth-child(7)  { animation-delay: .35s; }
+.stagger-children > *:nth-child(8)  { animation-delay: .40s; }
+.stagger-children > *:nth-child(9)  { animation-delay: .45s; }
+.stagger-children > *:nth-child(10) { animation-delay: .50s; }
+
+/* Skeleton shimmer — horizontal gradient sweep for loading skeletons */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(59,72,87,.25) 0%,
+    rgba(90,103,121,.35) 40%,
+    rgba(59,72,87,.25) 80%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* Map Scanner — cinematic sweep overlay during geocode lookups */
+@keyframes map-scan-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes map-scan-pulse {
+  0%, 100% { box-shadow: inset 0 0 40px rgba(45,212,191,.1); }
+  50%      { box-shadow: inset 0 0 80px rgba(45,212,191,.2); }
+}
+.map-scanner-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  animation: map-scan-pulse 1.6s ease-in-out infinite;
+}
+.map-scanner-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(45,212,191,.12) 30%,
+    rgba(45,212,191,.25) 50%,
+    rgba(45,212,191,.12) 70%,
+    transparent 100%
+  );
+  animation: map-scan-sweep 1.4s cubic-bezier(.4,0,.2,1) infinite;
+}
+.map-scanner-overlay::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(45,212,191,.4);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(45,212,191,.3), inset 0 0 20px rgba(45,212,191,.1);
+  animation: qf-pulse-ring 2s ease-in-out infinite;
+}
+
+/* Panel glow — subtle teal highlight on hover for interactive panels */
+.panel-glow {
+  transition: box-shadow .3s ease, border-color .3s ease;
+}
+.panel-glow:hover {
+  box-shadow: 0 0 20px rgba(45,212,191,.08), 0 4px 16px rgba(0,0,0,.3);
+  border-color: rgba(45,212,191,.25);
+}
+
+/* Smooth content transitions for data that loads async */
+.fade-in {
+  animation: page-enter .35s ease-out both;
+}
+
+/* Scale-in for modals and overlay elements */
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.scale-in {
+  animation: scale-in .25s cubic-bezier(.25,.46,.45,.94) both;
+}
+
+/* Search status badge pulse */
+@keyframes status-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(45,212,191,.4); }
+  50%      { box-shadow: 0 0 16px rgba(45,212,191,.7); }
+}
+.status-glow {
+  animation: status-glow 1.5s ease-in-out infinite;
+}
+
+/* Scanner fade-out when search completes */
+@keyframes scanner-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+.scanner-fade-out {
+  animation: scanner-fade-out .5s ease-out forwards;
+}
+
+/* Map Scanner Viewport & HUD Elements */
+.map-scanner-grid {
+  background-size: 36px 36px;
+  background-image:
+    linear-gradient(to right, rgba(45, 212, 191, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(45, 212, 191, 0.07) 1px, transparent 1px);
+}
+
+.map-scanner-vignette {
+  background: radial-gradient(circle at center, transparent 0%, rgba(11, 18, 26, 0.25) 90%);
+}
+
+@keyframes map-glass-sweep {
+  0% {
+    top: 24%;
+    left: 22%;
+  }
+  25% {
+    top: 32%;
+    left: 68%;
+  }
+  50% {
+    top: 65%;
+    left: 60%;
+  }
+  75% {
+    top: 58%;
+    left: 28%;
+  }
+  100% {
+    top: 24%;
+    left: 22%;
+  }
+}
+
+.animate-glass-sweep {
+  animation: map-glass-sweep 4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+@keyframes map-beam-cone {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.92) rotate(-5deg);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08) rotate(5deg);
+  }
+}
+
+.animate-beam-cone {
+  animation: map-beam-cone 2.2s ease-in-out infinite;
+}
+
+@keyframes corner-hud-pulse {
+  0%, 100% {
+    border-color: rgba(45, 212, 191, 0.3);
+    box-shadow: 0 0 4px rgba(45, 212, 191, 0.1);
+  }
+  50% {
+    border-color: rgba(45, 212, 191, 0.85);
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.4);
+  }
+}
+
+.hud-corner {
+  animation: corner-hud-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes lockon-pop {
+  0% {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-lockon {
+  animation: lockon-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes indeterminate-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.animate-indeterminate {
+  animation: indeterminate-slide 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  .animate-glass-sweep { animation: none !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; }
+  .animate-beam-cone { animation: none !important; opacity: 0.6 !important; }
+  .hud-corner { animation: none !important; border-color: rgba(45, 212, 191, 0.6) !important; }
+  .animate-lockon { animation: none !important; opacity: 1 !important; transform: scale(1) !important; }
+  .animate-indeterminate { animation: none !important; width: 100% !important; }
+  .animate-pulse-slow { animation: none !important; }
+}
+
+/* Slow pulse for spotlight glow around search */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+
+/* Sensor explanation panel slide-in */
+@keyframes slide-in-right {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.25s ease-out forwards;
+}
+
+/* Custom Leaflet Sensor Marker Anchors */
+.custom-sensor-icon-anchor {
+  background: transparent !important;
+  border: none !important;
+}
+
+@keyframes radar-pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 0.3; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.animate-radar-pulse {
+  animation: radar-pulse 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }

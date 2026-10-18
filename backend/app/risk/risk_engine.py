@@ -65,13 +65,18 @@ def _proximity_band(distance_km: float) -> str:
         return "FAR_FROM_RIVER"
 
 
-def generate_zone_risk_map(water_level_m: float, inflow_ktcmd: float, rainfall_mm_24h: float,
-                            resolution: str = "default") -> dict:
+def generate_zone_risk_map(
+    water_level_m: float,
+    inflow_ktcmd: float,
+    rainfall_mm_24h: float,
+    resolution: str = "default",
+    study_area: dict = None,
+) -> dict:
     """Generate a per-zone risk map with zone-specific spatial attenuation."""
 
     # Base classification (uniform, at the gauge)
     base = classify_risk(water_level_m, inflow_ktcmd, rainfall_mm_24h)
-    zones = get_risk_zone_geometry(resolution)
+    zones = get_risk_zone_geometry(resolution, study_area=study_area)
 
     zone_results = []
     for z in zones:

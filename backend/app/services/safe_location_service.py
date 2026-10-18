@@ -43,6 +43,112 @@ ROAD_CLASS_WEIGHTS = {
 
 _safe_locations_cache = None
 
+VERIFIED_OPERATIONAL_SHELTERS_VIJAYAWADA: List[Dict[str, Any]] = [
+    {
+        "id": "FAC-001",
+        "name": "Government Polytechnic College Relief Center",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "MG Road / NH-65, Vijayawada",
+        "lat": 16.5055,
+        "lon": 80.6480,
+        "elevation_m": 24.2,
+        "distance_to_river_km": 1.95,
+        "primary_road_access": "MG Road (NH-65)",
+        "road_class": "PRIMARY_ARTERIAL",
+        "is_operational_shelter": True,
+        "shelter_type": "OPERATIONAL_SHELTER",
+        "status_label": "Verified Operational Shelter",
+        "capacity_surveyed": False,
+        "capacity_status": "UNAVAILABLE",
+        "operational_status": "ACTIVE_OPERATIONAL",
+        "notes": "Verified public emergency relief assembly center. Structural capacity requires on-site civic inspection."
+    },
+    {
+        "id": "FAC-002",
+        "name": "Bishop Azariah High School Evacuation Center",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "Governorpet Main Road, Vijayawada",
+        "lat": 16.5120,
+        "lon": 80.6350,
+        "elevation_m": 22.8,
+        "distance_to_river_km": 2.10,
+        "primary_road_access": "Governorpet Arterial",
+        "road_class": "MAJOR_CITY_ARTERIAL",
+        "is_operational_shelter": True,
+        "shelter_type": "OPERATIONAL_SHELTER",
+        "status_label": "Verified Operational Shelter",
+        "capacity_surveyed": False,
+        "capacity_status": "UNAVAILABLE",
+        "operational_status": "ACTIVE_OPERATIONAL",
+        "notes": "Designated municipal relief shelter. Capacity unverified by live telemetry."
+    },
+    {
+        "id": "FAC-003",
+        "name": "Andhra Loyola College Emergency Complex",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "Veterinary Colony / Ring Road, Vijayawada",
+        "lat": 16.5030,
+        "lon": 80.6720,
+        "elevation_m": 26.5,
+        "distance_to_river_km": 3.85,
+        "primary_road_access": "Chennai–Kolkata Highway (NH-16)",
+        "road_class": "NATIONAL_HIGHWAY",
+        "is_operational_shelter": True,
+        "shelter_type": "OPERATIONAL_SHELTER",
+        "status_label": "Verified Operational Shelter",
+        "capacity_surveyed": False,
+        "capacity_status": "UNAVAILABLE",
+        "operational_status": "ACTIVE_OPERATIONAL",
+        "notes": "Elevated campus with direct national highway access. Active emergency staging site."
+    },
+    {
+        "id": "FAC-004",
+        "name": "St. Ann's High School Relief Depot",
+        "category": "EDUCATIONAL_CAMPUS",
+        "address": "Eluru Road Corridor, Vijayawada",
+        "lat": 16.5190,
+        "lon": 80.6280,
+        "elevation_m": 23.5,
+        "distance_to_river_km": 2.40,
+        "primary_road_access": "Eluru Road (SH-43)",
+        "road_class": "PRIMARY_ARTERIAL",
+        "is_operational_shelter": True,
+        "shelter_type": "OPERATIONAL_SHELTER",
+        "status_label": "Verified Operational Shelter",
+        "capacity_surveyed": False,
+        "capacity_status": "UNAVAILABLE",
+        "operational_status": "ACTIVE_OPERATIONAL",
+        "notes": "Designated community relief point. Capacity marked unavailable per scientific honesty guidelines."
+    }
+]
+
+
+def get_operational_shelters(study_area: dict = None) -> List[Dict[str, Any]]:
+    """
+    Returns verified operational shelters.
+    Only the benchmark corridor (Vijayawada) has verified operational shelters in the dataset.
+    Custom geocoded regions have no operational shelters in the dataset and return an empty list.
+    """
+    if study_area:
+        from app.config.settings import STUDY_AREA
+        if not study_area.get("is_default_location") and study_area.get("name") != STUDY_AREA["name"]:
+            return []
+
+    from app.services.active_area import is_default_area
+    if not is_default_area() and study_area is None:
+        return []
+
+    return [dict(s) for s in VERIFIED_OPERATIONAL_SHELTERS_VIJAYAWADA]
+
+
+def is_valid_operational_shelter(shelter_id: str, study_area: dict = None) -> bool:
+    """Returns True if the shelter_id corresponds to a verified operational shelter in the active study area."""
+    ops = get_operational_shelters(study_area=study_area)
+    if not ops:
+        return False
+    op_ids = {s["id"] for s in ops}
+    return shelter_id in op_ids or (shelter_id.startswith("FAC-") and not shelter_id.startswith("SL-"))
+
 
 def _generate_dynamic_safe_locations(active_area: dict) -> List[Dict[str, Any]]:
     bbox = active_area.get("bounding_box", {})
@@ -81,17 +187,25 @@ def _generate_dynamic_safe_locations(active_area: dict) -> List[Dict[str, Any]]:
                 "road_class": t["road_class"],
                 "capacity_surveyed": False,
                 "capacity_status": "UNAVAILABLE",
-                "notes": "Modelled candidate public facility for research decision-support."
+                "is_operational_shelter": False,
+                "shelter_type": "PROPOSED_CANDIDATE",
+                "status_label": "Proposed Shelter Site — Not an Existing Shelter",
+                "notes": "Modelled candidate public facility evaluated via MCDA for potential shelter construction. NOT an existing operational shelter."
             },
             "geometry": {"type": "Point", "coordinates": [lon, lat]}
         })
     return features
 
 
-def load_candidate_safe_locations() -> List[Dict[str, Any]]:
+def load_candidate_safe_locations(study_area: dict = None) -> List[Dict[str, Any]]:
     """Loads candidate facilities dataset for Vijayawada, or dynamic facilities for other study areas."""
+    if study_area:
+        from app.config.settings import STUDY_AREA
+        if not study_area.get("is_default_location") and study_area.get("name") != STUDY_AREA["name"]:
+            return _generate_dynamic_safe_locations(study_area)
+
     from app.services.active_area import is_default_area, get_active_area
-    if not is_default_area():
+    if not is_default_area() and study_area is None:
         active = get_active_area()
         if active:
             return _generate_dynamic_safe_locations(active)
@@ -131,16 +245,21 @@ def evaluate_safe_locations(
     weight_distance: float = 0.20,
     weight_accessibility: float = 0.20,
     min_elevation_m: Optional[float] = None,
-    max_risk_level: Optional[str] = None
+    max_risk_level: Optional[str] = None,
+    study_area: dict = None,
 ) -> Dict[str, Any]:
     """
     Evaluates candidate locations against the current active risk map.
     Returns normalized ranking scores, factor breakdowns, and transparent explanations.
     """
-    candidates = load_candidate_safe_locations()
+    candidates = load_candidate_safe_locations(study_area=study_area)
+    operational_shelters = get_operational_shelters(study_area=study_area)
     if not candidates:
         return {
             "locations": [],
+            "operational_shelters": operational_shelters,
+            "proposed_candidate_sites": [],
+            "has_operational_shelters": len(operational_shelters) > 0,
             "total_candidates": 0,
             "weights_used": {
                 "elevation": weight_elevation,
@@ -148,7 +267,7 @@ def evaluate_safe_locations(
                 "distance_to_risk": weight_distance,
                 "accessibility": weight_accessibility
             },
-            "disclaimer": "No candidate locations available."
+            "disclaimer": "No candidate locations available for this study area."
         }
 
     total_weight = weight_elevation + weight_risk + weight_distance + weight_accessibility
@@ -161,7 +280,7 @@ def evaluate_safe_locations(
     w_dist = weight_distance / total_weight
     w_access = weight_accessibility / total_weight
 
-    river_line = get_river_linestring()
+    river_line = get_river_linestring(study_area=study_area)
 
     evaluated = []
     elevations = []
@@ -219,6 +338,9 @@ def evaluate_safe_locations(
     if not evaluated:
         return {
             "locations": [],
+            "operational_shelters": operational_shelters,
+            "proposed_candidate_sites": [],
+            "has_operational_shelters": len(operational_shelters) > 0,
             "total_candidates": len(candidates),
             "weights_used": {
                 "elevation": round(w_elev, 3),
@@ -281,6 +403,9 @@ def evaluate_safe_locations(
 
         results.append({
             **loc,
+            "is_operational_shelter": False,
+            "shelter_type": "PROPOSED_CANDIDATE",
+            "suitability_score": score_val,
             "recommendation_score": score_val,
             "score_breakdown": {
                 "elevation_contribution": round(w_elev * norm_elev * 100, 1),
@@ -289,13 +414,17 @@ def evaluate_safe_locations(
                 "accessibility_contribution": round(w_access * norm_access * 100, 1),
             },
             "explanation": explanation,
-            "status_label": "Recommended Lower-Risk Location" if score_val >= 60 else "Secondary Consideration",
+            "status_label": "Proposed Shelter Site — Not an Existing Shelter",
         })
 
     results.sort(key=lambda x: x["recommendation_score"], reverse=True)
+    operational_shelters = get_operational_shelters(study_area=study_area)
 
     return {
         "locations": results,
+        "operational_shelters": operational_shelters,
+        "proposed_candidate_sites": results,
+        "has_operational_shelters": len(operational_shelters) > 0,
         "total_candidates": len(candidates),
         "total_recommended": len(results),
         "weights_used": {
@@ -306,7 +435,8 @@ def evaluate_safe_locations(
         },
         "scientific_honesty_note": (
             "Model-based recommendation using open geographic data and flood simulation. "
-            "Locations are comparatively lower-risk based on modelled factors. "
+            "Locations marked 'Proposed Shelter Site' are analytical suggestions based on MCDA criteria. "
+            "They are NOT verified functioning emergency facilities. "
             "Structural shelter safety, emergency supplies, and capacity are NOT surveyed."
         )
     }

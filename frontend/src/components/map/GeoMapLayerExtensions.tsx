@@ -25,16 +25,17 @@ export function SafeLocationMarkersLayer({
     <>
       {locations.map((loc) => {
         if (!loc || !isFinite(loc.lat) || !isFinite(loc.lon)) return null
+        const isOperational = loc.shelter_type === 'OPERATIONAL_SHELTER' || loc.is_operational === true
         const score = loc.recommendation_score ?? 50
-        const color = score >= 75 ? '#10B981' : score >= 55 ? '#2DD4BF' : '#F59E0B'
+        const color = isOperational ? '#10B981' : (score >= 60 ? '#38BDF8' : '#F59E0B')
         return (
           <CircleMarker
             key={loc.id}
             center={[loc.lat, loc.lon]}
-            radius={8}
+            radius={isOperational ? 9 : 7}
             pathOptions={{
-              color: '#0B121A',
-              weight: 2,
+              color: isOperational ? '#F0FDF4' : '#0B121A',
+              weight: isOperational ? 2.5 : 2,
               fillColor: color,
               fillOpacity: 0.9,
             }}
@@ -42,22 +43,32 @@ export function SafeLocationMarkersLayer({
           >
             <Tooltip direction="top" offset={[0, -6]}>
               <div className="font-mono text-xs">
-                <strong>{loc.name}</strong> ({score}/100)
+                <strong>{loc.name}</strong>
                 <br />
-                <span className="text-[10px] text-ink-500">{loc.category?.replace(/_/g, ' ') ?? 'Facility'}</span>
+                <span className={isOperational ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
+                  {isOperational ? 'OPERATIONAL SHELTER' : 'PROPOSED CANDIDATE SITE'}
+                </span>
+                {!isOperational && ` · ${score}/100`}
               </div>
             </Tooltip>
             <Popup maxWidth={300}>
               <div className="font-mono text-xs leading-relaxed">
                 <div className="font-bold text-sm text-ink-100">{loc.name}</div>
-                <div className="text-[11px] text-signal-teal mt-0.5">{loc.status_label}</div>
+                <div className={`text-[11px] font-semibold mt-0.5 ${isOperational ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {isOperational ? 'Verified Operational Relief Facility' : 'Proposed Candidate Site — Not an Existing Shelter'}
+                </div>
                 <div className="mt-2 text-[11px] text-ink-300">
-                  <div>Recommendation Score: <strong>{score} / 100</strong></div>
+                  {isOperational && loc.capacity_estimate && (
+                    <div>Verified Capacity: <strong className="text-emerald-400">{loc.capacity_estimate} evacuees</strong></div>
+                  )}
+                  {!isOperational && (
+                    <div>Suitability Score: <strong>{score} / 100</strong></div>
+                  )}
                   <div>Elevation: <strong>{loc.elevation_m} m</strong></div>
                   <div>Distance to river: <strong>{loc.distance_to_river_km} km</strong></div>
                   <div>Assigned Zone: <strong>{loc.assigned_zone_id}</strong> ({loc.modelled_risk_level} risk)</div>
                   <div>Road Access: <strong>{loc.primary_road_access}</strong></div>
-                  <div>Capacity Status: <strong className="text-amber-400">{loc.capacity_status}</strong></div>
+                  <div>Capacity Status: <strong className={isOperational ? 'text-emerald-400' : 'text-amber-400'}>{loc.capacity_status}</strong></div>
                 </div>
                 <div className="mt-2 pt-2 border-t border-base-600 text-[10px] text-ink-400 italic">
                   {loc.explanation}

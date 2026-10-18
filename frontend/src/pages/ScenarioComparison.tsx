@@ -125,7 +125,7 @@ export default function ScenarioComparison() {
   }))
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       {/* Header */}
       <div>
         <span className="eyebrow">Module 6 · Multi-Scenario Flood Intelligence</span>

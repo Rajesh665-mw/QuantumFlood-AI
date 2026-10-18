@@ -70,7 +70,7 @@ export default function NetworkResilience() {
   ]
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       {/* Header */}
       <div>
         <span className="eyebrow">Module 4 · Network Fault Tolerance &amp; Recovery</span>

@@ -38,7 +38,7 @@ export default function NetworkCoverage() {
 
   if (error || !result) {
     return (
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 page-enter">
         <PageHeader />
         <EmptyState
           title="No coverage data yet"
@@ -64,7 +64,7 @@ export default function NetworkCoverage() {
   )
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 page-enter">
       <PageHeader />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

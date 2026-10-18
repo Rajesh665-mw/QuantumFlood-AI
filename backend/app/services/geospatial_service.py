@@ -118,7 +118,18 @@ def _overpass_to_geojson(overpass_data: dict) -> Dict[str, Any]:
         if len(coords) < 2:
             continue
 
-        waterway_name = tags.get("name") or tags.get("name:en") or tags.get("int_name") or tags.get("alt_name") or "Unnamed waterway"
+        waterway_name = (
+            tags.get("name:en")
+            or tags.get("int_name")
+            or tags.get("name:latin")
+            or tags.get("name")
+            or tags.get("alt_name")
+            or "Unnamed waterway"
+        )
+        if waterway_name and any(ord(c) > 127 for c in str(waterway_name)):
+            import unicodedata
+            norm = unicodedata.normalize("NFKD", str(waterway_name)).encode("ascii", "ignore").decode("ascii").strip()
+            waterway_name = norm if norm else (tags.get("name:en") or "Unnamed waterway")
         feature = {
             "type": "Feature",
             "properties": {

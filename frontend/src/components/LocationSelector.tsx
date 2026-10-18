@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { api } from '../services/api'
 import type { StudyArea, LocationSearchResult } from '../types'
 
 interface LocationSelectorProps {
   currentArea: StudyArea | null
   onAreaChanged: (newArea: StudyArea) => void
+  autoNavigate?: boolean
+  targetRoute?: string
 }
 
 const PRESETS = [
@@ -15,7 +18,9 @@ const PRESETS = [
   { name: 'New Orleans / Mississippi', query: 'New Orleans, Louisiana, USA', desc: 'Sub-sea-level delta and hurricane surge zone' },
 ]
 
-export default function LocationSelector({ currentArea, onAreaChanged }: LocationSelectorProps) {
+export default function LocationSelector({ currentArea, onAreaChanged, autoNavigate = true, targetRoute = '/sensor-placement' }: LocationSelectorProps) {
+  const navigate = useNavigate()
+  const location = useLocation()
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<LocationSearchResult[]>([])
   const [loading, setLoading] = useState(false)
@@ -61,10 +66,19 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
         onAreaChanged(res.study_area)
         window.dispatchEvent(new CustomEvent('study-area-changed', { detail: res.study_area }))
         setMessage({
-          text: `Active study area successfully configured: ${res.location_name}. Downstream quantum & classical modules updated.`,
+          text: `Active study area successfully configured: ${res.location_name}. Navigating to analysis…`,
           type: 'success',
         })
         setQuery('')
+        if (autoNavigate) {
+          navigate(targetRoute, {
+            state: {
+              fromSearch: true,
+              targetArea: res.study_area,
+              timestamp: Date.now(),
+            },
+          })
+        }
       } else {
         setMessage({ text: 'Could not resolve location. Please try a different query.', type: 'error' })
       }
@@ -89,11 +103,20 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
         onAreaChanged(res.study_area)
         window.dispatchEvent(new CustomEvent('study-area-changed', { detail: res.study_area }))
         setMessage({
-          text: `Active study area configured at coordinates (${lat.toFixed(4)}, ${lon.toFixed(4)}).`,
+          text: `Active study area configured at coordinates (${lat.toFixed(4)}, ${lon.toFixed(4)}). Navigating to analysis…`,
           type: 'success',
         })
         setManualLat('')
         setManualLon('')
+        if (autoNavigate) {
+          navigate(targetRoute, {
+            state: {
+              fromSearch: true,
+              targetArea: res.study_area,
+              timestamp: Date.now(),
+            },
+          })
+        }
       }
     } catch (err: any) {
       setMessage({ text: err?.message || 'Failed to select coordinate area.', type: 'error' })
@@ -111,9 +134,18 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
         onAreaChanged(res.study_area)
         window.dispatchEvent(new CustomEvent('study-area-changed', { detail: res.study_area }))
         setMessage({
-          text: 'Reverted to default Vijayawada–Krishna River Corridor benchmark.',
+          text: 'Reverted to default Vijayawada–Krishna River Corridor benchmark. Navigating to analysis…',
           type: 'info',
         })
+        if (autoNavigate) {
+          navigate(targetRoute, {
+            state: {
+              fromSearch: true,
+              targetArea: res.study_area,
+              timestamp: Date.now(),
+            },
+          })
+        }
       }
     } catch (err: any) {
       setMessage({ text: err?.message || 'Failed to reset study area.', type: 'error' })
@@ -125,7 +157,7 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
   const isDefault = !currentArea || currentArea.name.includes('Vijayawada')
 
   return (
-    <div className="panel p-6 border border-base-600/80 bg-base-900/90 rounded-lg shadow-xl">
+    <div className="panel p-6 border border-base-600/80 bg-base-900/90 rounded-lg shadow-xl fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-base-700">
         <div>
           <div className="flex items-center gap-2">
@@ -184,8 +216,8 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
                 }}
               />
               {searching && (
-                <div className="absolute right-3 top-3 text-xs text-signal-teal animate-spin">
-                  ⟳
+                <div className="absolute right-3 top-3">
+                  <span className="w-4 h-4 border-2 border-base-600 border-t-signal-teal rounded-full animate-spin inline-block" />
                 </div>
               )}
             </div>
@@ -193,7 +225,7 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
               type="button"
               onClick={() => query.trim() && handleSelectLocation(query.trim())}
               disabled={loading || !query.trim()}
-              className="bg-signal-teal text-base-950 font-medium px-4 py-2.5 rounded text-xs hover:bg-signal-teal/90 disabled:opacity-40 transition-colors shadow"
+              className="bg-signal-teal text-base-950 font-medium px-4 py-2.5 rounded text-xs hover:bg-signal-teal/90 hover:shadow-[0_0_16px_rgba(45,212,191,.35)] disabled:opacity-40 transition-all duration-200 shadow"
             >
               {loading ? 'Configuring...' : 'Set Active Area'}
             </button>
@@ -201,7 +233,7 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
 
           {/* Autocomplete Dropdown */}
           {suggestions.length > 0 && (
-            <div className="absolute z-30 left-0 right-0 mt-1 bg-base-950 border border-base-600 rounded shadow-2xl overflow-hidden divide-y divide-base-800">
+            <div className="absolute z-30 left-0 right-0 mt-1 bg-base-950 border border-base-600 rounded shadow-2xl overflow-hidden divide-y divide-base-800 scale-in">
               {suggestions.map((s, idx) => (
                 <button
                   key={idx}
@@ -238,7 +270,7 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
                 type="button"
                 onClick={() => handleSelectLocation(p.query)}
                 disabled={loading}
-                className="text-left p-2.5 rounded bg-base-950/70 border border-base-750 hover:border-signal-teal/40 hover:bg-base-800/80 transition-all group"
+                className="text-left p-2.5 rounded bg-base-950/70 border border-base-750 hover:border-signal-teal/40 hover:bg-base-800/80 transition-all duration-200 group panel-glow"
               >
                 <div className="font-medium text-xs text-ink-200 group-hover:text-signal-teal transition-colors">
                   {p.name}
@@ -322,7 +354,7 @@ export default function LocationSelector({ currentArea, onAreaChanged }: Locatio
         {/* Feedback Alert */}
         {message && (
           <div
-            className={`p-3 rounded text-xs font-mono border flex items-center justify-between ${
+            className={`p-3 rounded text-xs font-mono border flex items-center justify-between fade-in ${
               message.type === 'success'
                 ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
                 : message.type === 'error'

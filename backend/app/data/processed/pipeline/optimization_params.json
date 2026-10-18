@@ -1,6 +1,4 @@
 {
-  "num_sensors": 4,
-  "coverage_radius_km": 2.5,
-  "comm_range_km": 4.0,
-  "max_comm_nodes": 4
+  "num_sensors": 8,
+  "coverage_radius_km": 2.5
 }

@@ -32,6 +32,8 @@ class QmlForecastResult:
     scaling_params: Dict[str, Any] = field(default_factory=dict)
     affine_w: float = 1.0
     affine_b: float = 0.0
+    residual_std: float = 0.0
+    uncertainty_calibrated: bool = True
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -97,6 +99,8 @@ class QmlForecastResult:
             "simulator_name": self.simulator_name,
             "affine_w": round(float(self.affine_w), 6),
             "affine_b": round(float(self.affine_b), 6),
+            "residual_std_m": round(float(self.residual_std), 4),
+            "uncertainty_calibrated": self.uncertainty_calibrated,
             "scaling_params": self.scaling_params,
             "metadata": self.metadata,
         }

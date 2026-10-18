@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from app.api.routes import (
     health, data, forecast, risk, map as map_routes, optimization, network,
     recommendations, dashboard, safe_locations, evacuation, adaptive_sensors,
-    network_resilience, resource_allocation, scenarios, area
+    network_resilience, resource_allocation, scenarios, area, reports
 )
 from app.ml.data_loader import DataValidationError
 
@@ -47,15 +47,39 @@ allow_all = os.getenv("ALLOW_ALL_ORIGINS", "").lower() in ("1", "true", "yes")
 
 cors_origins = ["*"] if allow_all else list(dict.fromkeys(default_origins + env_origins))
 cors_origin_regex = None if allow_all else os.getenv("ALLOWED_ORIGIN_REGEX", r"^https:\/\/.*\.vercel\.app$")
+# W3C CORS Spec: Wildcard '*' cannot be combined with allow_credentials=True
+cors_allow_credentials = False if ("*" in cors_origins) else True
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
     allow_origin_regex=cors_origin_regex,
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_credentials=cors_allow_credentials,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    """Enforces standard HTTP security defense headers."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
+
+from app.services.analysis_store import analysis_store
+
+
+@app.on_event("startup")
+def startup_cleanup():
+    """Sweeps stale temporary files and expired analyses on process launch."""
+    try:
+        analysis_store.cleanup_expired_analyses()
+    except Exception:
+        pass
 
 
 @app.exception_handler(DataValidationError)
@@ -80,6 +104,7 @@ app.include_router(network_resilience.router, prefix="/api", tags=["network-resi
 app.include_router(resource_allocation.router, prefix="/api", tags=["resource-allocation"])
 app.include_router(scenarios.router, prefix="/api", tags=["scenarios"])
 app.include_router(area.router, prefix="/api", tags=["area"])
+app.include_router(reports.router, prefix="/api", tags=["reports"])
 
 
 

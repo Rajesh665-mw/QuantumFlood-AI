@@ -114,7 +114,7 @@ export default function SensorOptimisation() {
   const uncoveredZones = new Set(result?.optimization.uncovered_priority_zone_ids ?? [])
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 page-enter">
       <div>
         <span className="eyebrow">Module 6 · Sensor Placement Optimisation</span>
         <h1 className="font-display text-2xl text-ink-100 mt-1">Sensor Placement & Quantum QAOA</h1>
@@ -375,13 +375,13 @@ export default function SensorOptimisation() {
             <div className="flex items-center justify-between text-xs text-signal-teal font-mono">
               <span className="font-semibold">QUANTUM QAOA OPTIMISATION RESULT</span>
               <span className="px-2 py-0.5 rounded text-[10px] bg-signal-teal/10 border border-signal-teal/30">
-                {quantumResult.quantum_metrics.is_feasible ? 'FEASIBLE' : 'INFEASIBLE'}
+                {(quantumResult.quantum_metrics?.is_feasible ?? quantumResult.quantum?.is_feasible) ? 'FEASIBLE' : 'INFEASIBLE'}
               </span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
               <div>
                 <span className="text-xs text-ink-500">Weighted Risk</span>
-                <p className="text-lg font-display font-semibold text-signal-teal">{quantumResult.optimization.weighted_coverage}</p>
+                <p className="text-lg font-display font-semibold text-signal-teal">{quantumResult.optimization.weighted_risk_coverage ?? quantumResult.optimization.weighted_coverage ?? 0}</p>
               </div>
               <div>
                 <span className="text-xs text-ink-500">Coverage</span>
@@ -393,15 +393,15 @@ export default function SensorOptimisation() {
               </div>
               <div>
                 <span className="text-xs text-ink-500">Simulator Time</span>
-                <p className="text-lg font-display font-semibold text-ink-100">{quantumResult.quantum_metrics.execution_time_ms} ms</p>
+                <p className="text-lg font-display font-semibold text-ink-100">{(quantumResult.quantum_metrics?.execution_time_ms ?? quantumResult.quantum?.execution_time_ms) ?? 0} ms</p>
               </div>
             </div>
             <div className="mt-3 pt-3 border-t border-base-700/60 flex flex-wrap gap-4 text-xs font-mono text-ink-400">
-              <span>Qubits: <span className="text-ink-200">{quantumResult.quantum_metrics.qubits_used}</span></span>
-              <span>QAOA Depth p: <span className="text-ink-200">{quantumResult.quantum_metrics.qaoa_depth_p}</span></span>
-              <span>Shots: <span className="text-ink-200">{quantumResult.quantum_metrics.shots}</span></span>
-              <span>Optimal Energy: <span className="text-ink-200">{quantumResult.quantum_metrics.optimal_energy.toFixed(3)}</span></span>
-              <span>Sample Probability: <span className="text-ink-200">{(quantumResult.quantum_metrics.sample_probability * 100).toFixed(2)}%</span></span>
+              <span>Qubits: <span className="text-ink-200">{(quantumResult.quantum_metrics?.qubits_used ?? quantumResult.quantum?.total_qubits) ?? 0}</span></span>
+              <span>QAOA Depth p: <span className="text-ink-200">{(quantumResult.quantum_metrics?.qaoa_depth_p ?? quantumResult.quantum?.qaoa_depth_p) ?? 1}</span></span>
+              <span>Shots: <span className="text-ink-200">{(quantumResult.quantum_metrics?.shots ?? quantumResult.quantum?.shots) ?? 1024}</span></span>
+              <span>Optimal Energy: <span className="text-ink-200">{((quantumResult.quantum_metrics?.optimal_energy ?? quantumResult.quantum?.qubo_energy) ?? 0).toFixed(3)}</span></span>
+              <span>Sample Probability: <span className="text-ink-200">{(((quantumResult.quantum_metrics?.sample_probability ?? quantumResult.quantum?.solution_probability) ?? 0) * 100).toFixed(2)}%</span></span>
               <span>Selected Sensors: <span className="text-ink-200">{quantumResult.optimization.selected_sensors.map(s => s.candidate_id).join(', ')}</span></span>
             </div>
           </div>
