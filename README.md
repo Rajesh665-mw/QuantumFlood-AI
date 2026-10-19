@@ -23,7 +23,7 @@ Flooding along the Krishna River basin—particularly at the bottleneck near the
   1. **Overview & Intelligence Home (`/`):** Executive flood risk posture, real-time gauge telemetry indicators, recent flood warnings, and workflow entrypoints.
   2. **Smart Sensor Placement (`/sensor-placement`):** Interactive map scanner, candidate generator, classical greedy vs. quantum QAOA optimizer, Pareto frontier minimal-node analysis, and RF line-of-sight connectivity telemetry.
   3. **Historical Flood Intelligence (`/historical-intelligence`):** Documented historical flood incidents at Prakasam Barrage (1903, 1998, 2009, 2024), peak discharge comparisons, zone inundation correlation, and strict data provenance transparency.
-  4. **Safe Shelters & Logistics (`/shelters`):** Multi-Criteria Decision Analysis (MCDA) ranking, verified operational relief centers vs. proposed candidate sites, risk-averse evacuation routing ($\beta = 3.0$), and shelter operator resource requests.
+  4. **Safe Shelters & Logistics (`/safe-shelters`):** Multi-Criteria Decision Analysis (MCDA) ranking, verified operational relief centers vs. proposed candidate sites, risk-averse evacuation routing ($\beta = 3.0$), and shelter operator resource requests.
   5. **Resource Planning & Fulfillment (`/resource-planning`):** Central inventory dashboard, multi-resource knapsack allocation, algorithmic demand estimation, shelter supply approval & dispatch workflows, and immutable audit logs.
 - **Multi-Model Hydrological Forecasting:** 1-day ahead water-level prediction evaluating Linear Regression, Random Forest, Gradient Boosting, a Persistence baseline, and an experimental 4-qubit Variational Quantum Regressor (VQR).
 - **Rule-Based Spatial Flood Risk Mapping:** Deterministic risk scoring (LOW, MODERATE, HIGH, CRITICAL) mapped over configurable spatial grids with distance-to-river spatial attenuation.
@@ -115,7 +115,46 @@ The application is structured into decoupled frontend and backend layers:
 
 - **Backend:** Python 3.10+, FastAPI 0.115, Uvicorn, Pydantic v2, NumPy 1.26, SciPy, Pandas, Scikit-Learn 1.5, Shapely, GeoPandas, Joblib, Pytest.
 - **Frontend:** TypeScript 5.5, React 18.3, Vite 5.4, React Router 6, Tailwind CSS 3.4, Recharts, Leaflet / React-Leaflet, Lucide React.
-- **Testing:** Pytest (198 unit, integration, and audit tests).
+- **Testing:** Pytest (225 passing unit, domain invariant, integration, and audit tests).
+
+### Repository Structure
+```text
+quantumflood-ai/
+├── backend/                  # FastAPI REST API & Computational Engines
+│   ├── app/
+│   │   ├── api/routes/       # Modular API endpoints (forecast, optimization, etc.)
+│   │   ├── config/           # Central settings & bounding coordinates
+│   │   ├── data/             # Historical records, geojson, and benchmark datasets
+│   │   ├── ml/               # Classical ML engines, pipelines, and evaluation
+│   │   ├── optimization/     # Classical greedy approximation & QUBO builders
+│   │   ├── quantum/          # Pure NumPy statevector QAOA & 4-qubit VQR engines
+│   │   ├── schemas/          # Pydantic v2 domain schemas & validation models
+│   │   ├── services/         # Business logic (shelter requests, routing, area)
+│   │   └── tests/            # Automated test suite (225 tests)
+│   └── requirements.txt      # Backend Python dependencies
+├── frontend/                 # Vite + React 18 Single-Page Application
+│   ├── src/
+│   │   ├── components/       # Reusable UI cards, maps, legends, and toast system
+│   │   ├── layouts/          # Responsive 5-section navigation layout
+│   │   ├── pages/            # Primary workflow pages (Home, Sensors, Shelters, etc.)
+│   │   ├── services/         # Typed API client with environment base URL resolution
+│   │   └── utils/            # Shared chart themes and helper utilities
+│   ├── package.json          # Frontend npm dependencies
+│   ├── vercel.json           # Vercel SPA routing rewrite rules
+│   └── vite.config.ts        # Vite dev server & proxy configuration
+├── docs/                     # Architectural, mathematical, and empirical benchmark documentation
+│   ├── mathematical_formulations.md
+│   ├── QUANTUM_BENCHMARK_REPORT.md
+│   └── QUANTUM_SYSTEM_ARCHITECTURE.md
+├── .env.example              # Central environment configuration template
+├── .gitignore                # Git ignore specifications
+├── Dockerfile                # Container definition for containerized backend execution
+├── LICENSE                   # MIT open source license
+├── README.md                 # Primary system documentation and developer guide
+├── render.yaml               # Render Blueprint for automated backend deployment
+├── requirements.txt          # Root Python dependency pointer (-r backend/requirements.txt)
+└── vercel.json               # Root Vercel deployment configuration
+```
 
 ---
 
@@ -150,6 +189,12 @@ Evaluated on 722 daily hydro-meteorological observations (80/20 chronological tr
 - *Note:* The individual exploratory multi-seed runs are computed dynamically via API evaluation; `qml_forecast_result.json` remains the sole committed model artifact.
 
 *Scientific Finding:* Verified classical models (Gradient Boosting and Linear Regression) outperform the 4-qubit simulated VQR on this continuous hydrological regression task.
+
+### In-Depth Scientific & Architectural Documentation
+For complete mathematical derivations, QUBO matrix formulations, and benchmark reproductions:
+- **[Empirical Benchmark & Scientific Validation Report](docs/QUANTUM_BENCHMARK_REPORT.md):** 225-test verification matrix, 4-seed VQR evaluation, residual confidence interval calibration, and QAOA execution profiles.
+- **[Hybrid System Architecture & Formulation Specification](docs/QUANTUM_SYSTEM_ARCHITECTURE.md):** Formal problem specifications for sensor placement, hydrological VQR, shelter site portfolios, and resource knapsack allocation.
+- **[Mathematical Formulations Reference](docs/mathematical_formulations.md):** Detailed reference for exponential flood attenuation, distance-decay models, and classical optimality bounds.
 
 ---
 
@@ -193,7 +238,7 @@ The system enforces a strict data provenance contract surfaced at `/api/data/pro
 | `ALLOWED_ORIGIN_REGEX` | Backend | `^https:\/\/.*\.vercel\.app$` | Regex allowing all Vercel preview/production domains. |
 | `ALLOW_ALL_ORIGINS` | Backend | `false` | Set to `true` only for completely open demo instances. |
 
-See `.env.example`, `frontend/.env.example`, and `backend/.env.example`.
+See `.env.example` and `frontend/.env.example`.
 
 ---
 
@@ -237,10 +282,10 @@ Interactive Dashboard will be available at: `http://localhost:5173`
 
 ## 11. Testing & Verification
 
-Run the full pytest suite (198 tests):
+Run the full pytest suite (225 tests):
 ```bash
 cd backend
-python -m pytest -v
+python -m pytest app/tests/ -v
 ```
 Build the frontend for production:
 ```bash
@@ -271,7 +316,12 @@ npm run build
 
 The backend requires a persistent Python 3.10+ container runtime with C-library support for GeoPandas and NumPy.
 
-#### Example: Deploying on [Render.com](https://render.com)
+#### Option 1: Blueprint Deployment via `render.yaml` (Recommended)
+The repository includes a preconfigured [`render.yaml`](render.yaml) at root.
+1. In the [Render Dashboard](https://dashboard.render.com), select **New > Blueprint**.
+2. Connect your GitHub repository; Render will automatically detect `render.yaml` and configure the Python web service with start command `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
+
+#### Option 2: Manual Web Service Setup
 1. Create a new **Web Service** connected to your GitHub repository.
 2. Configure settings:
    - **Root Directory:** `backend`
@@ -279,7 +329,7 @@ The backend requires a persistent Python 3.10+ container runtime with C-library 
    - **Build Command:** `pip install -r requirements.txt`
    - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 3. Add Environment Variables:
-   - `PYTHON_VERSION`: `3.10.12` (or 3.11/3.12)
+   - `PYTHON_VERSION`: `3.11.9`
    - `FRONTEND_URL`: `https://your-app.vercel.app`
 4. Deploy the service and copy the public URL to your frontend's `VITE_API_BASE_URL`.
 

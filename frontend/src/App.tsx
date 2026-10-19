@@ -86,6 +86,7 @@ export default function App() {
             <Route path="/data-analytics" element={<Navigate to="/historical-intelligence" replace />} />
 
             <Route path="/safe-locations" element={<Navigate to="/shelters" replace />} />
+            <Route path="/safe-shelters" element={<Navigate to="/shelters" replace />} />
             <Route path="/evacuation-routing" element={<Navigate to="/shelters" replace />} />
 
             <Route path="/resource-allocation" element={<Navigate to="/resource-planning" replace />} />

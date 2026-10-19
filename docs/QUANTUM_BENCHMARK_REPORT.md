@@ -180,4 +180,4 @@ $$\min_{\mathbf{x}} H_{\text{resource}}(\mathbf{x}) = -\sum_{i} \sum_{j} U_i \cd
 
 1. **Genuinely Enhanced Architecture:** Quantum algorithms were formulated strictly for combinatorial and representation tasks where physical Hamiltonians map cleanly to the problem structure (spatial dispersion, constrained subsets, and angle-embedded timeseries).
 2. **Honesty Regarding Hardware:** All quantum executions run on local open-source NumPy statevector simulators. The backend truthfully exposes solver metadata (`numpy_statevector_simulator`, qubit counts, circuit depth, CNOT count, and execution time) to prevent deceptive "quantum supremacy" impressions.
-3. **Robust Software Engineering:** Full regression testing verified 218 passing automated tests, a zero-error Vite production build, request-scoped session isolation, and operational data integrity.
+3. **Robust Software Engineering:** Full regression testing verified 225 passing automated tests, a zero-error Vite production build, request-scoped session isolation, and operational data integrity.
