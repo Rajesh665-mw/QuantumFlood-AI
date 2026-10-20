@@ -323,9 +323,9 @@ export default function SafeShelters() {
         {/* Left 2 Cols: Interactive Map with Evacuation Layer */}
         <div className="lg:col-span-2 panel p-3 sm:p-5 flex flex-col gap-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <span className="eyebrow">Spatial Assessment</span>
-              <div className="inline-flex rounded-lg bg-base-900 p-0.5 border border-base-750">
+              <div className="flex flex-col sm:flex-row rounded-lg bg-base-900 p-0.5 border border-base-750 gap-0.5">
                 <button
                   onClick={() => {
                     setActiveTab('OPERATIONAL')
@@ -333,7 +333,7 @@ export default function SafeShelters() {
                       handleSelectShelter(operationalShelters[0])
                     }
                   }}
-                  className={`px-3 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors min-h-[38px] sm:min-h-0 text-center flex items-center justify-center ${
                     activeTab === 'OPERATIONAL'
                       ? 'bg-emerald-500 text-base-950 font-bold shadow-sm'
                       : 'text-ink-400 hover:text-ink-200'
@@ -348,7 +348,7 @@ export default function SafeShelters() {
                       handleSelectShelter(proposedCandidateSites[0])
                     }
                   }}
-                  className={`px-3 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors min-h-[38px] sm:min-h-0 text-center flex items-center justify-center ${
                     activeTab === 'PROPOSED'
                       ? 'bg-signal-cyan text-base-950 font-bold shadow-sm'
                       : 'text-ink-400 hover:text-ink-200'
@@ -367,8 +367,8 @@ export default function SafeShelters() {
             </div>
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-base-700">
-            <GeoMap mapConfig={layers.map_config} bounds={layers.max_bounds} center={center} height="480px">
+          <div className="rounded-lg overflow-hidden border border-base-700 h-[340px] sm:h-[420px] lg:h-[480px]">
+            <GeoMap mapConfig={layers.map_config} bounds={layers.max_bounds} center={center} height="100%">
               <LayersControl position="topright">
                 <LayersOverlay name="Study Area Boundary" checked>
                   <StudyAreaBoundaryLayer boundary={layers.boundary} />
@@ -654,7 +654,7 @@ export default function SafeShelters() {
             <button
               onClick={handleOptimizePortfolio}
               disabled={portfolioLoading || proposedCandidateSites.length === 0}
-              className="w-full bg-signal-blue/20 hover:bg-signal-blue/30 text-signal-blue border border-signal-blue/40 text-xs font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-40"
+              className="w-full bg-signal-blue/20 hover:bg-signal-blue/30 text-signal-blue border border-signal-blue/40 text-xs font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-40 min-h-[44px] flex items-center justify-center"
             >
               {portfolioLoading ? 'Simulating QAOA Circuit…' : 'Run Quantum Portfolio Optimizer'}
             </button>
@@ -766,7 +766,7 @@ export default function SafeShelters() {
           </div>
         )}
 
-        <form onSubmit={handleCreateRequest} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <form onSubmit={handleCreateRequest} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-mono text-ink-300">Operational Shelter Facility</label>
             <select
@@ -856,7 +856,7 @@ export default function SafeShelters() {
             <button
               type="submit"
               disabled={submittingReq || operationalShelters.length === 0 || !isSelectedOperational}
-              className="w-full bg-emerald-500 hover:bg-emerald-400 text-base-950 font-semibold py-2 px-4 rounded text-xs transition-colors shadow-sm disabled:opacity-40"
+              className="w-full bg-emerald-500 hover:bg-emerald-400 text-base-950 font-semibold py-2.5 px-4 rounded text-xs transition-colors shadow-sm disabled:opacity-40 min-h-[44px] flex items-center justify-center"
             >
               {submittingReq ? 'Submitting Request…' : 'Submit Resource Request'}
             </button>
@@ -898,8 +898,8 @@ export default function SafeShelters() {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-ink-300">
+        <div className="responsive-table-container">
+          <table className="w-full text-left text-xs text-ink-300 min-w-[700px]">
             <thead className="bg-base-800 font-mono text-[11px] text-ink-400 uppercase border-b border-base-700">
               <tr>
                 <th className="py-2.5 px-3">Request ID</th>

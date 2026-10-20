@@ -60,7 +60,7 @@ function ToastSlot({ item, onDismiss }: { item: ToastItem; onDismiss: (id: numbe
       className={`flex items-center gap-3 px-4 py-3 rounded-lg border backdrop-blur-sm shadow-xl
         ${VARIANT_STYLES[item.variant]}
         ${exiting ? 'animate-toast-exit' : 'animate-toast-enter'}
-        max-w-sm w-full pointer-events-auto cursor-pointer`}
+        max-w-sm w-full pointer-events-auto cursor-pointer min-h-[44px]`}
       onClick={() => {
         setExiting(true)
         setTimeout(() => onDismiss(item.id), 300)
@@ -88,8 +88,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      {/* Toast container — fixed bottom-right */}
-      <div className="fixed bottom-4 right-4 z-[99998] flex flex-col gap-2 pointer-events-none" aria-label="Notifications">
+      {/* Toast container — responsive positioning */}
+      <div className="fixed bottom-4 right-4 left-4 sm:left-auto z-[99998] flex flex-col items-center sm:items-end gap-2 pointer-events-none safe-pb" aria-label="Notifications">
         {items.map((item) => (
           <ToastSlot key={item.id} item={item} onDismiss={dismiss} />
         ))}

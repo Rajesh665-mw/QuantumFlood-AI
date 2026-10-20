@@ -857,7 +857,7 @@ export function ConnectedSensorNodeBar({
   if (activeSensors.length === 0) return null
 
   return (
-    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-base-950/80 border border-base-750 overflow-x-auto">
+    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-base-950/80 border border-base-750 overflow-x-auto responsive-table-container">
       <span className="text-xs font-mono text-ink-400 whitespace-nowrap flex items-center gap-1.5 shrink-0 pr-1">
         <span className="w-2 h-2 rounded-full bg-signal-teal animate-pulse" />
         <span>Optimized Nodes ({activeSensors.length}):</span>
@@ -878,7 +878,7 @@ export function ConnectedSensorNodeBar({
               onClick={() => onSelectSensor(s.candidate_id, sLat, sLon)}
               onMouseEnter={() => onHoverSensor?.(s.candidate_id, sLat, sLon)}
               onMouseLeave={() => onLeaveSensor?.()}
-              className={`px-2 py-1 rounded text-xs font-mono transition-all duration-150 flex items-center gap-1 border shrink-0 ${
+              className={`px-2.5 py-1.5 rounded text-xs font-mono transition-all duration-150 flex items-center gap-1 border shrink-0 min-h-[34px] ${
                 isHovered
                   ? 'bg-sky-500/20 text-sky-200 border-sky-400 font-bold shadow-[0_0_12px_rgba(56,189,248,0.4)]'
                   : isSelected

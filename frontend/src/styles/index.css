@@ -399,3 +399,49 @@
 .animate-radar-pulse {
   animation: radar-pulse 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
+
+/* ──────────────────────────────────────────────────────────────
+   RESPONSIVE DESIGN & TOUCH SCREEN OPTIMIZATIONS
+   ────────────────────────────────────────────────────────────── */
+
+/* iOS Auto-Zoom Prevention: Ensure form controls are at least 16px on mobile viewports */
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Responsive Table Scroller: smooth momentum scrolling with visual boundary cues */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* Safe-area padding support for mobile notches and home indicators */
+.safe-pb {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+
+/* Leaflet layer control scaling on small screens */
+@media (max-width: 640px) {
+  .leaflet-top .leaflet-control {
+    margin-top: 8px !important;
+  }
+  .leaflet-right .leaflet-control {
+    margin-right: 8px !important;
+  }
+  .leaflet-control-layers {
+    max-width: 220px !important;
+    font-size: 11px !important;
+  }
+  .leaflet-control-layers-toggle {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}

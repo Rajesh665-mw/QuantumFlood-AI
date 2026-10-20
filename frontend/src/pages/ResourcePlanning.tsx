@@ -278,7 +278,7 @@ export default function ResourcePlanning() {
 
       {/* Summary KPI Cards */}
       {demandSummary && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             label="Total Shelter Requests"
             value={demandSummary.total_requests}
@@ -323,7 +323,7 @@ export default function ResourcePlanning() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {inventory.map((item) => {
             const pctAllocated = (item.allocated / (item.total_stock || 1)) * 100
             return (
@@ -375,8 +375,8 @@ export default function ResourcePlanning() {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-ink-300">
+          <div className="responsive-table-container">
+            <table className="w-full text-left text-xs text-ink-300 min-w-[650px]">
               <thead className="bg-base-800 font-mono text-[11px] text-ink-400 uppercase border-b border-base-700">
                 <tr>
                   <th className="py-2.5 px-3">Resource Commodity</th>
@@ -459,7 +459,7 @@ export default function ResourcePlanning() {
             <button
               onClick={handleRunQuantumAlloc}
               disabled={quantumAllocLoading || requests.length === 0}
-              className="w-full bg-signal-blue/20 hover:bg-signal-blue/30 text-signal-blue border border-signal-blue/40 text-xs font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-40"
+              className="w-full bg-signal-blue/20 hover:bg-signal-blue/30 text-signal-blue border border-signal-blue/40 text-xs font-semibold py-2.5 px-4 rounded-lg transition-colors disabled:opacity-40 min-h-[44px] flex items-center justify-center"
             >
               {quantumAllocLoading ? 'Simulating QAOA Knapsack…' : 'Run Quantum Resource Optimizer'}
             </button>
@@ -514,8 +514,8 @@ export default function ResourcePlanning() {
             </div>
 
             {/* Allocations breakdown */}
-            <div className="overflow-x-auto rounded-lg border border-base-750">
-              <table className="w-full text-left text-xs text-ink-300">
+            <div className="responsive-table-container rounded-lg border border-base-750">
+              <table className="w-full text-left text-xs text-ink-300 min-w-[560px]">
                 <thead className="bg-base-800 font-mono text-[11px] text-ink-400 uppercase border-b border-base-700">
                   <tr>
                     <th className="py-2 px-3">Req ID</th>
@@ -556,7 +556,7 @@ export default function ResourcePlanning() {
               <button
                 onClick={handleApplyQuantumAlloc}
                 disabled={quantumApplyLoading || quantumAllocResult.allocations.length === 0}
-                className="bg-emerald-600 hover:bg-emerald-500 text-base-950 font-bold text-xs py-2 px-4 rounded-lg transition-colors disabled:opacity-40 self-end sm:self-auto"
+                className="bg-emerald-600 hover:bg-emerald-500 text-base-950 font-bold text-xs py-2.5 px-4 rounded-lg transition-colors disabled:opacity-40 self-end sm:self-auto min-h-[40px] flex items-center justify-center"
               >
                 {quantumApplyLoading ? 'Applying to Ledger…' : 'Apply Quantum Allocations to Ledger'}
               </button>
@@ -609,8 +609,8 @@ export default function ResourcePlanning() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-ink-300">
+          <div className="responsive-table-container">
+            <table className="w-full text-left text-xs text-ink-300 min-w-[760px]">
               <thead className="bg-base-800 font-mono text-[11px] text-ink-400 uppercase border-b border-base-700">
                 <tr>
                   <th className="py-2.5 px-3">Req ID</th>
@@ -669,7 +669,7 @@ export default function ResourcePlanning() {
                                   setCustomAllocQty(Math.min(r.requested_quantity, availableStock))
                                 }}
                                 disabled={actionLoading}
-                                className="px-2.5 py-1 rounded bg-amber-500 hover:bg-amber-400 text-base-950 text-[11px] font-semibold transition-colors disabled:opacity-40"
+                                className="px-3 py-1.5 rounded bg-amber-500 hover:bg-amber-400 text-base-950 text-[11px] font-semibold transition-colors disabled:opacity-40 min-h-[34px] flex items-center justify-center"
                               >
                                 Allocate
                               </button>
@@ -681,7 +681,7 @@ export default function ResourcePlanning() {
                                   setCustomFulfillQty(r.allocated_quantity)
                                 }}
                                 disabled={actionLoading || r.allocated_quantity <= 0}
-                                className="px-2.5 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-base-950 text-[11px] font-semibold transition-colors disabled:opacity-40"
+                                className="px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-base-950 text-[11px] font-semibold transition-colors disabled:opacity-40 min-h-[34px] flex items-center justify-center"
                               >
                                 Fulfill
                               </button>
@@ -733,7 +733,7 @@ export default function ResourcePlanning() {
           </div>
 
           <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-base-750">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <label className="text-xs font-mono text-ink-300">Quantity to Allocate:</label>
               <input
                 type="number"
@@ -741,12 +741,12 @@ export default function ResourcePlanning() {
                 max={getInventoryForItem(activeAllocReq.resource_type)?.available ?? activeAllocReq.requested_quantity}
                 value={customAllocQty}
                 onChange={(e) => setCustomAllocQty(Number(e.target.value))}
-                className="bg-base-950 border border-base-700 rounded px-3 py-1.5 text-xs text-ink-100 font-mono w-32 focus:outline-none focus:border-amber-400"
+                className="bg-base-950 border border-base-700 rounded px-3 py-2 text-xs text-ink-100 font-mono w-32 focus:outline-none focus:border-amber-400 min-h-[38px]"
               />
               <button
                 type="button"
                 onClick={() => setCustomAllocQty(Math.min(activeAllocReq.requested_quantity, getInventoryForItem(activeAllocReq.resource_type)?.available ?? 0))}
-                className="text-[11px] text-signal-cyan underline font-mono"
+                className="text-[11px] text-signal-cyan underline font-mono py-1"
               >
                 Max Available
               </button>
@@ -755,14 +755,14 @@ export default function ResourcePlanning() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveAllocReq(null)}
-                className="px-3 py-1.5 rounded bg-base-800 text-ink-300 text-xs font-medium"
+                className="px-3.5 py-2 rounded bg-base-800 text-ink-300 text-xs font-medium min-h-[38px]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleAllocate(activeAllocReq, customAllocQty)}
                 disabled={actionLoading || customAllocQty <= 0}
-                className="px-4 py-1.5 rounded bg-amber-500 hover:bg-amber-400 text-base-950 text-xs font-bold transition-colors disabled:opacity-40"
+                className="px-4 py-2 rounded bg-amber-500 hover:bg-amber-400 text-base-950 text-xs font-bold transition-colors disabled:opacity-40 min-h-[38px] flex items-center justify-center"
               >
                 {actionLoading ? 'Allocating…' : 'Confirm Allocation'}
               </button>
@@ -787,7 +787,7 @@ export default function ResourcePlanning() {
           </div>
 
           <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <label className="text-xs font-mono text-ink-300">Quantity Delivered:</label>
               <input
                 type="number"
@@ -795,7 +795,7 @@ export default function ResourcePlanning() {
                 max={activeFulfillReq.allocated_quantity}
                 value={customFulfillQty}
                 onChange={(e) => setCustomFulfillQty(Number(e.target.value))}
-                className="bg-base-950 border border-base-700 rounded px-3 py-1.5 text-xs text-ink-100 font-mono w-32 focus:outline-none focus:border-emerald-400"
+                className="bg-base-950 border border-base-700 rounded px-3 py-2 text-xs text-ink-100 font-mono w-32 focus:outline-none focus:border-emerald-400 min-h-[38px]"
               />
               <span className="text-[11px] text-ink-500 font-mono">
                 Allocated balance: {activeFulfillReq.allocated_quantity} units
@@ -805,14 +805,14 @@ export default function ResourcePlanning() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveFulfillReq(null)}
-                className="px-3 py-1.5 rounded bg-base-800 text-ink-300 text-xs font-medium"
+                className="px-3.5 py-2 rounded bg-base-800 text-ink-300 text-xs font-medium min-h-[38px]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleFulfill(activeFulfillReq, customFulfillQty)}
                 disabled={actionLoading || customFulfillQty <= 0}
-                className="px-4 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-base-950 text-xs font-bold transition-colors disabled:opacity-40"
+                className="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-400 text-base-950 text-xs font-bold transition-colors disabled:opacity-40 min-h-[38px] flex items-center justify-center"
               >
                 {actionLoading ? 'Recording Dispatch…' : 'Record Verified Fulfillment'}
               </button>
@@ -889,7 +889,7 @@ export default function ResourcePlanning() {
         <button
           onClick={handleRerunTactical}
           disabled={tacticalLoading}
-          className="bg-base-800 hover:bg-base-750 text-signal-cyan border border-base-700 text-xs font-semibold py-2 px-4 rounded transition-colors disabled:opacity-40"
+          className="bg-base-800 hover:bg-base-750 text-signal-cyan border border-base-700 text-xs font-semibold py-2.5 px-4 rounded transition-colors disabled:opacity-40 min-h-[44px] flex items-center justify-center"
         >
           {tacticalLoading ? 'Optimizing Knapsack…' : 'Re-Run Tactical Resource Optimizer'}
         </button>
@@ -919,8 +919,8 @@ export default function ResourcePlanning() {
             </div>
 
             {/* Serviced Zones Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-ink-300">
+            <div className="responsive-table-container">
+              <table className="w-full text-left text-xs text-ink-300 min-w-[620px]">
                 <thead className="bg-base-800 font-mono text-[11px] text-ink-400 uppercase border-b border-base-700">
                   <tr>
                     <th className="py-2.5 px-3">Zone ID</th>

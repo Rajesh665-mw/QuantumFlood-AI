@@ -550,9 +550,9 @@ export default function SensorPlacement() {
               <button
                 onClick={() => setActiveSolverView('classical')}
                 disabled={!result}
-                className={`px-3 py-1 rounded font-medium transition-colors ${
+                className={`min-h-[38px] px-3.5 py-1.5 rounded font-medium text-xs transition-colors ${
                   activeSolverView === 'classical'
-                    ? 'bg-signal-teal text-base-950 font-semibold shadow-sm'
+                    ? 'bg-signal-teal text-base-950 font-bold shadow-sm'
                     : 'text-ink-300 hover:text-ink-100 disabled:opacity-40'
                 }`}
               >
@@ -561,9 +561,9 @@ export default function SensorPlacement() {
               <button
                 onClick={() => setActiveSolverView('quantum')}
                 disabled={!quantumResult}
-                className={`px-3 py-1 rounded font-medium transition-colors ${
+                className={`min-h-[38px] px-3.5 py-1.5 rounded font-medium text-xs transition-colors ${
                   activeSolverView === 'quantum'
-                    ? 'bg-signal-teal text-base-950 font-semibold shadow-sm'
+                    ? 'bg-signal-teal text-base-950 font-bold shadow-sm'
                     : 'text-ink-300 hover:text-ink-100 disabled:opacity-40'
                 }`}
               >
@@ -574,10 +574,11 @@ export default function SensorPlacement() {
         </div>
 
         {/* Inputs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono text-ink-300 font-medium">
-              Sensor Budget (K): <span className="text-signal-teal font-bold">{numSensors}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-4">
+          <div className="flex flex-col gap-1.5 p-3 rounded-lg bg-base-950/40 border border-base-750/60">
+            <label className="text-xs font-mono text-ink-300 font-medium flex items-center justify-between">
+              <span>Sensor Budget (K):</span>
+              <span className="text-signal-teal font-bold">{numSensors}</span>
             </label>
             <input
               type="range"
@@ -585,14 +586,15 @@ export default function SensorPlacement() {
               max={24}
               value={numSensors}
               onChange={(e) => setNumSensors(Number(e.target.value))}
-              className="accent-signal-teal cursor-pointer"
+              className="accent-signal-teal cursor-pointer h-2 min-h-[36px]"
             />
             <span className="text-[10px] text-ink-500 font-mono">1 to 24 sensors</span>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono text-ink-300 font-medium">
-              Coverage Radius: <span className="text-signal-teal font-bold">{radius} km</span>
+          <div className="flex flex-col gap-1.5 p-3 rounded-lg bg-base-950/40 border border-base-750/60">
+            <label className="text-xs font-mono text-ink-300 font-medium flex items-center justify-between">
+              <span>Coverage Radius:</span>
+              <span className="text-signal-teal font-bold">{radius} km</span>
             </label>
             <input
               type="range"
@@ -601,14 +603,15 @@ export default function SensorPlacement() {
               step={0.1}
               value={radius}
               onChange={(e) => setRadius(Number(e.target.value))}
-              className="accent-signal-teal cursor-pointer"
+              className="accent-signal-teal cursor-pointer h-2 min-h-[36px]"
             />
             <span className="text-[10px] text-ink-500 font-mono">Hydrological sensing horizon</span>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono text-ink-300 font-medium">
-              Comm Range: <span className="text-signal-cyan font-bold">{commRange} km</span>
+          <div className="flex flex-col gap-1.5 p-3 rounded-lg bg-base-950/40 border border-base-750/60">
+            <label className="text-xs font-mono text-ink-300 font-medium flex items-center justify-between">
+              <span>Comm Range:</span>
+              <span className="text-signal-cyan font-bold">{commRange} km</span>
             </label>
             <input
               type="range"
@@ -617,21 +620,22 @@ export default function SensorPlacement() {
               step={0.5}
               value={commRange}
               onChange={(e) => setCommRange(Number(e.target.value))}
-              className="accent-signal-cyan cursor-pointer"
+              className="accent-signal-cyan cursor-pointer h-2 min-h-[36px]"
             />
             <span className="text-[10px] text-ink-500 font-mono">LoRa / mesh link limit</span>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono text-ink-300 font-medium">
-              QAOA Depth (p): <span className="text-purple-400 font-bold">p={qaoaDepth}</span>
+          <div className="flex flex-col gap-1.5 p-3 rounded-lg bg-base-950/40 border border-base-750/60">
+            <label className="text-xs font-mono text-ink-300 font-medium flex items-center justify-between">
+              <span>QAOA Depth:</span>
+              <span className="text-purple-400 font-bold">p={qaoaDepth}</span>
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 min-h-[36px] items-center">
               {[1, 2].map((pVal) => (
                 <button
                   key={pVal}
                   onClick={() => setQaoaDepth(pVal)}
-                  className={`flex-1 py-1 rounded text-xs font-mono border ${
+                  className={`flex-1 py-1.5 rounded text-xs font-mono border min-h-[36px] transition-colors ${
                     qaoaDepth === pVal
                       ? 'bg-purple-950/80 border-purple-500 text-purple-200 font-bold'
                       : 'border-base-700 bg-base-800 text-ink-400 hover:text-ink-200'
@@ -646,11 +650,11 @@ export default function SensorPlacement() {
         </div>
 
         {/* Solver Execution Actions */}
-        <div className="flex flex-wrap items-center gap-3 mt-6 pt-4 border-t border-base-700/60">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 mt-6 pt-4 border-t border-base-700/60">
           <button
             onClick={handleRunClassical}
             disabled={runningClassical || runningQuantum || runningComparison}
-            className="bg-signal-teal text-base-950 font-semibold px-4 py-2.5 rounded-lg hover:bg-signal-teal/90 disabled:opacity-40 transition-colors text-xs flex items-center gap-2"
+            className="w-full sm:w-auto min-h-[44px] bg-signal-teal text-base-950 font-bold px-4 py-2.5 rounded-lg hover:bg-signal-teal/90 disabled:opacity-40 transition-colors text-xs flex items-center justify-center gap-2 shrink-0"
           >
             {runningClassical ? (
               <>
@@ -670,7 +674,7 @@ export default function SensorPlacement() {
           <button
             onClick={handleRunQuantum}
             disabled={runningClassical || runningQuantum || runningComparison}
-            className="bg-purple-600/20 border border-purple-500/50 text-purple-200 font-semibold px-4 py-2.5 rounded-lg hover:bg-purple-600/30 disabled:opacity-40 transition-colors text-xs flex items-center gap-2"
+            className="w-full sm:w-auto min-h-[44px] bg-purple-600/20 border border-purple-500/50 text-purple-200 font-bold px-4 py-2.5 rounded-lg hover:bg-purple-600/30 disabled:opacity-40 transition-colors text-xs flex items-center justify-center gap-2 shrink-0"
           >
             {runningQuantum ? (
               <>
@@ -688,7 +692,7 @@ export default function SensorPlacement() {
           <button
             onClick={handleRunComparison}
             disabled={runningClassical || runningQuantum || runningComparison}
-            className="border border-base-600 bg-base-800 text-ink-100 font-medium px-4 py-2.5 rounded-lg hover:bg-base-750 disabled:opacity-40 transition-colors text-xs flex items-center gap-2"
+            className="w-full sm:w-auto min-h-[44px] border border-base-600 bg-base-800 text-ink-100 font-medium px-4 py-2.5 rounded-lg hover:bg-base-750 disabled:opacity-40 transition-colors text-xs flex items-center justify-center gap-2 shrink-0"
           >
             {runningComparison ? (
               <>
@@ -715,7 +719,7 @@ export default function SensorPlacement() {
 
       {/* Metrics Row (When result exists) */}
       {(result || quantumResult) && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             label="Sensors Placed"
             value={activeSensors.length}
@@ -825,7 +829,7 @@ export default function SensorPlacement() {
         )}
 
         {/* Full-Width Map Canvas with Connected Intelligence Floating Callouts */}
-        <div className="relative rounded-xl overflow-hidden border border-base-700 bg-base-950 shadow-inner h-[660px] xl:h-[700px] w-full">
+        <div className="relative rounded-xl overflow-hidden border border-base-700 bg-base-950 shadow-inner h-[380px] sm:h-[480px] lg:h-[640px] xl:h-[700px] w-full">
           {/* MapScanner Animation Overlay */}
           <MapScanner
             stage={scanStage}

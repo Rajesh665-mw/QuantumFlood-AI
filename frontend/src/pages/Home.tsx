@@ -226,7 +226,7 @@ export default function Home() {
               <label className="block text-xs font-mono uppercase tracking-wider text-ink-400 mb-2">
                 Search a flood-prone area to begin
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2.5">
                 <div className="relative flex-1">
                   <input
                     ref={searchRef}
@@ -235,7 +235,7 @@ export default function Home() {
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Type any city, river, or region (e.g., Tokyo, Cologne, Houston)…"
                     disabled={loading}
-                    className="w-full bg-base-950 border-2 border-base-600 focus:border-signal-teal rounded-lg px-4 py-3 text-sm text-ink-100 placeholder-ink-600 focus:outline-none transition-colors shadow-inner"
+                    className="w-full bg-base-950 border-2 border-base-600 focus:border-signal-teal rounded-lg px-4 py-3 text-sm text-ink-100 placeholder-ink-600 focus:outline-none transition-colors shadow-inner min-h-[44px]"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && query.trim()) handleSelectLocation(query.trim())
                     }}
@@ -251,7 +251,7 @@ export default function Home() {
                   type="button"
                   onClick={() => query.trim() && handleSelectLocation(query.trim())}
                   disabled={loading || !query.trim()}
-                  className="bg-signal-teal text-base-950 font-semibold px-6 py-3 rounded-lg hover:bg-signal-teal/90 hover:shadow-[0_0_20px_rgba(45,212,191,.4)] disabled:opacity-40 transition-all duration-200 text-sm shadow-lg"
+                  className="w-full sm:w-auto min-h-[44px] flex items-center justify-center bg-signal-teal text-base-950 font-bold px-6 py-3 rounded-lg hover:bg-signal-teal/90 hover:shadow-[0_0_20px_rgba(45,212,191,.4)] disabled:opacity-40 transition-all duration-200 text-sm shadow-lg shrink-0"
                 >
                   {loading ? 'Resolving…' : 'Analyze Area'}
                 </button>
@@ -259,13 +259,13 @@ export default function Home() {
 
               {/* Autocomplete dropdown */}
               {suggestions.length > 0 && (
-                <div className="absolute z-30 left-0 right-0 mt-1 bg-base-950 border border-base-600 rounded-lg shadow-2xl overflow-hidden divide-y divide-base-800 scale-in">
+                <div className="absolute z-30 left-0 right-0 mt-1 bg-base-950 border border-base-600 rounded-lg shadow-2xl overflow-hidden divide-y divide-base-800 scale-in max-h-[60vh] overflow-y-auto">
                   {suggestions.map((s, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => handleSelectCoords(s.latitude, s.longitude)}
-                      className="w-full text-left px-4 py-3 text-xs hover:bg-base-800 transition-colors flex items-center justify-between group"
+                      className="w-full text-left px-4 py-3 min-h-[44px] text-xs hover:bg-base-800 transition-colors flex items-center justify-between group"
                     >
                       <div className="min-w-0 pr-2">
                         <span className="font-semibold text-ink-100 group-hover:text-signal-teal transition-colors">
@@ -273,7 +273,7 @@ export default function Home() {
                         </span>
                         <span className="text-ink-500 truncate block text-[11px]">{s.display_name}</span>
                       </div>
-                      <span className="font-mono text-[10px] text-ink-600 shrink-0">
+                      <span className="font-mono text-[10px] text-ink-600 shrink-0 ml-2">
                         {s.latitude.toFixed(2)}°, {s.longitude.toFixed(2)}°
                       </span>
                     </button>
@@ -287,14 +287,14 @@ export default function Home() {
               <span className="text-[11px] font-mono text-ink-500 uppercase tracking-wider block mb-2">
                 Or choose a reference basin
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
                 {PRESETS.map((p) => (
                   <button
                     key={p.name}
                     type="button"
                     onClick={() => handleSelectLocation(p.query)}
                     disabled={loading}
-                    className="text-left p-3 rounded-lg bg-base-950/70 border border-base-750 hover:border-signal-teal/40 hover:bg-base-800/80 transition-all duration-200 group"
+                    className="text-left p-3 min-h-[56px] rounded-lg bg-base-950/70 border border-base-750 hover:border-signal-teal/40 hover:bg-base-800/80 transition-all duration-200 group flex flex-col justify-center"
                   >
                     <div className="font-medium text-xs text-ink-200 group-hover:text-signal-teal transition-colors">
                       {p.name}
@@ -309,30 +309,32 @@ export default function Home() {
             {error && (
               <div className="mt-4 p-3 rounded-lg bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs flex items-center justify-between">
                 <span>{error}</span>
-                <button onClick={() => setError(null)} className="text-ink-400 hover:text-ink-100 ml-2">✕</button>
+                <button onClick={() => setError(null)} className="min-h-[36px] min-w-[36px] text-ink-400 hover:text-ink-100 ml-2 flex items-center justify-center">✕</button>
               </div>
             )}
 
             {/* Active area indicator */}
             {studyArea && (
-              <div className="mt-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-base-800/60 border border-base-700 text-xs text-ink-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                <span>Currently loaded:</span>
-                <strong className="text-ink-200">{studyArea.name}</strong>
-                <span className="text-ink-600 font-mono">
-                  ({studyArea.center.lat.toFixed(3)}°, {studyArea.center.lon.toFixed(3)}°)
-                </span>
+              <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 sm:px-4 sm:py-3 rounded-lg bg-base-800/60 border border-base-700 text-xs text-ink-400">
+                <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                  <span>Currently loaded:</span>
+                  <strong className="text-ink-100 font-semibold">{studyArea.name}</strong>
+                  <span className="text-ink-500 font-mono text-[11px]">
+                    ({studyArea.center.lat.toFixed(3)}°, {studyArea.center.lon.toFixed(3)}°)
+                  </span>
+                </div>
                 <button
+                  type="button"
                   onClick={() => {
                     setStep('sensor-setup')
-                    // Load candidates for this area
                     setLoadingCandidates(true)
                     api.candidates(studyArea)
                       .then((c) => setCandidateCount(c.candidates?.length ?? 0))
                       .catch(() => setCandidateCount(null))
                       .finally(() => setLoadingCandidates(false))
                   }}
-                  className="ml-auto text-signal-teal hover:underline font-medium"
+                  className="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-signal-teal/10 hover:bg-signal-teal/20 text-signal-teal border border-signal-teal/30 font-medium text-xs flex items-center justify-center self-start sm:self-auto shrink-0 transition-colors"
                 >
                   Configure sensors →
                 </button>
@@ -477,18 +479,18 @@ export default function Home() {
           </div>
 
           {/* Launch button */}
-          <div className="mt-6 flex flex-col sm:flex-row items-center gap-4">
+          <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
             <button
               onClick={handleLaunchOptimization}
               disabled={!sensorCountValid}
-              className="w-full sm:w-auto bg-signal-teal text-base-950 font-bold px-8 py-3.5 rounded-lg hover:bg-signal-teal/90 hover:shadow-[0_0_30px_rgba(45,212,191,.4)] disabled:opacity-40 transition-all duration-200 text-sm shadow-lg flex items-center justify-center gap-2"
+              className="w-full sm:w-auto min-h-[48px] bg-signal-teal text-base-950 font-bold px-8 py-3.5 rounded-lg hover:bg-signal-teal/90 hover:shadow-[0_0_30px_rgba(45,212,191,.4)] disabled:opacity-40 transition-all duration-200 text-sm shadow-lg flex items-center justify-center gap-2 shrink-0"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              Run Optimization &amp; Open Map
+              <span>Run Optimization &amp; Open Map</span>
             </button>
-            <span className="text-xs text-ink-500">
+            <span className="text-xs text-ink-500 text-center sm:text-left">
               Places {numSensors} sensors with {coverageRadius} km coverage radius on {studyArea.name}
             </span>
           </div>
@@ -507,12 +509,12 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
           {SECTIONS.map((s) => (
             <Link
               key={s.title}
               to={s.link}
-              className="panel p-5 flex flex-col gap-3 hover:border-signal-teal/30 transition-all duration-200 group"
+              className="panel p-5 flex flex-col gap-3 hover:border-signal-teal/30 transition-all duration-200 group min-h-[140px] rounded-lg"
             >
               <h3 className={`font-display font-semibold text-base ${s.color} group-hover:brightness-125 transition-all`}>
                 {s.title}
@@ -520,7 +522,7 @@ export default function Home() {
               <p className="text-ink-400 text-xs leading-relaxed flex-1">{s.desc}</p>
               <span className="text-[11px] text-signal-teal font-medium flex items-center gap-1 mt-auto">
                 Explore
-                <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                 </svg>
               </span>

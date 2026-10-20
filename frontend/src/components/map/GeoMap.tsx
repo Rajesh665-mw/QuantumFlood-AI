@@ -322,7 +322,7 @@ function ResetViewControl({ bounds }: { bounds: LatLngBoundsExpression }) {
           console.warn('Reset view failed:', e)
         }
       }}
-      className="absolute z-[1000] bottom-3 right-3 bg-base-800/95 border border-base-600 text-ink-100 text-xs font-mono px-3 py-1.5 rounded hover:bg-base-700 hover:border-signal-teal/50 transition-colors shadow-lg"
+      className="absolute z-[1000] bottom-7 right-2 sm:bottom-3 sm:right-3 bg-base-800/95 border border-base-600 text-ink-100 text-xs font-mono px-3 py-1.5 rounded hover:bg-base-700 hover:border-signal-teal/50 transition-colors shadow-lg min-h-[34px] flex items-center gap-1"
       aria-label="Reset map view to study area"
     >
       ⤾ Reset View

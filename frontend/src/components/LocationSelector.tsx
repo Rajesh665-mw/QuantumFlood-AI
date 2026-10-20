@@ -184,7 +184,7 @@ export default function LocationSelector({ currentArea, onAreaChanged, autoNavig
           type="button"
           onClick={handleResetToDefault}
           disabled={loading || isDefault}
-          className={`shrink-0 text-xs font-mono px-3.5 py-2 rounded transition-all flex items-center gap-1.5 ${
+          className={`shrink-0 text-xs font-mono px-3.5 py-2 rounded transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto min-h-[40px] sm:min-h-0 ${
             isDefault
               ? 'opacity-40 cursor-not-allowed border border-base-700 text-ink-500'
               : 'border border-signal-teal/40 bg-signal-teal/10 text-signal-teal hover:bg-signal-teal/20 shadow-sm'
@@ -200,7 +200,7 @@ export default function LocationSelector({ currentArea, onAreaChanged, autoNavig
           <label className="block text-xs font-mono uppercase tracking-wider text-ink-400 mb-1.5">
             Search Global Location or River Basin
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <input
                 type="text"
@@ -208,7 +208,7 @@ export default function LocationSelector({ currentArea, onAreaChanged, autoNavig
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Type any city, river, or region (e.g., Tokyo, Cologne, London, Houston)..."
                 disabled={loading}
-                className="w-full bg-base-950 border border-base-600 rounded px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-600 focus:outline-none focus:border-signal-teal transition-colors"
+                className="w-full bg-base-950 border border-base-600 rounded px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-600 focus:outline-none focus:border-signal-teal transition-colors min-h-[44px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && query.trim()) {
                     handleSelectLocation(query.trim())
@@ -225,7 +225,7 @@ export default function LocationSelector({ currentArea, onAreaChanged, autoNavig
               type="button"
               onClick={() => query.trim() && handleSelectLocation(query.trim())}
               disabled={loading || !query.trim()}
-              className="bg-signal-teal text-base-950 font-medium px-4 py-2.5 rounded text-xs hover:bg-signal-teal/90 hover:shadow-[0_0_16px_rgba(45,212,191,.35)] disabled:opacity-40 transition-all duration-200 shadow"
+              className="bg-signal-teal text-base-950 font-medium px-4 py-2.5 rounded text-xs hover:bg-signal-teal/90 hover:shadow-[0_0_16px_rgba(45,212,191,.35)] disabled:opacity-40 transition-all duration-200 shadow w-full sm:w-auto min-h-[44px] flex items-center justify-center"
             >
               {loading ? 'Configuring...' : 'Set Active Area'}
             </button>

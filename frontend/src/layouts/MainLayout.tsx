@@ -252,9 +252,10 @@ export default function MainLayout() {
         </div>
       </aside>
 
-      {/* Mobile Top Header */}
-      <div className="lg:hidden flex flex-col w-full min-h-screen">
-        <header className="bg-base-900 border-b border-base-600 px-4 py-3 flex items-center justify-between sticky top-0 z-40" ref={mobileNavRef}>
+      {/* Main Column: Mobile Header on small screens + Unified Content Viewport */}
+      <div className="flex flex-col flex-1 min-w-0 min-h-screen">
+        {/* Mobile Top Header (Hidden on lg+ screens) */}
+        <header className="lg:hidden bg-base-900 border-b border-base-600 px-4 py-3 flex items-center justify-between sticky top-0 z-40" ref={mobileNavRef}>
           <NavLink to="/" className="flex items-center gap-2.5" aria-label="QuantumFlood AI Home">
             <span className="w-2.5 h-2.5 rounded-full bg-signal-teal shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
             <span className="font-display font-semibold text-ink-100 tracking-tight text-base">
@@ -263,7 +264,7 @@ export default function MainLayout() {
           </NavLink>
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded text-ink-500 hover:text-ink-100 hover:bg-base-800 transition-colors"
+            className="min-h-[44px] min-w-[44px] -mr-2 p-2 rounded-lg text-ink-300 hover:text-ink-100 hover:bg-base-800 transition-colors flex items-center justify-center focus-visible:outline-signal-teal"
             aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={mobileOpen}
           >
@@ -277,22 +278,23 @@ export default function MainLayout() {
           </button>
         </header>
 
-        {/* Mobile Navigation Overlay + Dropdown */}
+        {/* Mobile Navigation Drawer / Dropdown */}
         {mobileOpen && (
           <>
             {/* Backdrop overlay */}
             <div
-              className="fixed inset-0 bg-base-950/60 backdrop-blur-sm z-30"
+              className="lg:hidden fixed inset-0 bg-base-950/70 backdrop-blur-sm z-30"
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
             <nav
-              className="relative z-40 bg-base-900 border-b border-base-600 px-4 py-3 space-y-2 max-h-[80vh] overflow-y-auto scale-in"
+              className="lg:hidden relative z-40 bg-base-900 border-b border-base-600 px-4 py-3 space-y-1.5 max-h-[80vh] overflow-y-auto shadow-2xl"
               aria-label="Mobile navigation"
               role="navigation"
             >
-              <div className="text-[10px] font-mono uppercase tracking-wider text-ink-500 font-semibold px-1 pb-1">
-                Primary Workflow (5 Modules)
+              <div className="flex items-center justify-between px-1 pb-1 text-[10px] font-mono uppercase tracking-wider text-ink-500 font-semibold">
+                <span>Primary Workflow (5 Modules)</span>
+                <span className="text-signal-teal">{currentAreaName}</span>
               </div>
               {PRIMARY_SECTIONS.map((item, idx) => (
                 <NavLink
@@ -302,53 +304,70 @@ export default function MainLayout() {
                   onClick={() => setMobileOpen(false)}
                   aria-label={item.label}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2.5 rounded text-xs font-medium ${
+                    `flex items-center justify-between px-3 py-3 rounded-lg text-xs font-medium min-h-[44px] transition-colors ${
                       isActive
-                        ? 'bg-base-700 text-signal-teal font-semibold'
-                        : 'text-ink-400 hover:text-ink-100 hover:bg-base-800'
+                        ? 'bg-base-700 text-signal-teal font-semibold border-l-2 border-signal-teal'
+                        : 'text-ink-300 hover:text-ink-100 hover:bg-base-800'
                     }`
                   }
                 >
-                  <div className="flex items-center gap-2.5">
-                    {item.icon}
+                  <div className="flex items-center gap-3">
+                    <div className="text-signal-teal shrink-0">{item.icon}</div>
                     <div>
-                      <div className="font-medium">{item.label}</div>
-                      <div className="text-[10px] text-ink-500">{item.desc}</div>
+                      <div className="font-medium text-ink-100">{item.label}</div>
+                      <div className="text-[10px] text-ink-500 mt-0.5">{item.desc}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {item.badge && (
-                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-signal-teal/15 text-signal-teal border border-signal-teal/30">
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-signal-teal/15 text-signal-teal border border-signal-teal/30">
                         {item.badge}
                       </span>
                     )}
-                    <span className="text-[9px] font-mono text-ink-700">0{idx + 1}</span>
+                    <span className="text-[10px] font-mono text-ink-700">0{idx + 1}</span>
                   </div>
                 </NavLink>
               ))}
+
+              {/* Mobile Quick Reset & Status */}
+              <div className="pt-2 mt-2 border-t border-base-750 flex items-center justify-between px-2 text-xs text-ink-400">
+                <span className="flex items-center gap-1.5 truncate pr-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  <span className="truncate">{currentAreaName}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleQuickReset}
+                  className={`min-h-[36px] px-2.5 py-1 rounded text-[11px] font-mono transition-colors shrink-0 ${
+                    confirmReset
+                      ? 'bg-amber-950/80 text-amber-300 border border-amber-500 font-bold'
+                      : 'text-ink-400 hover:text-signal-teal bg-base-800 border border-base-700'
+                  }`}
+                  aria-label="Reset study area to Vijayawada Benchmark"
+                >
+                  {confirmReset ? 'Confirm Reset?' : 'Reset to Benchmark'}
+                </button>
+              </div>
             </nav>
           </>
         )}
 
-        {/* Mobile Content */}
-        <main className="flex-1 px-4 py-6" id="main-content">
+        {/* Single Unified Responsive Content Viewport */}
+        <main
+          className="flex-1 w-full max-w-[1600px] mx-auto px-3 py-4 sm:px-6 lg:p-8 transition-all"
+          id="main-content"
+        >
           <Outlet />
         </main>
 
-        <footer className="border-t border-base-600 bg-base-900 px-4 py-4 text-xs text-ink-700 flex flex-col gap-1 items-center text-center">
-          <span>QuantumFlood AI — {currentAreaName} Corridor</span>
-          <span className="font-mono text-[10px]">Quantum-Enhanced Disaster Intelligence</span>
-        </footer>
-      </div>
-
-      {/* Desktop Main Content */}
-      <div className="hidden lg:flex flex-col flex-1 min-w-0 min-h-screen overflow-y-auto">
-        <main className="flex-1 p-8 max-w-[1600px] w-full mx-auto" id="main-content">
-          <Outlet />
-        </main>
-        <footer className="border-t border-base-600 bg-base-900/60 px-8 py-4 flex items-center justify-between text-xs text-ink-700">
-          <span>QuantumFlood AI · {currentAreaName} Corridor · Hybrid Quantum-Classical Pipeline</span>
-          <span className="font-mono text-[11px] text-ink-500">v1.0 · QAOA + VQR + QUBO</span>
+        {/* Unified Responsive Footer */}
+        <footer className="border-t border-base-600 bg-base-900/60 px-4 py-3 sm:px-8 sm:py-4 text-xs text-ink-500 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-center sm:text-left">
+          <span>
+            QuantumFlood AI · <span className="text-ink-300">{currentAreaName} Corridor</span> · Hybrid Quantum-Classical Decision Support
+          </span>
+          <span className="font-mono text-[10px] sm:text-[11px] text-ink-600">
+            v1.0 · QAOA + VQR + QUBO Baselines
+          </span>
         </footer>
       </div>
     </div>

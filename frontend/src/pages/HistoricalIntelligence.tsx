@@ -217,7 +217,7 @@ export default function HistoricalIntelligence() {
                   <button
                     key={ev.event_id || ev.year}
                     onClick={() => setSelectedEvent(ev)}
-                    className={`w-full text-left p-3.5 rounded-lg border transition-all duration-150 ${
+                    className={`w-full text-left p-3.5 rounded-lg border transition-all duration-150 min-h-[44px] ${
                       isSelected
                         ? 'bg-base-750 border-signal-teal text-ink-100 shadow-md ring-1 ring-signal-teal/30'
                         : 'bg-base-850 border-base-700/70 text-ink-300 hover:bg-base-800 hover:border-base-600'
@@ -371,13 +371,13 @@ export default function HistoricalIntelligence() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-ink-500 font-mono">Horizon:</span>
             {[30, 90, 180].map((days) => (
               <button
                 key={days}
                 onClick={() => setTimeRange(days)}
-                className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
+                className={`px-3 py-1.5 rounded text-xs font-mono transition-colors min-h-[36px] flex items-center justify-center ${
                   timeRange === days
                     ? 'bg-signal-teal text-base-950 font-bold'
                     : 'bg-base-800 text-ink-400 hover:text-ink-200 border border-base-700'
@@ -399,9 +399,9 @@ export default function HistoricalIntelligence() {
         </div>
 
         {/* Interactive Hydrograph Chart */}
-        <div className="mt-6 h-[320px] w-full">
+        <div className="mt-6 h-[260px] sm:h-[320px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -18, bottom: 0 }}>
               <defs>
                 <linearGradient id="waterLevelGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.6} />
@@ -417,19 +417,19 @@ export default function HistoricalIntelligence() {
               <YAxis
                 yAxisId="left"
                 stroke="#0ea5e9"
-                fontSize={11}
+                fontSize={10}
+                width={38}
                 domain={[8, 24]}
                 tickLine={false}
-                label={{ value: 'Water Level (m)', angle: -90, position: 'insideLeft', fill: '#0ea5e9', fontSize: 10 }}
               />
               <YAxis
                 yAxisId="right"
                 orientation="right"
                 stroke="#10b981"
-                fontSize={11}
+                fontSize={10}
+                width={38}
                 domain={[0, 150]}
                 tickLine={false}
-                label={{ value: 'Rainfall (mm)', angle: 90, position: 'insideRight', fill: '#10b981', fontSize: 10 }}
               />
               <Tooltip
                 contentStyle={DARK_TOOLTIP_STYLE.contentStyle}
@@ -633,7 +633,7 @@ export default function HistoricalIntelligence() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-ink-400 font-mono">Horizon:</span>
             {[1, 3, 7].map((h) => (
               <button
@@ -643,7 +643,7 @@ export default function HistoricalIntelligence() {
                   handleRunForecast(h)
                 }}
                 disabled={forecastLoading || !isDefaultBenchmark}
-                className={`px-3 py-1.5 rounded text-xs font-mono font-semibold transition-colors disabled:opacity-40 ${
+                className={`px-3.5 py-2 rounded text-xs font-mono font-semibold transition-colors disabled:opacity-40 min-h-[40px] flex items-center justify-center ${
                   forecastHorizon === h
                     ? 'bg-signal-cyan text-base-950'
                     : 'bg-base-800 text-ink-300 hover:bg-base-750 border border-base-700'
@@ -691,7 +691,7 @@ export default function HistoricalIntelligence() {
                     Trained on 180-day hydro-meteorological series using lag features (water level, inflow, 24h rainfall).
                   </p>
 
-                  <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-base-750">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-4 pt-3 border-t border-base-750">
                     <div className="p-2 rounded bg-base-900 border border-base-750 text-center">
                       <span className="text-[10px] font-mono text-ink-500 block">Test MAE</span>
                       <span className="font-mono text-xs font-bold text-signal-teal">0.38 m</span>
@@ -711,7 +711,7 @@ export default function HistoricalIntelligence() {
                   <button
                     onClick={() => handleRunForecast(forecastHorizon)}
                     disabled={forecastLoading}
-                    className="w-full bg-signal-cyan hover:bg-signal-cyan/90 text-base-950 font-semibold py-2 px-4 rounded text-xs transition-colors shadow-sm disabled:opacity-40"
+                    className="w-full bg-signal-cyan hover:bg-signal-cyan/90 text-base-950 font-semibold py-2.5 px-4 rounded text-xs transition-colors shadow-sm disabled:opacity-40 min-h-[44px] flex items-center justify-center"
                   >
                     {forecastLoading ? 'Calculating Forecast…' : `Generate ${forecastHorizon}-Day Forecast`}
                   </button>
