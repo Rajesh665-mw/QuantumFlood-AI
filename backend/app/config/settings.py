@@ -27,10 +27,13 @@ DATA_RAW_DIR = APP_DIR / "data" / "raw"
 DATA_GEO_DIR = APP_DIR / "data" / "geo"
 DATA_PROCESSED_DIR = APP_DIR / "data" / "processed"
 MODEL_DIR = DATA_PROCESSED_DIR / "models"
-DATA_RAW_DIR.mkdir(parents=True, exist_ok=True)
-DATA_GEO_DIR.mkdir(parents=True, exist_ok=True)
-DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-MODEL_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    DATA_RAW_DIR.mkdir(parents=True, exist_ok=True)
+    DATA_GEO_DIR.mkdir(parents=True, exist_ok=True)
+    DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
+except OSError:
+    pass
 
 # ---------------------------------------------------------------------------
 # Study area: Krishna river stretch near Vijayawada, Andhra Pradesh.

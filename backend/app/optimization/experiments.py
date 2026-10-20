@@ -22,7 +22,12 @@ from app.optimization.evaluator import build_coverage_summary
 from app.config.settings import DATA_PROCESSED_DIR
 
 EXPERIMENTS_DIR = DATA_PROCESSED_DIR / "experiments"
-EXPERIMENTS_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    EXPERIMENTS_DIR.mkdir(parents=True, exist_ok=True)
+except OSError:
+    import tempfile
+    EXPERIMENTS_DIR = Path(tempfile.gettempdir()) / "quantumflood" / "experiments"
+    EXPERIMENTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Default benchmark suite (Step 14: small / medium / large problem sizes).
 # Kept modest so the default run stays fast for a classroom prototype.

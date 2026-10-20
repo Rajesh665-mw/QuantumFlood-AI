@@ -31,7 +31,12 @@ from app.config.settings import (
 logger = logging.getLogger(__name__)
 
 ANALYSES_DIR = DATA_PROCESSED_DIR / "analyses"
-ANALYSES_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    ANALYSES_DIR.mkdir(parents=True, exist_ok=True)
+except OSError:
+    import tempfile
+    ANALYSES_DIR = Path(tempfile.gettempdir()) / "quantumflood" / "analyses"
+    ANALYSES_DIR.mkdir(parents=True, exist_ok=True)
 
 ANALYSIS_ID_REGEX = re.compile(r"^ANL-[A-Za-z0-9_-]{8,64}$")
 
@@ -44,8 +49,13 @@ class AnalysisStore:
         ttl_hours: float = ANALYSIS_STORE_TTL_HOURS,
         max_disk_mb: float = ANALYSIS_STORE_MAX_DISK_MB,
     ):
-        self._dir = storage_dir.resolve()
-        self._dir.mkdir(parents=True, exist_ok=True)
+        try:
+            self._dir = storage_dir.resolve()
+            self._dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            import tempfile
+            self._dir = (Path(tempfile.gettempdir()) / "quantumflood" / "analyses").resolve()
+            self._dir.mkdir(parents=True, exist_ok=True)
         self._max_cache = max_cache
         self._ttl_seconds = max(0.1, float(ttl_hours) * 3600.0)
         self._max_disk_bytes = max(10 * 1024 * 1024, int(max_disk_mb * 1024 * 1024))

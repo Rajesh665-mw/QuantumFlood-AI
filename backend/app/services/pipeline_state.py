@@ -25,7 +25,12 @@ from app.config.settings import DATA_PROCESSED_DIR
 logger = logging.getLogger(__name__)
 
 PIPELINE_DIR = DATA_PROCESSED_DIR / "pipeline"
-PIPELINE_DIR.mkdir(parents=True, exist_ok=True)
+try:
+    PIPELINE_DIR.mkdir(parents=True, exist_ok=True)
+except OSError:
+    import tempfile
+    PIPELINE_DIR = Path(tempfile.gettempdir()) / "quantumflood" / "pipeline"
+    PIPELINE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Module-level lock protects all pipeline state writes (JSON serialisation
 # to disk) from interleaving under concurrent FastAPI/uvicorn requests.
