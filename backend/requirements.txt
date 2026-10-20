@@ -1,3 +1,4 @@
+# QuantumFlood AI — Production dependencies for FastAPI backend
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 pydantic==2.9.2
@@ -6,7 +7,5 @@ numpy==1.26.4
 scipy>=1.13.0
 scikit-learn==1.5.1
 joblib==1.4.2
-geopandas==0.14.4
 shapely==2.0.4
 httpx==0.27.2
-pytest==8.3.2
