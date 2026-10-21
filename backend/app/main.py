@@ -40,6 +40,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Explicit top-level aliases for WSGI/ASGI runners (Vercel, AWS Lambda, Gunicorn)
+application = app
+handler = app
+
 # CORS configuration: allows local dev servers, Vercel deployments, and custom FRONTEND_URL
 default_origins = [
     "http://localhost:5173",
