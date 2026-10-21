@@ -33,7 +33,7 @@ Upper-triangular QUBO matrix elements:
 Mathematical reference: QUANTUM_FORMULATION_REPORT.md
 """
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Tuple
 import numpy as np
 
 from app.utils.geo_math import haversine_km
